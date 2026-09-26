@@ -102,7 +102,7 @@ export default function BasinMap() {
       <div className="absolute left-6 top-6 flex w-[440px] flex-col gap-4">
         <Wordmark />
         <div>
-          <div className="text-[11px] uppercase tracking-[0.18em] text-accent">{f?.well.program ?? 'Samudra Manthan'}</div>
+          <div className="text-[11px] uppercase tracking-[0.18em] text-accent">{f?.well.program ?? 'Mahanadi deepwater'}</div>
           <h1 className="mt-1 text-[34px] font-semibold leading-tight tracking-tight text-fg">{f?.well.basin ?? 'Mahanadi Offshore Deepwater'}</h1>
           <p className="mt-2 text-sm leading-relaxed text-muted">One live deepwater well, its offsets, and everything the organisation already knows about them — watched, reasoned over and acted on by a Gemini agent, with a human approving every decision.</p>
         </div>

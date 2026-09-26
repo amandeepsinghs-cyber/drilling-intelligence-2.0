@@ -91,3 +91,12 @@ google-chrome --headless=new --no-sandbox --window-size=1920,1080 --virtual-time
 - 2026-09-26 · **A-5a** `Facts` type has `reservoir` + `mudlog`; offline mocks regenerated (15 turns, reservoir, mudlog). → P0-4
 - 2026-09-26 · P0-7 act stages built + Playwright-verified → checklist P0-7 ticked.
 - 2026-09-26 · ADC restored; first real Live smoke passed (tool call + correct Hinglish numbers).
+
+### 2026-09-26 11:00 — branding, lane rename, script + README (uncommitted, pre-v0.4)
+- Official Google Cloud logo live in header (files in `frontend/public/brand/`, verified dark + light via `frontend/scratch/logo_probe.mjs`). Raw downloads kept (owner: do not delete).
+- Act 3 phone lane: "phone (Telegram)" → "phone push"; phone mirror headers now "Drilling Intelligence · …". Backend unchanged (Telegram text only on real send, which is parked).
+- `docs/run_of_show.md` rewritten (15-min script); `README.md` rewritten. Old versions copied to `docs/archive/`.
+- Checks: tsc ✓, vitest 21/21, build ✓, fact gate 0/0.
+- Open: owner to confirm closing ask (90-day pilot placeholder) and Hinglish lines; 30-min re-soak not yet run.
+- 11:13 Brand wording per Y26 guide: agent badge "Gemini Live"→"Live"; "Built with Google Gemini" under agent input; audit line → "Gemini Enterprise Agent Platform (Live API)"; run_of_show closing + README drop "Vertex AI". No new logos. tsc ✓ vitest 21/21.
+- 11:35 Cockpit polish: agent title "Sagar Drishti AI Agent" 20px; top-bar LIVE chip removed (agent-panel badge stays); Well-at-a-glance card removed; log headers 72→84 px + group strip 22→26 px, no-wrap labels, headers clipped per track; ML badge solid; Cuttings 128 px.

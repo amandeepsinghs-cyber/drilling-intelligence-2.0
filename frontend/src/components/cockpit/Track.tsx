@@ -38,9 +38,9 @@ export function drawUndrilled(ctx: CanvasRenderingContext2D, s: DepthScale, w: n
 
 function ScaleRow({ s }: { s: TrackScale }) {
   return (
-    <div className="flex h-[14px] items-center gap-1 leading-none">
+    <div className="flex h-[14px] min-w-0 items-center gap-1 leading-none">
       <span className="num w-[30px] shrink-0 text-left text-[10.5px] text-muted">{s.min}</span>
-      <span className="relative flex flex-1 items-center justify-center">
+      <span className="relative flex min-w-0 flex-1 items-center justify-center">
         <span className="absolute inset-x-0 top-1/2 h-0 border-t-2" style={{ borderColor: s.color, borderStyle: s.dash ? 'dashed' : 'solid' }} />
         <span className="relative truncate bg-panel px-1 text-[11px] font-semibold" style={{ color: s.color }}>
           {s.label}{s.unit ? <span className="font-normal text-faint"> {s.unit}</span> : null}
@@ -72,9 +72,9 @@ export default function Track({
   return (
     <div className={clsx('flex min-w-0 flex-col border-r border-line last:border-r-0', className)} style={{ width, flex: width ? '0 0 auto' : '1 1 0' }}
       data-track={title} data-last-md={lastMd}>
-      <div className="flex shrink-0 flex-col justify-between border-b border-line px-1.5 pb-1.5 pt-1.5" style={{ height: TRACK_HEADER_PX }}>
-        <div className="truncate text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">{title}</div>
-        <div className="flex flex-col gap-[2px]">
+      <div className="flex shrink-0 flex-col justify-between overflow-hidden border-b border-line px-1.5 py-2" style={{ height: TRACK_HEADER_PX }}>
+        <div className="truncate text-[11px] font-semibold uppercase leading-tight tracking-[0.12em] text-muted" title={title}>{title}</div>
+        <div className="flex flex-col gap-[3px]">
           {scales.slice(0, 3).map((sc) => <ScaleRow key={sc.label} s={sc} />)}
         </div>
       </div>

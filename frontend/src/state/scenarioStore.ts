@@ -64,7 +64,7 @@ interface ScenarioState {
   source: 'api' | 'mock' | null;
   md: number;
   playing: boolean;
-  speed: number;            // metres of hole per second of demo time
+  speed: number;            // rig-time multiplier on the real ROP curve: 1 = real time, 60 = one rig-hour per demo minute
   approvedMw: boolean;
   ropCapped: boolean;
   fired: Partial<Record<TriggerId, boolean>>;
@@ -98,7 +98,7 @@ export const useScenario = create<ScenarioState>((set, get) => ({
   source: null,
   md: START_MD,
   playing: false,
-  speed: 2,
+  speed: 60,
   approvedMw: false,
   ropCapped: false,
   fired: {},

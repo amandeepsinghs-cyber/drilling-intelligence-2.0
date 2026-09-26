@@ -20,7 +20,7 @@ tags:
 
 ## 1. General Well & Shift Data
 - **Well Identifier**: MN-SM-DW-01 (Mahanadi Offshore Deepwater)
-- **Operator**: ONGC Deepwater Operations (Project Samudra Manthan)
+- **Operator**: ONGC Deepwater Operations (illustrative)
 - **Date**: 2026-09-21
 - **Tour**: NIGHT (18:00 - 06:00)
 - **Depth Interval**: 4150.0 m to 4172.0 m MD

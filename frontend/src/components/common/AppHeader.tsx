@@ -1,21 +1,28 @@
 /** AppHeader — wordmark, well identity, feed status, and presenter controls. */
 import clsx from 'clsx';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useScenario } from '../../state/scenarioStore';
 import { useUi } from '../../state/uiStore';
 
+/** Official Google Cloud logo files (drop them into frontend/public/brand/). Never redraw the logo — brand rules. */
+const LOGO = { dark: '/brand/google-cloud-logo-on-dark.svg', light: '/brand/google-cloud-logo-on-light.svg' } as const;
+
 export function Wordmark() {
+  const theme = useUi((s) => s.theme);
+  const [logoOk, setLogoOk] = useState(true);
+  const src = theme === 'light' ? LOGO.light : LOGO.dark;
+  useEffect(() => setLogoOk(true), [src]);
   return (
-    <div className="flex items-center gap-2.5">
-      <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden>
-        <rect x="1" y="1" width="24" height="24" rx="7" fill="none" stroke="var(--accent)" strokeWidth="1.5" />
-        <path d="M13 5v11" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" />
-        <path d="M9.5 16h7L13 21z" fill="var(--accent)" />
-      </svg>
-      <div className="leading-tight">
-        <div className="text-[13px] font-semibold tracking-tight text-fg">Sagar Drishti <span className="text-accent">AI Agent</span></div>
-        <div className="text-[10px] uppercase tracking-[0.16em] text-faint">Project Samudra Manthan · Deepwater</div>
-      </div>
+    <div className="flex items-center gap-3">
+      {logoOk ? (
+        <img src={src} alt="Google Cloud" className="h-7 w-auto" onError={() => setLogoOk(false)} />
+      ) : (
+        // Placeholder until the official logo file is present: plain text, no imitation of the logo.
+        <span className="whitespace-nowrap text-[15px] font-medium tracking-tight text-fg">Google Cloud</span>
+      )}
+      <span className="h-5 w-px bg-line" />
+      <span className="whitespace-nowrap text-[14px] font-semibold tracking-tight text-muted">Drilling Intelligence</span>
     </div>
   );
 }

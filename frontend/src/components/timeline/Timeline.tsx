@@ -12,6 +12,9 @@ const SHORT: Record<string, string> = {
   act4: 'Loss side · WCR',
 };
 
+/** Rig-time multipliers on the real ROP: 1× shows true real-time drilling; ×60 is the story pace; ×300/×1200 fast-forward to TD. */
+export const SPEEDS: [number, string][] = [[1, '1× real'], [60, '×60'], [300, '×300'], [1200, '×1200']];
+
 export default function Timeline() {
   const { data, bundle, md, playing, speed, fired, togglePlay, setSpeed, setMd } = useScenario();
   const board = useUi((s) => s.mode) === 'board';
@@ -44,7 +47,7 @@ export default function Timeline() {
       </button>
       <div className="flex flex-col shrink-0 leading-tight">
         <span className="num text-[12px] font-semibold text-fg">{hms(t)}</span>
-        <span className="text-[9px] text-faint">rig time</span>
+        <span className="text-[9px] text-faint">rig time · {speed === 1 ? 'real time' : `×${speed}`}</span>
       </div>
       <div className="relative h-10 flex-1">
         {/* Act boundary labels */}
@@ -87,12 +90,12 @@ export default function Timeline() {
         <div className="pointer-events-none absolute top-[12px] h-[15px] w-[15px] -translate-x-1/2 rounded-full border-2 border-accent bg-app shadow-glow"
           style={{ left: `${pct(md)}%` }} />
       </div>
-      {!board && (<>
-      <div className="flex items-center gap-1 shrink-0">
-        {[1, 2, 5].map((s) => (
-          <button key={s} onClick={() => setSpeed(s)} className={clsx('kbd px-1.5 py-0.5 text-[10px]', speed === s && 'border-accent text-accent')}>{s} m/s</button>
+      <div className="flex items-center gap-1 shrink-0" title="Rig-time speed: real ROP × multiplier">
+        {SPEEDS.map(([s, label]) => (
+          <button key={s} onClick={() => setSpeed(s)} className={clsx('kbd px-1.5 py-0.5 text-[10px]', speed === s && 'border-accent text-accent')}>{label}</button>
         ))}
       </div>
+      {!board && (<>
       <div className="flex items-center gap-1 border-l border-line pl-2 shrink-0">
         {bundle.turns.map((tn) => (
           <button key={tn.n} onClick={() => runTurn(tn.n, { jump: true })} title={`Turn ${tn.n} · ${tn.intent ?? tn.trigger}`}

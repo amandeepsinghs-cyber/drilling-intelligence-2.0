@@ -64,7 +64,7 @@ export default function AuditDrawer() {
               <div className="text-muted">Curves: {Object.entries(data.meta.curve_sources).map(([c, s]) => `${c}=${s}`).join(' · ')}</div>
               <div className="text-muted">Physics: Eaton / Matthews–Kelly / Jorden–Shirley dxc / scenario-calibrated ECD</div>
               <div className="text-muted">ML: {data.meta.ml_status === 'trained_rf_lithology' ? 'lithology = RandomForest trained on offset wells; kick risk = scenario baseline' : `${data.meta.ml_status} (trained model not loaded)`}</div>
-              <div className="text-muted">Agent: Gemini Live · search over synthetic offset reports, SOPs and WCRs</div>
+              <div className="text-muted">Agent: Gemini Enterprise Agent Platform (Live API) · search over synthetic offset reports, SOPs and WCRs</div>
             </section>
             <section>
               <div className="panel-title mb-2">Decision ledger · append-only</div>

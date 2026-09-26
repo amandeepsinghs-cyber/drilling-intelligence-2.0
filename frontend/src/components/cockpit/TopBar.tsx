@@ -29,21 +29,25 @@ export default function TopBar() {
       {f && (
         <div className="shrink-0 border-l border-line pl-5 leading-tight">
           <div className="num text-[16px] font-semibold text-fg">{f.well.id}</div>
-          <div className="text-[11.5px] text-muted">{f.well.basin} · {f.well.water_depth_m.toLocaleString('en-IN')} m water · {f.well.rig}</div>
+          <div className="whitespace-nowrap text-[11.5px] text-muted">
+            Mahanadi deepwater · {f.well.water_depth_m.toLocaleString('en-IN')} m water
+            <span className="hidden min-[2000px]:inline"> · {f.well.rig}</span>
+          </div>
         </div>
       )}
-      <nav className="flex min-w-0 flex-1 items-center justify-center gap-1" aria-label="Acts">
+      <nav className="flex min-w-0 flex-1 items-center justify-center gap-1 overflow-hidden" aria-label="Acts">
         {ACTS.map((a, i) => {
           const on = a.id === act, done = i < cur;
           return (
-            <div key={a.id} className="flex min-w-0 items-center">
-              {i > 0 && <span className={clsx('mx-1 h-px w-6', done || on ? 'bg-accent/60' : 'bg-line')} />}
-              <button onClick={() => enterAct(a.id)} title={`${a.takeaway} (Shift+${a.actNumber})`}
-                className={clsx('flex min-w-0 items-center gap-2 rounded-full border px-3 py-1.5 transition-all duration-200',
+            <div key={a.id} className="flex shrink-0 items-center">
+              {i > 0 && <span className={clsx('mx-1 h-px w-4 min-[1800px]:w-6', done || on ? 'bg-accent/60' : 'bg-line')} />}
+              <button onClick={() => enterAct(a.id)} title={`${SHORT[a.id] ?? a.title} — ${a.takeaway} (Shift+${a.actNumber})`}
+                className={clsx('flex items-center gap-2 rounded-full border px-2.5 py-1.5 transition-all duration-200',
                   on ? 'border-accent/70 bg-accent/15 shadow-glow' : 'border-transparent hover:border-line')}>
                 <span className={clsx('grid h-6 w-6 shrink-0 place-items-center rounded-full text-[12px] font-bold',
                   on ? 'bg-accent text-app' : done ? 'bg-ok/20 text-ok' : 'bg-raised text-faint')}>{done ? '✓' : a.actNumber}</span>
-                <span className={clsx('whitespace-nowrap text-[13.5px] font-semibold', on ? 'text-fg' : 'text-muted')}>{SHORT[a.id] ?? a.title}</span>
+                {/* Active act always shows its name; the others only on very wide screens (no overlap). */}
+                <span className={clsx('whitespace-nowrap text-[13.5px] font-semibold', on ? 'text-fg' : 'hidden text-muted min-[1800px]:inline')}>{SHORT[a.id] ?? a.title}</span>
               </button>
             </div>
           );
@@ -51,10 +55,7 @@ export default function TopBar() {
       </nav>
       <div className="flex shrink-0 items-center gap-3">
         {approved && <span className="chip border-accent/40 text-accent">MOC active</span>}
-        <button onClick={ui.toggleAgentMode} title="Switch LIVE / SCRIPTED"
-          className={clsx('chip text-[11px]', ui.agentMode === 'LIVE' ? 'border-ok/50 text-ok' : 'border-warn/50 text-warn')}>
-          <span className={clsx('h-1.5 w-1.5 rounded-full', ui.agentMode === 'LIVE' ? 'animate-pulse bg-ok' : 'bg-warn')} />{ui.agentMode}
-        </button>
+        {/* LIVE/SCRIPTED chip lives only in the agent panel (owner: one "LIVE" on screen). V still toggles. */}
         <div className="border-l border-line pl-3 text-right leading-tight">
           <div className="text-[10px] uppercase tracking-wider text-faint">Bit depth</div>
           <div className="num text-[17px] font-semibold text-fg">{md.toLocaleString('en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} <span className="text-[12px] text-muted">m</span></div>

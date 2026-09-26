@@ -22,7 +22,7 @@ const LANE_META: Record<string, { who: string; how: string; icon: string }> = {
   mud: { who: 'Mud chemist', how: 'rig console', icon: 'M4 5h16v10H8l-4 4z' },
   chat: { who: 'RTOC onshore', how: 'Google Chat', icon: 'M3 4h14v10H7l-4 3zM19 8h2v12l-3-3h-8v-2' },
   email: { who: 'Drilling manager', how: 'email', icon: 'M3 6h18v12H3zM3 6l9 7 9-7' },
-  phone: { who: 'Superintendent', how: 'phone (Telegram)', icon: 'M8 2h8v20H8zM11 18h2' },
+  phone: { who: 'Superintendent', how: 'phone push', icon: 'M8 2h8v20H8zM11 18h2' },
 };
 const LANES = ['mud', 'chat', 'email', 'phone'] as const;
 
@@ -173,7 +173,7 @@ export default function Act3ActionPanel() {
             </div>
             {phone && phone.status !== 'queued' && (
               <div className={clsx('border-t border-white/10 px-2 py-1 text-center text-[10px]', phone.status === 'delivered' ? 'text-ok' : phone.status === 'failed' ? 'text-risk' : 'text-warn')}>
-                {phone.status === 'delivered' ? 'Real Telegram push delivered' : phone.status === 'failed' ? 'Telegram send failed' : 'Simulated for the demo — mirrored for the room'}
+                {phone.status === 'delivered' ? 'Real phone push delivered' : phone.status === 'failed' ? 'Phone push failed' : 'Simulated for the demo — mirrored for the room'}
               </div>
             )}
           </div>

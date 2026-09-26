@@ -31,8 +31,8 @@ export default function VoiceRing({ state, size = 44 }: { state: VoiceState; siz
         </div>
       </div>
       <div>
-        <div className="text-sm font-medium text-fg">Drilling Intelligence Agent</div>
-        <div className="text-[11px]" style={{ color: state === 'idle' ? 'var(--text-muted)' : color }}>{LABEL[state]}</div>
+        <div className="whitespace-nowrap text-[20px] font-semibold leading-tight text-fg">Sagar Drishti <span className="text-accent">AI Agent</span></div>
+        {state !== 'idle' && <div className="text-[11px]" style={{ color }}>{LABEL[state]}</div>}
       </div>
     </div>
   );

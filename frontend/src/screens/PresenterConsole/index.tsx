@@ -6,6 +6,7 @@
 import clsx from 'clsx';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Wordmark } from '../../components/common/AppHeader';
+import { SPEEDS } from '../../components/timeline/Timeline';
 import { CHANNEL, type PresenterCmd } from '../../state/presenter';
 import { ACTS, actOfTurn, useScenario, type ActId } from '../../state/scenarioStore';
 
@@ -141,7 +142,7 @@ export default function PresenterConsole() {
           {/* Drilling State */}
           <div className="chip border-strong px-2 py-1">
             <span className={echo?.playing ? 'text-emerald-400' : 'text-muted'}>
-              {echo?.playing ? `Drilling (${echo.speed} m/s)` : 'Paused'}
+              {echo?.playing ? `Drilling (rig time ×${echo.speed})` : 'Paused'}
             </span>
           </div>
 
@@ -358,13 +359,13 @@ export default function PresenterConsole() {
           <button className="btn-primary" onClick={() => send({ cmd: 'toggle' })}>
             Play / pause (Space)
           </button>
-          {[1, 2, 5].map((s) => (
+          {SPEEDS.map(([s, label]) => (
             <button
               key={s}
               className={clsx('btn text-xs', echo?.speed === s && 'border-accent text-accent-fg')}
               onClick={() => send({ cmd: 'speed', s })}
             >
-              {s} m/s
+              {label}
             </button>
           ))}
           <button className="btn text-xs" onClick={() => send({ cmd: 'mode' })}>

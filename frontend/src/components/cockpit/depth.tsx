@@ -3,9 +3,9 @@
 import { createContext, useContext } from 'react';
 
 /** Height of every track header. Bodies start exactly this far below the top of each column. */
-export const TRACK_HEADER_PX = 72;
+export const TRACK_HEADER_PX = 84;
 /** Group-label strip above the headers ("INPUT · LWD", "PRESSURE", "WELLBORE"). Same in every column. */
-export const COLUMN_TOP_PX = 22;
+export const COLUMN_TOP_PX = 26;
 /** Body top relative to the column top. The bit line is drawn at BODY_TOP_PX + y(bit). */
 export const BODY_TOP_PX = COLUMN_TOP_PX + TRACK_HEADER_PX;
 

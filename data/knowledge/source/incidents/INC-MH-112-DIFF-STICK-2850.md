@@ -31,6 +31,6 @@ During exploration drilling on Mumbai High reference well MH-112 in fractured Mi
 - **Day 14 11:00**: Spotted 50 bbl hydrocarbon-based freeing pipe pill around BHA.
 - **Day 15 02:00**: String jarred free after 14.5 hours of jarring operations. Total NPT incurred: 48.0 hours.
 
-## 3. Lessons for Deepwater Project Samudra Manthan
+## 3. Lessons for Deepwater Drilling
 - In transition zones and depleted sections, overbalance must be tightly constrained to prevent differential sticking.
 - When drilling narrow margins in MN-SM-DW-01, maintaining ECD strictly within the 11.48 ppg pore pressure to 12.10 ppg shoe FIT envelope is essential to prevent both kicks and severe loss-induced pipe sticking.

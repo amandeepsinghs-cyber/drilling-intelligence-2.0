@@ -209,7 +209,7 @@ During exploration drilling on Mumbai High reference well {mh['id']} in fracture
 - **Day 14 11:00**: Spotted {mh_inc.get('freeing_pill_bbl', 50)} bbl hydrocarbon-based freeing pipe pill around BHA.
 - **Day 15 02:00**: String jarred free after {mh_inc.get('jarring_h', 14.5):.1f} hours of jarring operations. Total NPT incurred: {mh_inc.get('npt_h', 48.0):.1f} hours.
 
-## 3. Lessons for Deepwater Project Samudra Manthan
+## 3. Lessons for Deepwater Drilling
 - In transition zones and depleted sections, overbalance must be tightly constrained to prevent differential sticking.
 - When drilling narrow margins in {facts['well']['id']}, maintaining ECD strictly within the {sand_pp:.2f} ppg pore pressure to {shoe_fit:.2f} ppg shoe FIT envelope is essential to prevent both kicks and severe loss-induced pipe sticking.
 """,

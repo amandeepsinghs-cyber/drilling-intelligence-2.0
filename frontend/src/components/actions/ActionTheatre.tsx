@@ -275,7 +275,7 @@ export default function ActionTheatre() {
                 <div className="flex items-center justify-between text-[10px] text-slate-300 pb-1 mb-1 border-b border-slate-700/50">
                   <span className="flex items-center gap-1.5">
                     <span className="h-2 w-2 rounded-full bg-[#2AABEE]" />
-                    <span className="font-bold">Telegram · DI High-Priority</span>
+                    <span className="font-bold">Drilling Intelligence · High priority</span>
                   </span>
                   <span className="num text-slate-400">now</span>
                 </div>

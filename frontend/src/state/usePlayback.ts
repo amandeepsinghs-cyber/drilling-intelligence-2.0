@@ -1,8 +1,11 @@
 /** usePlayback — rAF drilling clock; clamps at trigger depths and hands over to the turn machine. */
 import { useEffect, useRef } from 'react';
+import { indexAt, num } from '../lib/frames';
 import { useScenario } from './scenarioStore';
 import { checkTriggers, runTurn } from './turnMachine';
 import { useUi } from './uiStore';
+
+const FALLBACK_ROP_M_HR = 20; // facts-ok: only used if the frame has no ROP value
 
 export function usePlayback() {
   const playing = useScenario((s) => s.playing);
@@ -16,7 +19,9 @@ export function usePlayback() {
       const dt = Math.min(0.1, (now - last) / 1000);
       last = now;
       const prev = pos.current ?? S.md;
-      const next = prev + S.speed * dt;
+      // Real ROP (m/hr) at the bit × rig-time multiplier → metres per demo second.
+      const rop = (S.data && num(S.data, 'drilling.ROP', indexAt(S.data, prev))) || FALLBACK_ROP_M_HR;
+      const next = prev + (rop / 3600) * S.speed * dt;
       const hit = checkTriggers(prev, next);
       if (hit) {
         S.setMd(hit.clampTo);

@@ -15,7 +15,7 @@ export function Column({ label, tone = 'text-muted', width, children, right }: {
     <div className="relative flex min-w-0 flex-col border-r border-line last:border-r-0" style={{ width, flex: width ? '0 0 auto' : '1 1 0', paddingTop: COLUMN_TOP_PX }}>
       {label && (
         <div className="absolute inset-x-2 top-0 flex items-center justify-between" style={{ height: COLUMN_TOP_PX }}>
-          <span className={`text-[10.5px] font-bold uppercase tracking-[0.2em] ${tone}`}>{label}</span>{right}
+          <span className={`truncate whitespace-nowrap text-[10.5px] font-bold uppercase tracking-[0.2em] ${tone}`}>{label}</span>{right}
         </div>
       )}
       <div className="flex min-h-0 flex-1">{children}</div>

@@ -219,7 +219,7 @@ function LithoTrack({ data }: D) {
       { label: 'volume', min: 0, max: 100, unit: '%', color: '#C084FC' },
     ]}>
       <CanvasLayer draw={draw} />
-      <div className="pointer-events-none absolute right-1 top-1 rounded bg-ml/20 px-1.5 py-0.5 text-[10.5px] font-semibold text-ml">ML · at the bit</div>
+      <div className="pointer-events-none absolute right-1 top-1 rounded border border-ml/40 bg-panel px-1.5 py-0.5 text-[10.5px] font-semibold text-ml">ML · at the bit</div>
     </Track>
   );
 }
@@ -252,7 +252,7 @@ function CuttingsTrack({ data, p }: D) {
     }
   }, [data, p]);
   return (
-    <Track title="Cuttings" width={112} scales={[
+    <Track title="Cuttings" width={128} scales={[
       { label: 'lag', min: 0, max: 100, unit: '%', color: '#94A3B8' },
     ]}>
       <CanvasLayer draw={draw} />
@@ -277,7 +277,7 @@ export default function MultiLog() {
   const lagIds = ids.filter((t) => t === 'cuttings');
   const group = (label: string, tone: string, list: TrackId[]) => list.length ? (
     <div className="relative flex min-w-0 flex-1 border-r border-strong last:border-r-0" style={{ flexGrow: list.length }}>
-      <span style={{ top: -COLUMN_TOP_PX, height: COLUMN_TOP_PX }} className={`pointer-events-none absolute left-2 flex items-center text-[10.5px] font-bold uppercase tracking-[0.2em] ${tone}`}>{label}</span>
+      <span style={{ top: -COLUMN_TOP_PX, height: COLUMN_TOP_PX }} className={`pointer-events-none absolute left-2 right-2 flex items-center overflow-hidden whitespace-nowrap text-[10.5px] font-bold uppercase tracking-[0.2em] ${tone}`}>{label}</span>
       {list.map((t) => { const C = TRACK_CMP[t]; return <C key={t} data={data} facts={facts} p={p} />; })}
     </div>
   ) : null;
@@ -286,7 +286,7 @@ export default function MultiLog() {
       {group('Input · LWD', 'text-muted', inputIds)}
       {group('Output · ML', 'text-ml', outputIds)}
       {lagIds.length ? <div className="relative flex shrink-0">
-        <span style={{ top: -COLUMN_TOP_PX, height: COLUMN_TOP_PX }} className="pointer-events-none absolute left-2 flex items-center text-[10.5px] font-bold uppercase tracking-[0.2em] text-warn">Lag</span>
+        <span style={{ top: -COLUMN_TOP_PX, height: COLUMN_TOP_PX }} className="pointer-events-none absolute left-2 flex items-center whitespace-nowrap text-[10.5px] font-bold uppercase tracking-[0.2em] text-warn">Lag</span>
         {lagIds.map((t) => { const C = TRACK_CMP[t]; return <C key={t} data={data} facts={facts} p={p} />; })}
       </div> : null}
     </div>

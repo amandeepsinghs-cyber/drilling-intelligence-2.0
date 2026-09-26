@@ -43,7 +43,7 @@ const NEXT_BY_ACT: Record<string, string[]> = {
 
 function StatusPill({ live, mode }: { live: LiveStatus; mode: string }) {
   const ok = live === 'connected' || live === 'reconnecting';
-  const text = mode === 'SCRIPTED' ? 'Scripted' : ok ? 'Gemini Live' : live === 'fallback' ? 'Rehearsal engine' : 'Connecting';
+  const text = mode === 'SCRIPTED' ? 'Scripted' : ok ? 'Live' : live === 'fallback' ? 'Rehearsal engine' : 'Connecting';
   return (
     <button onClick={toggleAgentMode} title="Agent mode (V): LIVE = Gemini answers and acts; SCRIPTED = rehearsal script"
       className={clsx('chip text-[10.5px]', ok && mode === 'LIVE' ? 'border-ok/50 text-ok' : 'border-strong text-muted')}>
@@ -162,7 +162,6 @@ export default function AgentPanel() {
         <AnimatePresence mode="wait">
           {lastAgent ? <Stage m={lastAgent} speaking={voice === 'speaking'} /> : (
             <motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
-              <WellGlance />
               <div className="rounded-xl border border-dashed border-line p-4">
                 <div className="text-[15px] text-fg">Ask in Hindi, English or Hinglish</div>
                 <div className="devanagari text-[14px] text-muted">हिंदी, अंग्रेज़ी या हिंग्लिश में पूछिए</div>
@@ -175,7 +174,6 @@ export default function AgentPanel() {
             </motion.div>
           )}
         </AnimatePresence>
-        {lastAgent && <WellGlance />}
         {history.length > 0 && (
           <div className="space-y-1.5 pt-1">
             <div className="text-[10.5px] font-bold uppercase tracking-[0.18em] text-faint">Earlier</div>
@@ -216,6 +214,7 @@ export default function AgentPanel() {
             className="flex-1 rounded-lg border border-line bg-app px-3 py-1.5 text-[13.5px] text-fg placeholder:text-faint focus:border-accent focus:outline-none" />
           <button type="submit" className="btn py-1.5 text-[13px]">Ask</button>
         </form>
+        <div className="text-center text-[10.5px] text-faint">Built with Google Gemini</div>
       </footer>
     </aside>
   );

@@ -10,7 +10,7 @@ well:
   id: MN-SM-DW-01
   display_name: "MN-SM-DW-01 (illustrative)"
   basin: "Mahanadi Offshore Deepwater"
-  program: "Samudra Manthan (illustrative scenario)"
+  program: "Mahanadi deepwater (illustrative scenario)"
   location: { lat: 19.45, lon: 87.35, note: "~110 km off Odisha; illustrative coordinates" }
   rig: "Ultra-deepwater drillship"
   water_depth_m: 1620

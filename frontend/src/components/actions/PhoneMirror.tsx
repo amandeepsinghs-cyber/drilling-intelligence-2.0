@@ -15,7 +15,7 @@ export default function PhoneMirror() {
         <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 0.2 }}
           className="absolute right-[440px] top-[150px] z-30 w-[320px] rounded-2xl border border-line bg-[#17212B] p-3 text-white shadow-2xl">
           <div className="mb-2 flex items-center justify-between text-[11px] text-slate-300">
-            <span className="flex items-center gap-1.5"><span className="h-4 w-4 rounded-full bg-[#2AABEE]" />Telegram · DI Alerts</span><span>now</span>
+            <span className="flex items-center gap-1.5"><span className="h-4 w-4 rounded-full bg-[#2AABEE]" />Drilling Intelligence · Alerts</span><span>now</span>
           </div>
           <div className="rounded-xl bg-[#232E3C] p-3 text-[13px] leading-snug">
             <div className="font-semibold">{f.well.id} · MOC approved</div>
