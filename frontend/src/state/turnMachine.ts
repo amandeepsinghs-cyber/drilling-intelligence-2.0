@@ -7,10 +7,11 @@ import { buildScript } from '../mocks/agentScript';
 import { chime } from '../lib/chime';
 import { indexAt, num } from '../lib/frames';
 import { useAgent } from './agentStore';
-import { useLedger } from './ledgerStore';
+import { useLedger, toChannels, type Evidence, type LedgerChannel, type ShiftLine } from './ledgerStore';
 import { actOfTurn, turnsOfAct, useScenario, type ActId, type TriggerId } from './scenarioStore';
 import { useUi } from './uiStore';
 import { liveClient } from '../live/liveClient';
+import { postTool } from '../api/client';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 let busy = false;
@@ -34,8 +35,35 @@ function snapshot(md: number): Record<string, number | null> {
   };
 }
 
+/** SCRIPTED path: pull memo evidence from the same backend tool Live uses (no-op offline). */
+async function fetchMemoEvidence() {
+  const r = await postTool<{ evidence?: Evidence[] }>('create_moc_memo');
+  if (r?.evidence?.length) useLedger.getState().patch('MEMO', { evidence: r.evidence, citations: r.evidence.map((e) => e.doc_id) });
+}
+
+/** SCRIPTED path: real fan-out via backend (honest statuses). Offline → mud console in-app, the rest SIMULATED. */
+async function fetchDispatch(f: { ids: { dispatch_ids: string[] } }) {
+  const r = await postTool<{ channels_dispatched?: unknown[]; message_text?: string }>('dispatch_fanout');
+  const labels = ['Mud Chemist Console', 'RTOC Chat', 'Drilling Manager Email', 'Superintendent Phone'];
+  const lanes = ['mud', 'chat', 'email', 'phone'];
+  const channels: LedgerChannel[] = r?.channels_dispatched
+    ? toChannels(r.channels_dispatched)
+    : f.ids.dispatch_ids.map((cid, i) => ({
+        id: cid, channel: labels[i] ?? cid, lane: lanes[i], status: i === 0 ? ('delivered' as const) : ('simulated' as const),
+        note: i === 0 ? 'Shown in the in-app mud console' : 'Backend offline — simulated',
+      }));
+  return { channels, text: r?.message_text };
+}
+
+async function fetchShiftLog(md: number) {
+  const r = await postTool<{ lines?: ShiftLine[] }>('draft_shift_log');
+  const L = useLedger.getState();
+  L.append({ id: 'SHIFT_LOG', kind: 'SHIFT_LOG', md, title: 'Shift handover notes', actor: 'agent', lines: r?.lines ?? [] });
+  if (r?.lines) L.patch('SHIFT_LOG', { lines: r.lines });
+}
+
 /** Turn numbers by role, read from turns.yaml (trigger / intent) so renumbering the script never breaks side effects. */
-export interface TurnRoles { watch: number; t3: number; memo: number; approve: number; fanout: number; t8: number; t9: number; wcr: number }
+export interface TurnRoles { watch: number; t3: number; memo: number; approve: number; fanout: number; t8: number; t9: number; shift: number; wcr: number }
 export function turnRoles(turns: { n: number; trigger?: string; intent?: string }[]): TurnRoles {
   const by = (p: (t: { trigger?: string; intent?: string }) => boolean) => turns.find(p)?.n ?? -1; // facts-ok: "not found" sentinel
   return {
@@ -46,6 +74,7 @@ export function turnRoles(turns: { n: number; trigger?: string; intent?: string 
     fanout: by((t) => t.intent === 'fanout'),
     t8: by((t) => t.trigger === 'T8_OFFSET_DEPTH'),
     t9: by((t) => t.trigger === 'T9_DRILLING_BREAK'),
+    shift: by((t) => t.intent === 'draft_shift_log'),
     wcr: by((t) => t.intent === 'generate_wcr'),
   };
 }
@@ -60,15 +89,25 @@ function ensurePrereqs(n: number) {
   const before = (role: number) => role >= 0 && n > role;
   if (before(R.watch)) watchdog = true;
   if (before(R.t3) && !s.fired.T3_PRESSURE_RAMP) s.markFired('T3_PRESSURE_RAMP');
-  if (before(R.memo)) {
+  if (before(R.memo) && !L.entries.some((e) => e.id === 'MEMO')) {
     L.append({ id: 'MEMO', kind: 'MEMO', md: f.mud.weight_up_location_m, title: f.ids.memo_id, actor: 'agent', basis: snapshot(f.mud.weight_up_location_m) });
+    void fetchMemoEvidence();
   }
   if (before(R.approve) && !s.approvedMw) {
     s.approve();
     L.append({ id: 'APPROVAL', kind: 'APPROVAL', md: f.mud.weight_up_location_m, title: `${f.ids.memo_id} approved`, actor: 'Presenter (Drilling Superintendent)', basis: snapshot(f.mud.weight_up_location_m) });
   }
+  if (before(R.fanout) && !L.entries.some((e) => e.id === 'DISPATCH')) {
+    L.append({ id: 'DISPATCH', kind: 'DISPATCH', md: f.mud.weight_up_location_m, title: 'MOC fan-out', actor: 'agent', channels: [] });
+    void fetchDispatch(f).then(({ channels, text }) => useLedger.getState().patch('DISPATCH', { channels, text }));
+  }
   if (before(R.t8) && !s.fired.T8_OFFSET_DEPTH) s.markFired('T8_OFFSET_DEPTH');
-  if (before(R.t9) && !s.fired.T9_DRILLING_BREAK) { s.markFired('T9_DRILLING_BREAK'); s.capRop(); }
+  if (before(R.t9) && !s.fired.T9_DRILLING_BREAK) {
+    s.markFired('T9_DRILLING_BREAK'); s.capRop();
+    const t9 = f.triggers.T9_DRILLING_BREAK.md_m as number;
+    L.append({ id: 'ROP_CAP', kind: 'ROP_CAP', md: t9, title: `ROP cap ${f.drilling.rop_cap_m_hr} m/hr + sweep`, actor: 'Driller (accepted)', basis: snapshot(t9) });
+  }
+  if (before(R.shift) && !L.entries.some((e) => e.id === 'SHIFT_LOG')) void fetchShiftLog(s.md);
 }
 
 async function speak(id: string, text: string) {
@@ -171,24 +210,22 @@ export async function runTurn(n: number, opts: { jump?: boolean } = {}) {
     if (n === R.memo && !done('MEMO')) {
       L.append({ id: 'MEMO', kind: 'MEMO', md: turn.md_m, title: f.ids.memo_id, actor: 'agent', basis: snapshot(turn.md_m),
         citations: (script.citations ?? []).map((c) => c.doc_id) });
-      U.open('memo');
+      void fetchMemoEvidence();
     }
+    if (n === R.memo && live && !useLedger.getState().entries.find((e) => e.id === 'MEMO')?.evidence?.length) void fetchMemoEvidence();
     if (n === R.approve && !(live && useScenario.getState().approvedMw)) {
       S.approve();
       L.append({ id: 'APPROVAL', kind: 'APPROVAL', md: turn.md_m, title: `${f.ids.memo_id} approved`, actor: 'Presenter (Drilling Superintendent)', basis: snapshot(turn.md_m) });
       U.notify(`${f.ids.memo_id} approved — basis frozen`, 'ok');
     }
     if (n === R.fanout && !done('DISPATCH')) {
-      const labels = ['Mud chemist work order', 'RTOC alert', 'Email · Drilling Manager', 'Phone push'];
-      L.append({ id: 'DISPATCH', kind: 'DISPATCH', md: turn.md_m, title: 'MOC fan-out', actor: 'agent',
-        channels: f.ids.dispatch_ids.map((cid, i) => ({ id: cid, channel: labels[i] ?? cid, status: 'queued' as const })) });
-      U.close('memo');
-      U.open('phone');
-      f.ids.dispatch_ids.forEach((cid, i) => {
-        setTimeout(() => useLedger.getState().setChannelStatus('DISPATCH', cid, 'sent'), 500 + i * 350);
-        setTimeout(() => useLedger.getState().setChannelStatus('DISPATCH', cid, 'delivered'), 1600 + i * 400);
+      const { channels, text } = await fetchDispatch(f);
+      L.append({ id: 'DISPATCH', kind: 'DISPATCH', md: turn.md_m, title: 'MOC fan-out', actor: 'agent', text,
+        channels: channels.map((c) => ({ ...c, status: 'queued' as const })) });
+      channels.forEach((c, i) => {
+        setTimeout(() => useLedger.getState().setChannelStatus('DISPATCH', c.id, 'sent'), 400 + i * 300);
+        setTimeout(() => useLedger.getState().setChannelStatus('DISPATCH', c.id, c.status), 1300 + i * 350);
       });
-      setTimeout(() => useUi.getState().close('phone'), 7000);
     }
     if (n === R.t9 && !done('ROP_CAP')) {
       setTimeout(() => {
@@ -197,11 +234,11 @@ export async function runTurn(n: number, opts: { jump?: boolean } = {}) {
         useUi.getState().notify(`ROP capped at ${f.drilling.rop_cap_m_hr} m/hr`, 'ok');
       }, live ? 0 : 2500);
     }
+    if (n === R.shift && !useLedger.getState().entries.find((e) => e.id === 'SHIFT_LOG')?.lines?.length) await fetchShiftLog(turn.md_m);
     if (n === R.wcr) {
-      const hadWcr = done('WCR');
+      if (!useLedger.getState().entries.some((e) => e.id === 'SHIFT_LOG')) await fetchShiftLog(turn.md_m);
       L.append({ id: 'WCR', kind: 'WCR', md: turn.md_m, title: f.ids.wcr_id, actor: 'agent' });
       L.append({ id: 'WRITEBACK', kind: 'WRITEBACK', md: turn.md_m, title: '2 lessons → knowledge base', actor: 'agent' });
-      if (!hadWcr) U.open('wcr');
     }
     if (!live && id) await speak(id, script.agent.en);
     A.setVoice('idle');
@@ -259,6 +296,67 @@ export function nextTurn() {
   const turns = useScenario.getState().bundle?.turns ?? [];
   const next = turns.find((t) => t.n > lastTurn);
   if (next) void runTurn(next.n, { jump: true });
+}
+
+/** Wait until the running turn finishes (clicks during an agent reply must not be dropped). */
+async function waitIdle(maxMs = 45000) {
+  const t0 = Date.now();
+  while (busy && Date.now() - t0 < maxMs) await sleep(150);
+}
+
+/** Approve button (Act 3): approval turn, then fan-out turn — works in LIVE (Gemini calls the tools) and SCRIPTED. */
+export async function approveAndDispatch() {
+  const R = roles();
+  if (R.approve < 0) return;
+  await waitIdle();
+  if (!useScenario.getState().approvedMw) await runTurn(R.approve, { jump: lastTurn < R.memo });
+  await waitIdle();
+  if (!useLedger.getState().entries.some((e) => e.id === 'DISPATCH') && R.fanout >= 0) await runTurn(R.fanout);
+}
+
+/** FT-12: keyword → scripted turn intent (Hinglish + English). Order matters: first match wins. */
+const INTENT_KEYWORDS: [RegExp, string][] = [
+  [/approve|manzoor|approved|sign/i, 'approve'],
+  [/dispatch|bhej|send|fan.?out|notify/i, 'fanout'],
+  [/memo|moc|mud weight|weight.?up|barite|badha|recommend/i, 'recommend_weight_up'],
+  [/offset|paas|pados|nearby|rig pe|complication|history|pehle/i, 'nearby_rig_complications'],
+  [/shift|handover|notes/i, 'draft_shift_log'],
+  [/wcr|completion|report/i, 'generate_wcr'],
+  [/formation|cuttings|litho|chattan|rock/i, 'formation_and_cuttings_lag'],
+  [/time|kitna|eta|kab|zone/i, 'eta_next_zone_query'],
+  [/sand|aage|ahead|preview/i, 'prospective_sand_preview'],
+  [/watch|nazar|monitor|arm/i, 'arm_watchdog'],
+  [/status|haal|kya chal|depth|well/i, 'status_check'],
+];
+
+export function scriptedTurnFor(text: string): number | null {
+  const turns = useScenario.getState().bundle?.turns ?? [];
+  for (const [re, intent] of INTENT_KEYWORDS) {
+    if (re.test(text)) {
+      const t = turns.find((x) => (x as { intent?: string }).intent === intent);
+      if (t) return t.n;
+    }
+  }
+  return null;
+}
+
+/** Agent panel input / example chips. LIVE → Gemini. Otherwise → the matching scripted turn (the show never dead-ends). */
+export async function askAgent(text: string) {
+  const q = text.trim();
+  if (!q) return;
+  if (liveActive()) {
+    liveClient.sendText(q);
+    return;
+  }
+  const n = scriptedTurnFor(q);
+  if (n === null) {
+    useUi.getState().notify('Scripted mode: try "status", "agle zone", "paas wale rig", "memo banao", "approve"', 'warn');
+    return;
+  }
+  const R = roles();
+  if (n === R.approve) { await approveAndDispatch(); return; }
+  await waitIdle();
+  await runTurn(n, { jump: n !== lastTurn + 1 });
 }
 
 export function resetShow() {

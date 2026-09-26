@@ -1,0 +1,10 @@
+import { chromium } from 'playwright';
+const b = await chromium.launch({ executablePath: '/usr/bin/google-chrome', args: ['--no-sandbox'] });
+const p = await b.newPage({ viewport: { width: 1366, height: 768 } });
+await p.goto('http://localhost:5173/well/MN-SM-DW-01?act=3');
+await p.waitForTimeout(3500);
+await p.click('text=MOC memo banao — mud weight badhao');
+await p.waitForTimeout(6000);
+await p.screenshot({ path: 'scratch/ftb_small.png' });
+console.log('Saved scratch/ftb_small.png');
+await b.close();

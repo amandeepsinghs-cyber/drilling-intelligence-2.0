@@ -3,7 +3,7 @@
  * Bridges microphone PCM input, Gemini Live 24 kHz playback, tool progress, and UI state.
  */
 import { useAgent, type VoiceState } from '../state/agentStore';
-import { useLedger } from '../state/ledgerStore';
+import { toChannels, useLedger } from '../state/ledgerStore';
 import { useScenario } from '../state/scenarioStore';
 import { useUi } from '../state/uiStore';
 import { audioPlayer } from './audioPlayer';
@@ -268,15 +268,21 @@ class LiveClient {
 
       case 'action': {
         const payload = msg.payload || {};
+        // The action panels live in Act 3 (memo → approve → fan-out) and Act 4 (shift notes ⇄ WCR).
+        if (['memo', 'approval', 'dispatch'].includes(msg.kind)) S.setAct('act3');
+        if (['shift_log', 'wcr'].includes(msg.kind)) S.setAct('act4');
         if (msg.kind === 'memo') {
+          const evidence = Array.isArray(payload.evidence) ? payload.evidence : [];
           L.append({
             id: 'MEMO',
             kind: 'MEMO',
             md: currMd,
             title: payload.memo_id || 'MEMO-SM-2026-09',
             actor: 'agent',
+            evidence,
+            citations: evidence.map((e: { doc_id: string }) => e.doc_id),
           });
-          U.open('memo');
+          if (evidence.length) L.patch('MEMO', { evidence, citations: evidence.map((e: { doc_id: string }) => e.doc_id) });
           U.notify('MOC Memo drafted for approval', 'warn');
         } else if (msg.kind === 'approval') {
           S.approve();
@@ -289,21 +295,10 @@ class LiveClient {
           });
           U.notify('MOC Approved — decision basis frozen in ledger', 'ok');
         } else if (msg.kind === 'dispatch') {
-          L.append({
-            id: 'DISPATCH',
-            kind: 'DISPATCH',
-            md: currMd,
-            title: 'MOC fan-out',
-            actor: 'agent',
-            channels: (payload.channels_dispatched || []).map((c: any) => ({
-              id: c.id,
-              channel: c.channel,
-              status: c.status === 'DELIVERED' ? 'delivered' : 'sent',
-            })),
-          });
+          const channels = toChannels(payload.channels_dispatched);
+          L.append({ id: 'DISPATCH', kind: 'DISPATCH', md: currMd, title: 'MOC fan-out', actor: 'agent', channels, text: payload.message_text });
+          L.patch('DISPATCH', { channels, text: payload.message_text });
           U.close('memo');
-          U.open('phone');
-          setTimeout(() => U.close('phone'), 7000);
         } else if (msg.kind === 'rop_cap') {
           S.capRop();
           L.append({
@@ -314,6 +309,9 @@ class LiveClient {
             actor: 'Driller (accepted)',
           });
           U.notify(`ROP capped at ${payload.rop_cap_m_hr || 12} m/hr`, 'ok');
+        } else if (msg.kind === 'shift_log') {
+          L.append({ id: 'SHIFT_LOG', kind: 'SHIFT_LOG', md: currMd, title: 'Shift handover notes', actor: 'agent', lines: payload.lines ?? [] });
+          L.patch('SHIFT_LOG', { lines: payload.lines ?? [] });
         } else if (msg.kind === 'wcr') {
           L.append({
             id: 'WCR',
@@ -322,7 +320,6 @@ class LiveClient {
             title: payload.doc_id || 'WCR-MN-SM-DW-01',
             actor: 'agent',
           });
-          U.open('wcr');
         }
         break;
       }

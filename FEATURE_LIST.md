@@ -23,17 +23,18 @@ Legend: ✅ built & verified · 🟡 built, needs polish · ⬜ not built · ✖
 | 11 | Gemini Live voice agent grounded in live bit depth (clarifying question, ETA, offsets, memo) | ✅ verified in UI | — | `backend/app/agent/*`, `frontend/src/live/*` |
 | 12 | Hold-to-talk microphone | ✅ on `localhost`/https only (SSH tunnel) | — | `live/micCapture.ts` |
 | 13 | RAG with citations (BM25); dense Hinglish embeddings | ✅ / ⬜ | WP-13 | `backend/app/rag/retriever.py` |
-| 14 | MOC memo document with Approve | 🟡 "Evidence" empty (FT-3) | WP-08 | `actions/MemoOverlay.tsx`, `agent/tools.py › create_moc_memo` |
-| 15 | Act 3 action panel (#5): memo → APPROVED stamp → 4 lanes → phone mirror → ledger | ⬜ old panel | WP-08 | `actions/ActionTheatre.tsx` (old) |
-| 16 | Honest channel status DELIVERED / SIMULATED / FAILED | ⬜ | WP-05 | `backend/app/actions/dispatch.py` |
-| 17 | Real phone push (Telegram) | ⬜ needs bot token | owner | `actions/push_telegram.py` |
-| 18 | Act 4: loss side at 4,222 + Shift notes ⇄ WCR side-by-side with source links | 🟡 old WCR overlay | WP-09 | `screens/WcrViewer/*` (old) |
-| 19 | Backend REST (tools/actions/ledger/WCR) + show state on `/ws/events` | ⬜ | WP-05 | `backend/app/api/*` |
+| 14 | MOC memo document with Approve | ✅ evidence cards (offset INC, offset WCR, SOP, live PP/FG) | WP-08 | `cockpit/act3/Act3ActionPanel.tsx`, `actions/MemoOverlay.tsx`, `agent/tools.py › create_moc_memo` |
+| 15 | Act 3 action panel (#5): memo → APPROVED stamp → 4 lanes → phone mirror → ledger | ✅ LIVE + SCRIPTED | WP-08 | `cockpit/act3/Act3ActionPanel.tsx`, `state/turnMachine.ts › approveAndDispatch` |
+| 16 | Honest channel status DELIVERED / SIMULATED / FAILED | ✅ | WP-05 | `agent/tools.py › dispatch_fanout`, `state/ledgerStore.ts › toChannelStatus` |
+| 17 | Real phone push (Telegram) / phone call | ⏸ **parked by owner** (Argolis bot/credential risk) — lanes show SIMULATED by design; code path exists but stays off (no env keys) | owner | `agent/tools.py › _send_telegram` |
+| 18 | Act 4: loss side at 4,222 + Shift notes ⇄ WCR side-by-side with source links | ✅ notes from `draft_shift_log`, hover → WCR section | WP-09 | `cockpit/act4/Act4ShiftWcr.tsx` |
+| 19 | Backend REST (tools/actions/ledger/WCR) + show state on `/ws/events` | 🟡 `/api/tools/{name}` done; rest open | WP-05 | `backend/app/api/routes_actions.py` |
+| 19b | Scripted fallback: chips / typed text → matching scripted turn | ✅ | FT-12 | `state/turnMachine.ts › askAgent` |
 | 20 | Presenter console synced to the stage | 🟡 old | WP-11 | `screens/PresenterConsole/index.tsx` |
 | 21 | Basin map: offline basemap, no label overlap, click → live well | 🟡 | WP-10 | `screens/BasinMap/*` |
 | 22 | Trained ML models (RF lithology, kick risk) | 🟡 in progress | WP-12 | `backend/app/ml/*`, `data/models/*` |
-| 23 | Takeaway card per act; "4 layers of AI" closing card | ✅ / ⬜ | FT-9 | `common/TakeawayCard.tsx` |
-| 24 | What-if and audit drawers (keys W, A) on new layout | 🟡 check | FT-16 | `whatif/*`, `audit/*` |
+| 23 | Takeaway card per act; "4 layers of AI" closing card | ✅ | FT-9 | `common/TakeawayCard.tsx`, `common/ClosingCard.tsx` |
+| 24 | What-if and audit drawers (keys W, A) on new layout | ✅ | FT-16 | `whatif/*`, `audit/*` |
 | 25 | Verification harness (per act, API, 15-turn Live, adversarial 5, soak, offline) | 🟡 probes exist | WP-14 | `frontend/scratch/*.mjs`, `backend/scratch/live_smoke.py` |
 | 26 | 3D hero / cinematic stage | ✖ dropped ("theatre") | — | `well3d/*` unmounted |
 | 27 | LAS-calibrated curves, DT Option A | ✖ parked (mock data accepted) | WP-15 | — |

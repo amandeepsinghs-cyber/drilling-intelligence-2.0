@@ -64,7 +64,19 @@ export default function MemoOverlay() {
                 <div className="num grid grid-cols-3 gap-x-4 gap-y-0.5 text-[11.5px] text-slate-600">
                   {Object.entries(b).map(([k, v]) => <div key={k}>{k}: <span className="text-[#0B1520]">{typeof v === 'number' ? +v.toFixed(3) : String(v ?? '—')}</span></div>)}
                 </div>
-                <div className="mt-2 text-[11.5px] text-slate-600">Evidence: {(memo?.citations ?? []).join(' · ') || '—'}</div>
+                <div className="mt-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Evidence</div>
+                {(memo?.evidence ?? []).length === 0 ? (
+                  <div className="text-[11.5px] text-slate-400">{(memo?.citations ?? []).join(' · ') || 'Fetching sources…'}</div>
+                ) : (
+                  <ul className="mt-1 space-y-1">
+                    {memo!.evidence!.map((e) => (
+                      <li key={e.doc_id} className="rounded border border-slate-200 px-2 py-1 text-[11.5px]">
+                        <span className="font-semibold">{e.doc_id}</span> <span className="text-slate-400">· {e.section}</span>
+                        {e.snippet && <div className="text-slate-600">{e.snippet}</div>}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </section>
             <footer className="mt-6">

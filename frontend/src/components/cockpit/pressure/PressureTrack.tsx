@@ -48,11 +48,11 @@ function draw(ctx: CanvasRenderingContext2D, s: DepthScale, w: number, h: number
   for (let v = Math.ceil(R.lo * 2) / 2; v <= R.hi; v += 0.5) { const X = Math.round(x(v)) + 0.5; ctx.beginPath(); ctx.moveTo(X, 0); ctx.lineTo(X, h); ctx.stroke(); }
 
   // Drilled: window fill (PP → limit), then kick/loss fills.
-  fillRows(ctx, data, s, h, (i) => (pp[i] == null ? null : [x(pp[i]!), x(limitAt(i)), 'rgba(52,211,153,0.07)']));
+  fillRows(ctx, data, s, h, (i) => (pp[i] == null ? null : [x(pp[i]!), x(limitAt(i)), p.isLight ? 'rgba(5,150,105,0.12)' : 'rgba(52,211,153,0.07)']));
   fillRows(ctx, data, s, h, (i) => {
     const z = zoneAt(mw[i], pp[i], ecd[i], limitAt(i));
-    if (z === 'kick') return [x(mw[i]!), x(pp[i]!), 'rgba(239,68,68,0.35)'];
-    if (z === 'loss') return [x(limitAt(i)), x(ecd[i]!), 'rgba(245,158,11,0.45)'];
+    if (z === 'kick') return [x(mw[i]!), x(pp[i]!), p.isLight ? 'rgba(220,38,38,0.25)' : 'rgba(239,68,68,0.35)'];
+    if (z === 'loss') return [x(limitAt(i)), x(ecd[i]!), p.isLight ? 'rgba(217,119,6,0.30)' : 'rgba(245,158,11,0.45)'];
     return null;
   });
 
@@ -69,11 +69,11 @@ function draw(ctx: CanvasRenderingContext2D, s: DepthScale, w: number, h: number
       const i = indexAt(data, s.md(y + 0.5));
       const g = approved ? (f.mud.weighted.mw_ppg) : (ghost[i] ?? f.mud.initial.mw_ppg);
       const q = pp[i];
-      if (q != null && g < q) { ctx.fillStyle = 'rgba(239,68,68,0.28)'; ctx.fillRect(x(g), y, x(q) - x(g), 1); }
+      if (q != null && g < q) { ctx.fillStyle = p.isLight ? 'rgba(220,38,38,0.22)' : 'rgba(239,68,68,0.28)'; ctx.fillRect(x(g), y, x(q) - x(g), 1); }
     }
     const p10 = f.ml.mw_rec_p10_ppg, p90 = f.ml.mw_rec_p90_ppg;
     if (p10 != null && p90 != null) {
-      ctx.fillStyle = 'rgba(192,132,252,0.16)'; ctx.fillRect(x(p10), yb, x(p90) - x(p10), ya - yb);
+      ctx.fillStyle = p.isLight ? 'rgba(147,51,234,0.14)' : 'rgba(192,132,252,0.16)'; ctx.fillRect(x(p10), yb, x(p90) - x(p10), ya - yb);
     }
     const aheadCurve = (arr: (number | null)[], color: string, width = 1.4) => {
       ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = width; ctx.setLineDash([5, 4]); ctx.beginPath();
@@ -85,12 +85,63 @@ function draw(ctx: CanvasRenderingContext2D, s: DepthScale, w: number, h: number
     if (!approved) aheadCurve(ghost, p.muted, 1.6);
     ctx.save(); ctx.strokeStyle = p.ml; ctx.lineWidth = 2; ctx.setLineDash([7, 4]);
     ctx.beginPath(); ctx.moveTo(x(f.mud.weighted.mw_ppg), yb); ctx.lineTo(x(f.mud.weighted.mw_ppg), ya); ctx.stroke(); ctx.restore();
-    // Labels.
+
+    // Labels with rounded background pills for high contrast (FT-6).
+    ctx.save();
     ctx.font = '600 11px "Inter Variable", Inter, sans-serif';
-    ctx.fillStyle = p.ml; ctx.textAlign = 'left';
-    ctx.fillText(`ML MW ${f.mud.weighted.mw_ppg.toFixed(2)}`, x(f.mud.weighted.mw_ppg) + 4, Math.min(h - 6, yb + 16));
-    if (p10 != null && p90 != null) { ctx.fillStyle = p.faint; ctx.fillText(`P10–P90 ${p10.toFixed(2)}–${p90.toFixed(2)}`, x(f.mud.weighted.mw_ppg) + 4, Math.min(h - 6, yb + 30)); }
-    if (!approved) { ctx.fillStyle = p.muted; ctx.fillText('if unchanged', 8, Math.min(h - 6, ya - 6)); }
+    const mlText = `ML MW ${f.mud.weighted.mw_ppg.toFixed(2)}`;
+    const p10Text = p10 != null && p90 != null ? `P10–P90 ${p10.toFixed(2)}–${p90.toFixed(2)}` : null;
+    const lx = Math.max(6, Math.min(w - 120, x(f.mud.weighted.mw_ppg) + 4));
+    const ly1 = Math.min(h - 38, Math.max(22, yb + 6));
+    const pillFill = p.isLight ? 'rgba(255,255,255,0.92)' : 'rgba(11,15,20,0.85)';
+    const pillStroke = p.isLight ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.15)';
+    const m1 = ctx.measureText(mlText);
+    ctx.fillStyle = pillFill;
+    ctx.strokeStyle = pillStroke;
+    ctx.lineWidth = 1;
+    if (ctx.roundRect) {
+      ctx.beginPath();
+      ctx.roundRect(lx - 4, ly1, m1.width + 8, 16, 4);
+      ctx.fill(); ctx.stroke();
+    } else {
+      ctx.fillRect(lx - 4, ly1, m1.width + 8, 16);
+    }
+    ctx.fillStyle = p.ml;
+    ctx.textAlign = 'left';
+    ctx.fillText(mlText, lx, ly1 + 12);
+
+    if (p10Text) {
+      const ly2 = ly1 + 18;
+      const m2 = ctx.measureText(p10Text);
+      ctx.fillStyle = pillFill;
+      ctx.strokeStyle = pillStroke;
+      if (ctx.roundRect) {
+        ctx.beginPath();
+        ctx.roundRect(lx - 4, ly2, m2.width + 8, 16, 4);
+        ctx.fill(); ctx.stroke();
+      } else {
+        ctx.fillRect(lx - 4, ly2, m2.width + 8, 16);
+      }
+      ctx.fillStyle = p.isLight ? p.text : p.faint;
+      ctx.fillText(p10Text, lx, ly2 + 12);
+    }
+    if (!approved) {
+      const ifText = 'if unchanged';
+      const mi = ctx.measureText(ifText);
+      const iy = Math.min(h - 8, Math.max(22, ya - 6));
+      ctx.fillStyle = pillFill;
+      ctx.strokeStyle = pillStroke;
+      if (ctx.roundRect) {
+        ctx.beginPath();
+        ctx.roundRect(4, iy - 12, mi.width + 8, 15, 3);
+        ctx.fill(); ctx.stroke();
+      } else {
+        ctx.fillRect(4, iy - 12, mi.width + 8, 15);
+      }
+      ctx.fillStyle = p.muted;
+      ctx.fillText(ifText, 8, iy);
+    }
+    ctx.restore();
   }
 
   // Drilled curves (stop at the bit).
@@ -99,11 +150,26 @@ function draw(ctx: CanvasRenderingContext2D, s: DepthScale, w: number, h: number
   strokeCurve(ctx, data, s, 'derived.ECD', i0, bi, x, { color: c.ecd, width: 1.8 });
   strokeCurve(ctx, data, s, 'mud.MW_IN_PPG', i0, bi, x, { color: c.mw, width: 2.4 });
 
-  // Side labels.
-  ctx.font = '700 11px "Inter Variable", Inter, sans-serif';
-  ctx.fillStyle = p.risk; ctx.textAlign = 'left'; ctx.fillText('◀ KICK SIDE', 6, 14);
-  ctx.fillStyle = p.warn; ctx.textAlign = 'right'; ctx.fillText('LOSS SIDE ▶', w - 6, 14);
+  // Header strip at body top so curves do not cross side labels (FT-6).
+  ctx.save();
+  ctx.fillStyle = p.panel;
+  ctx.fillRect(0, 0, w, 18);
+  ctx.strokeStyle = p.line;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(0, 18.5);
+  ctx.lineTo(w, 18.5);
+  ctx.stroke();
+
+  // Side labels inside the header strip.
+  ctx.font = '700 10.5px "Inter Variable", Inter, sans-serif';
+  ctx.fillStyle = p.risk;
   ctx.textAlign = 'left';
+  ctx.fillText('◀ KICK SIDE', 6, 13);
+  ctx.fillStyle = p.warn;
+  ctx.textAlign = 'right';
+  ctx.fillText('LOSS SIDE ▶', w - 6, 13);
+  ctx.restore();
 }
 
 export default function PressureTrack() {

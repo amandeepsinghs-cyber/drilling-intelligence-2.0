@@ -20,7 +20,8 @@
 ## 2. Planned (WP-05)
 
 ### 2.1 Tools over REST (same functions as the Live tools in `agent/tools.py`)
-`POST /api/tools/{name}`, body `{"args": {...}}`, returns `{"name", "result", "ms"}`.
+`POST /api/tools/{name}` — **LIVE since 07:52** (`backend/app/api/routes_actions.py`). Body = the tool's args object directly (e.g. `{}` or `{"memo_id": "…"}`); returns the tool's result JSON unchanged (same payload Live sends in `action` events). 404 for unknown tools. `GET /api/tools` lists names. Planned v2 envelope `{"name","result","ms"}` not adopted yet.
+`dispatch_fanout` result: `channels_dispatched[] = {id, channel, lane: mud|chat|email|phone, status: DELIVERED|SIMULATED|FAILED, note, action}` + `message_text`. `create_moc_memo` adds `evidence[] = {doc_id, doc_type, section, page, snippet, provenance}`. New tool `draft_shift_log` → `{doc_id, status, lines[] = {md_m, text, source, wcr_section}}`.
 Names: `get_well_status, get_lithology, forecast_pore_pressure, compute_ecd, compute_barite, search_knowledge, lookup_offset_events, create_moc_memo, request_approval, dispatch_fanout, set_rop_cap, generate_wcr, writeback_lessons`. An unknown name returns 404.
 
 ### 2.2 Knowledge

@@ -199,20 +199,24 @@ Owner **F** = safe for Flash (prompt: playbook §P-FT). Owner **O** = Opus (touc
 |---|---|---|---|---|
 | FT-1 | Wellbore: offset-event label (KICK/LOSS) overlaps the unit id (U3) label | F | `cockpit/wellbore/WellboreColumn.tsx` | No overlap at bit 4,160 / 4,195 / 4,222 (screenshots) |
 | FT-2 | Console 404 (favicon) | F | `frontend/index.html`, `frontend/public/favicon.svg` | No console errors on load |
-| FT-3 | Memo "Evidence" is empty — pass the offset/SOP citations found by `search_knowledge` / `lookup_offset_events` into the memo | O | `backend/app/agent/tools.py`, `components/actions/MemoOverlay.tsx` | Memo lists ≥ 2 doc ids |
-| FT-4 | Act 3 new action panel | F (after WP-05) | see WP-08 | WP-08 acceptance |
-| FT-5 | Act 4: make the loss event visible — window reaches 4,222, ECD rise after the drilling break, amber fill; WCR side-by-side | F (after WP-05) | see WP-09 | WP-09 acceptance |
+| FT-3 | Memo evidence | O | `agent/tools.py › _memo_evidence`, `MemoOverlay.tsx`, `Act3ActionPanel.tsx` | ✅ 07:52 — 4 sources shown |
+| FT-4 | Act 3 new action panel | O | `cockpit/act3/Act3ActionPanel.tsx` | ✅ 07:52 — see WP-08 |
+| FT-5 | Act 4 loss side + WCR side-by-side | O | `cockpit/act4/Act4ShiftWcr.tsx`, `Cockpit.tsx` | ✅ 07:52 — notes ⇄ WCR, pressure loss side kept visible |
 | FT-6 | Pressure track: "KICK SIDE" label crosses the PP line; ML MW / P10–P90 labels low contrast | F | `cockpit/pressure/PressureTrack.tsx` | Labels readable, not over curves |
 | FT-7 | GR shading looks stripy — colour by a smoothed GR (e.g. 1 m running mean) | F | `cockpit/logs/MultiLog.tsx › GrTrack` | Smooth colour ramp |
 | FT-8 | Light theme pass on the cockpit (canvas colours come from `cockpit/palette.ts`) | F | `cockpit/palette.ts`, `design/theme.css` | `T` toggles; everything readable |
 | FT-9 | Takeaway card on the new layout + "4 layers of AI" closing card (data · physics · ML · agent) | F | `common/TakeawayCard.tsx`, new `common/ClosingCard.tsx` | `Enter` shows card; closing card after WCR |
 | FT-10 | Scrubber: add turn markers + act boundaries; make it 48 px tall | F | `timeline/Timeline.tsx` | Visual check |
-| FT-11 | Remove unmounted old components after WP-14 passes (`logs/CompositeLog.tsx`, `logs/LogTracks.tsx`, `pressure/PressureWindow.tsx`, `CommandCenter/acts.tsx`, `common/ActNavBar.tsx`, `well3d/*`) | O (ask owner first) | those files | Build green, no imports left |
-| FT-12 | SCRIPTED mode: example chips / typed questions should map to the matching scripted turn instead of a warning toast | O | `live/liveClient.ts`, `state/turnMachine.ts` | Chip works with backend down |
+| FT-11 | Remove unmounted old components after WP-14 passes (`logs/CompositeLog.tsx`, `logs/LogTracks.tsx`, `pressure/PressureWindow.tsx`, `CommandCenter/acts.tsx`, `common/ActNavBar.tsx`, `well3d/*`, `actions/ActionTheatre.tsx`, `actions/DispatchCard.tsx`, `actions/PhoneMirror.tsx`) | O (ask owner first) | those files | Build green, no imports left |
+| FT-12 | SCRIPTED mode chips / typed text → matching scripted turn | O | `state/turnMachine.ts › askAgent, scriptedTurnFor` | ✅ 07:52 |
 | FT-13 | Presenter view (`/presenter`) shows the new act names and next-turn text | F (after WP-05) | see WP-11 | WP-11 acceptance |
 | FT-14 | Basin map polish | F | see WP-10 | WP-10 acceptance |
 | FT-16 | What-if (`W`) and audit (`A`) drawers open correctly over the cockpit | F | `whatif/WhatIfDrawer.tsx`, `audit/AuditDrawer.tsx` | Screenshots with each open |
 | FT-17 | Play-button flicker | O | `cockpit/CanvasLayer.tsx` | ✅ fixed 2026-09-26 — `node scratch/flicker_probe.mjs` → 0 blank frames |
+| FT-18 | Scripted fan-out agent line says "delivered to your device" even when the phone lane is SIMULATED — reword to "sent; phone shown on screen" | F | `mocks/agentScript.ts` (fan-out turn text) | Text never claims a delivery the lane does not show |
+| FT-19 | Act 3 memo card: on 1080p the evidence list pushes the Approve row to the bottom; keep Approve always visible (sticky is in place — check at 1366×768) | F | `cockpit/act3/Act3ActionPanel.tsx` | Approve visible at 1366×768 |
+
+**Act 3/4 data flow (for Flash):** Live tool call → `liveClient` `action` event → `ledgerStore` (`MEMO`/`APPROVAL`/`DISPATCH`/`SHIFT_LOG`/`WCR`) → panels render. SCRIPTED uses `turnMachine` → `POST /api/tools/{name}` (same backend tools) → same ledger entries. Panels read **only** the ledger + `scenarioStore`; never hard-code statuses. Probe: `node scratch/act34_flow.mjs <live|scripted> scratch/out`.
 
 ## 3.2 How to open the app
 - Viewing: `http://amandeepsinghs.c.googlers.com:5173/well/MN-SM-DW-01` (`?act=1..4` jumps to an act). `vite.config.ts` has `allowedHosts: true`.

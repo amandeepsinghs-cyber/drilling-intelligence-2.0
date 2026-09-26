@@ -1,6 +1,6 @@
 /** ApprovalRail — the human-in-the-loop gate. Nothing is dispatched without this click (or the spoken "approved"). */
 import { useScenario } from '../../state/scenarioStore';
-import { runTurn } from '../../state/turnMachine';
+import { approveAndDispatch } from '../../state/turnMachine';
 
 export default function ApprovalRail() {
   const approved = useScenario((s) => s.approvedMw);
@@ -13,7 +13,7 @@ export default function ApprovalRail() {
       </div>
       <div className="flex gap-2">
         <button className="rounded-md border border-slate-300 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-100">Request changes</button>
-        <button onClick={() => runTurn(6)} className="rounded-md bg-[#0891B2] px-4 py-1.5 text-sm font-semibold text-white hover:bg-[#0E7490]">
+        <button onClick={() => void approveAndDispatch()} className="rounded-md bg-[#0891B2] px-4 py-1.5 text-sm font-semibold text-white hover:bg-[#0E7490]">
           Approve
         </button>
       </div>

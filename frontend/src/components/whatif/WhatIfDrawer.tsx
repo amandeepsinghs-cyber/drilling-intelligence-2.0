@@ -40,12 +40,24 @@ export default function WhatIfDrawer() {
     return () => clearTimeout(h);
   }, [open, mw, rop, md]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        close('whatif');
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open, close]);
+
   const tone = (m: number) => (m < 0.1 ? 'text-risk' : m < 0.2 ? 'text-warn' : 'text-ok');
   return (
     <AnimatePresence>
       {open && bundle && (
         <motion.aside initial={{ x: 380, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: 380, opacity: 0 }} transition={{ duration: 0.18 }}
-          className="panel absolute bottom-3 right-3 top-3 z-30 flex w-[360px] flex-col gap-4 p-4 shadow-glow">
+          className="panel absolute bottom-3 right-3 top-3 z-50 flex w-[360px] flex-col gap-4 p-4 shadow-glow">
           <div className="flex items-center justify-between">
             <div><div className="panel-title">What-if · at {md.toFixed(1)} m</div><div className="text-sm text-muted">Physics recompute, human decides</div></div>
             <button className="kbd" onClick={() => close('whatif')}>Esc</button>

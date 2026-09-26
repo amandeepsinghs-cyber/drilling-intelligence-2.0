@@ -23,10 +23,27 @@ function GrTrack({ data, facts }: D) {
     const r = drilledRange(data, s); if (!r) return;
     const x = linX(SCALE.GR[0], SCALE.GR[1], w), xc = linX(SCALE.CALI[0], SCALE.CALI[1], w);
     const gr = col(data, 'curves.GR');
+    // FT-7: compute fill colour from a 1 m running mean of curves.GR
+    const stepM = data.meta.grid.step_m;
+    const win = Math.max(1, Math.round(1 / stepM));
+    const halfWin = Math.floor(win / 2);
+    const grSmooth = new Float32Array(gr.length);
+    for (let i = 0; i < gr.length; i++) {
+      let sum = 0, count = 0;
+      const j0 = Math.max(0, i - halfWin);
+      const j1 = Math.min(gr.length - 1, i + halfWin);
+      for (let j = j0; j <= j1; j++) {
+        const val = gr[j];
+        if (val != null) { sum += val; count++; }
+      }
+      grSmooth[i] = count > 0 ? sum / count : (gr[i] ?? 0);
+    }
+
     // GR shading: fill from the left edge to the GR line, sand-yellow → shale-grey.
     fillRows(ctx, data, s, h, (i) => {
       const v = gr[i]; if (v == null) return null;
-      return [x(SCALE.GR[0]), x(v), mix(COLORS.sand, COLORS.shaleGr, (v - 30) / 80)];
+      const sv = grSmooth[i] || v;
+      return [x(SCALE.GR[0]), x(v), mix(COLORS.sand, COLORS.shaleGr, (sv - 30) / 80)];
     });
     ctx.save(); ctx.strokeStyle = COLORS.bit; ctx.setLineDash([2, 3]); ctx.beginPath();
     ctx.moveTo(xc(bitIn), 0); ctx.lineTo(xc(bitIn), Math.min(h, s.y(s.bitMd))); ctx.stroke(); ctx.restore();

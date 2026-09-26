@@ -192,8 +192,8 @@ export function buildScript(b: ScenarioBundle, d: Columnar): Record<number, Scri
         hi: 'Mud chemist को message, manager को email, base को भी बता दो।',
       },
       agent: {
-        en: `Dispatched: mud chemist work order ${mc}, RTOC alert ${rtoc}, email ${email} to drilling manager, and phone push ${push}. Confirmation delivered to your device.`,
-        hi: `भेज दिया: mud chemist work order ${mc}, RTOC alert ${rtoc}, manager को email ${email}, और phone push ${push}। पुष्टि आपके फ़ोन पर पहुँच गई है।`,
+        en: 'Instructions sent — mud chemist console updated; RTOC, email and phone are simulated for the demo.',
+        hi: 'निर्देश भेज दिए गए — mud chemist console अपडेट हो गया; RTOC, email और phone डेमो के लिए simulated हैं।',
       },
     },
     11: {

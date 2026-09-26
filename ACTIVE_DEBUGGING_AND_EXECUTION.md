@@ -14,24 +14,28 @@ _Last updated: 2026-09-26 07:33 UTC · by Opus_
 | WP-02 | Opus | Design system + cockpit grid + shared depth axis (`components/cockpit/*`, `screens/CommandCenter/Cockpit.tsx`) | ✅ built · tsc/tests/build/gate green · Playwright layout probe OK (all tracks 752 px, one bit line) |
 | WP-03 | Opus | Wellbore column (overview strip + to-scale zoom) | ✅ built |
 | WP-04 | Opus | Agent stage panel (Hindi-first large caption, steps, evidence, idle glance card) | ✅ built |
-| WP-05 | Opus | Backend real-time API + show state | ▶ next |
+| WP-05 | Opus | Backend real-time API + show state | 🟡 partial: `/api/tools/{name}` + honest dispatch done; `/api/actions/*`, `/api/ledger`, ShowState `/ws/events` open |
 | WP-06 / 07 | Flash | Multi-log renderer / pressure track | ✅ done (10 tracks, Board/Engineer, cuttings lag, kick/loss sides) |
-| WP-08 / 09 / 11 | Flash | Act 3 / Act 4+WCR / presenter | ✅ done (ActionTheatre, WcrCompareView, PresenterConsole sync) |
+| WP-08 / 09 | Opus | Act 3 action panel / Act 4 notes ⇄ WCR | ✅ rebuilt 07:52 as `cockpit/act3/Act3ActionPanel.tsx`, `cockpit/act4/Act4ShiftWcr.tsx` (Flash's ActionTheatre/WcrCompareView kept, unmounted / behind "Open full WCR") |
+| WP-11 | Flash | Presenter console | ✅ done (PresenterConsole sync) |
 | WP-10 | Flash | Basin map offline | ✅ done (bundled GeoJSON, shelf edge, collision-free labels) |
-| WP-12 | Flash | ML lithology fix + trained models | ✅ done (RandomForest + GradientBoosting on offsets, 1.0 acc, MODEL_INFERENCE) |
+| WP-12 | Flash | ML lithology fix + trained models | 🟡 review 08:55: RF lithology model loads and is used in frames; `backend/tests/ml/test_models.py` missing (FB-5); `meta.ml_status` hard-coded (Opus); kick_risk model not wired (kept on baseline on purpose) |
+| P-FB-1 | Flash (+Opus a/b/c) | Review feedback on P-FT A+B — see docs/FLASH_PLAYBOOK.md §P-FB-1 (FB-1 small-screen overlap, FB-2 lane gaps, FB-3 doc comment, FB-4 ClosingCard copy/colours, FB-5 ML tests) | ⬜ open |
 
 ## 2 · Open issues
 | ID | Sev | Symptom | Owner | Serves |
 |---|---|---|---|---|
 | A-10 | Cosmetic | Stray tick labels on the old CompositeLog | superseded by WP-06 | — |
-| A-14 | Important | ML litho shows ~40 % sand in U1 shale (Larionov baseline 115 API) | WP-12 | V6 |
-| A-15 | Important | `dispatch.py` fallbacks report DELIVERED when nothing was sent | WP-05 | V4 honesty |
+| A-14 | Cosmetic (accuracy parked) | Measured 08:55: shale median vol.SHALE 0.70 / SAND 0.27 (target ≥ 0.75); sand median vol.SAND 0.71 ✅ | parked with WP-15 | V6 |
+| A-16 | Cosmetic | Scripted fan-out agent line claims "delivered to your device" while phone lane is SIMULATED | Flash (FT-18) | V4 honesty · ✅ resolved |
+| A-17 | Cosmetic | Old `backend/app/actions/dispatch.py` fallbacks still say DELIVERED — not on the demo path any more (agent uses `tools.dispatch_fanout`) | Opus (WP-05) | — |
 
 ## 3 · Parked (owner decision: last step)
 - WP-15: LAS calibration of curve shapes; **DT Option A** (porosity drives density + sonic together, remove DT-only transition term, T3 departure ≈ 3 µs/ft); final narrative.
+- **Real messaging + phone call — PARKED (owner, 2026-09-26 08:21).** No Telegram bot, no Google Chat webhook, no calling service (Twilio etc.) on the Argolis project. Reason: avoid any third-party bot/credential risk on demo day. Lanes stay **SIMULATED** by design. Do NOT set `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` / `GOOGLE_CHAT_WEBHOOK_URL`; without them the backend makes no outbound call. Revisit only on owner request.
 
 ## 4 · Blocked / waiting on owner
-- Telegram bot token + chat ID (real phone push; until then phone lane shows SIMULATED).
+- (none)
 
 
 ---
@@ -55,6 +59,9 @@ google-chrome --headless=new --no-sandbox --window-size=1920,1080 --virtual-time
 > Note: the backend runs with `--reload`; saving any file under `backend/` restarts it (drops open sockets).
 
 ## 6 · Done log (clear at next checklist update)
+- 2026-09-26 · **P-FT-B · Front-end fine-tuning batch B (FT-9, FT-18, FT-19 + Act 3/4 tests)** (Flash). FT-9: `TakeawayCard` centered over log area (`inset-y-0 left-0 right-[460px]`), dismissable with Esc; created `ClosingCard.tsx` ("Four Layers of AI": Data, Physics, ML, Agent; pure text, zero hardcoded numbers, Esc dismiss, mounted in `CommandCenter/index.tsx`). FT-18: Scripted fan-out agent line updated in EN and HI to honest simulated disclaimer ("Instructions sent — mud chemist console updated; RTOC, email and phone are simulated for the demo."). FT-19: `Act3ActionPanel` memo card restructured with scrollable body and sticky Approve row; fan-out lanes tuned (`minmax(150px, 210px)` phone lane) to prevent overflow at 1366×768 (verified via `scratch/ftb_small.png`). Unit tests: `act3act4.test.ts` (5 tests covering `toChannelStatus` mapping and `scriptedTurnFor` keyword routing). Verification: tsc clean, vitest 21/21 green, build clean, `fact_gate.py` 0 E / 0 W, `act34_flow.mjs` flow verified. → V4 honesty, V9
+- 2026-09-26 · **P-FT · Front-end fine-tuning batch A (FT-1, 2, 6, 7, 8, 10, 16)** (Flash). FT-1: formation labels moved to left edge (`MINI_W + 5`) and offset kick/loss labels into compact right pills (`x = W - 8`, `textAnchor = "end"`), eliminating overlap. FT-2: drill bit SVG favicon in cyan `#22D3EE` accent created and linked in `index.html`. FT-6: pressure track side labels moved into dedicated opaque header strip at body top (`y=0..18`) so curves never cross text; `ML MW` and `P10–P90` given rounded high-contrast background pills. FT-7: GR shading color computed from a 1m running mean of `curves.GR` using `data.meta.grid.step_m`, keeping the GR line unsmoothed. FT-8: light theme tuned across `WellboreColumn`, `PressureTrack`, `palette.ts` (added `isLight` and `line`), wellbore hole fill and rock pattern. FT-10: timeline height set to 48px, with turn tick marks and act boundary short names. FT-16: `WhatIfDrawer` and `AuditDrawer` set to `z-50`, non-clipping, and responsive to `Esc` key even when inputs are focused. Unit tests: `pressureTrack.test.ts` (7 tests covering `zoneAt` and `pressureRange`). Verification: tsc clean, vitest 16/16 green, build clean, `fact_gate.py` 0 E / 0 W, `flicker_probe.mjs` 0 blank frames / 173, Playwright screenshots captured. → V4, V5, V6, V7
+- 2026-09-26 07:52 · **Act 3 + Act 4 driven by the agent (WP-08/09 rebuilt, FT-3, FT-12, A-15)**. Backend: memo carries `evidence` (offset INC + offset WCR + SOP from the corpus, + live PP/FG; never cites this well's own future reports); `dispatch_fanout` returns honest DELIVERED/SIMULATED/FAILED per lane (real Telegram / Chat send only when env creds exist); new tool `draft_shift_log` (declared to Live, emits `action: shift_log`); new `POST /api/tools/{name}` so SCRIPTED uses the same tools. Frontend: `Act3ActionPanel` (memo+evidence+Approve → stamp → 4 lanes → phone → ledger), `Act4ShiftWcr` (wellbore | pressure loss side | notes ⇄ WCR, hover links), `askAgent()` (LIVE → Gemini; else keyword → scripted turn), `approveAndDispatch()` (waits for the running turn; fixes Approve which used to run turn 6), per-act suggestion chips, ledger `patch()` + honest `ChannelStatus`. Old DispatchCard/PhoneMirror floaters unmounted. Verify: `node scratch/act34_flow.mjs scripted scratch/scr` and `… live scratch/live`; tsc, vitest 9/9, build, pytest 59/59, gate 0/0.
 - 2026-09-26 · **Access + flicker + live-in-UI**: Vite answered 403 to the Cloudtop hostname → `allowedHosts: true`. Play flicker = canvas cleared every depth step and redrawn a frame later → `CanvasLayer` now resizes only on size change and draws synchronously (0 blank frames / 174). Live agent verified through the real page: clarifying question → ETA 1 h 32 min (matches glance card) → offsets → memo MEMO-SM-2026-09 opens. Captions no longer duplicated; closed-socket prompt no longer hangs on "thinking". FEATURE_LIST §0 status table added; ₹ removed from FEATURE_LIST.
 - 2026-09-26 · **WP-02/03/04 + cockpit logs/pressure**: new cockpit (#4) replaces the Plotly act stages. Shared `DepthScale` (`cockpit/depth.tsx`), Canvas tracks (GR·CALI, depth+tops, RHOB·NPHI·PEF crossover, triple resistivity log scale, SW·SXO, PHIE fills, ML litho patterns, cuttings with in-transit lag hatch), pressure track (kick/loss fills, ahead-of-bit dashed forecast, if-unchanged, ML MW + P10–P90), wellbore overview+zoom, top bar with act stepper, 6 KPIs per act, agent stage. New YAML: `ml.mw_rec_p10_ppg / p90` (ASSUMED). Old components (`CompositeLog`, `PressureWindow`, `acts.tsx`) kept, no longer mounted. Note: headless `chrome --screenshot` mis-measures layout — use `node scratch/probe_cockpit.mjs <act> <png> [keys]`.
 - 2026-09-26 · **WP-06 / WP-07** (Flash): Multi-log v2 (10 tracks, Board/Engineer modes, cuttings lag, D-N crossover, PEF, Sonic DT + overpressure shading) and PressureTrack (both kick/loss sides, look-ahead ghost, compact legend). → V5, V6, V7

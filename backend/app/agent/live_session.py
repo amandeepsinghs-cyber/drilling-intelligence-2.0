@@ -124,7 +124,7 @@ FUNCTION_DECLARATIONS_DATA = [
     },
     {
         "name": "dispatch_fanout",
-        "description": "Fan out approved instructions to Mud Chemist, RTOC, Drilling Manager, and Rig Floor.",
+        "description": "After approval: fan out the approved MOC to Mud Chemist console, RTOC chat, Drilling Manager email and Superintendent phone. Returns honest per-channel status (DELIVERED / SIMULATED / FAILED).",
         "parameters": {
             "type": "OBJECT",
             "properties": {
@@ -140,6 +140,14 @@ FUNCTION_DECLARATIONS_DATA = [
             "properties": {
                 "rop": {"type": "NUMBER", "description": "Maximum allowable ROP in m/hr"},
             },
+        },
+    },
+    {
+        "name": "draft_shift_log",
+        "description": "Draft the end-of-shift handover notes (events, decisions, ledger) for the 12-1/4 in section, each line linked to its source.",
+        "parameters": {
+            "type": "OBJECT",
+            "properties": {},
         },
     },
     {
@@ -436,6 +444,8 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any, inbound: asyncio.
                                 await websocket.send_json({"type": "action", "kind": "dispatch", "payload": result})
                             elif fc.name == "set_rop_cap":
                                 await websocket.send_json({"type": "action", "kind": "rop_cap", "payload": result})
+                            elif fc.name == "draft_shift_log":
+                                await websocket.send_json({"type": "action", "kind": "shift_log", "payload": result})
                             elif fc.name == "generate_wcr":
                                 await websocket.send_json({"type": "action", "kind": "wcr", "payload": result})
 

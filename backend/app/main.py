@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.agent.live_session import handle_live_websocket
+from app.api.routes_actions import router as tools_router
 from app.api.routes_physics import router as physics_router
 from app.api.routes_scenario import router as scenario_router
 from app.core.config import get_settings
@@ -13,6 +14,7 @@ app = FastAPI(title="Drilling Intelligence 2.0", version="0.1.0")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 app.include_router(scenario_router)
 app.include_router(physics_router)
+app.include_router(tools_router)
 
 
 @app.get("/health")

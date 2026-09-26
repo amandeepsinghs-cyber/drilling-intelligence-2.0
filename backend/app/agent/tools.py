@@ -9,6 +9,7 @@ resolved from the live frame at the bit or from data/scenario/*.yaml; a missing 
 """
 from __future__ import annotations
 
+import re
 from datetime import datetime, timezone
 from typing import Any
 
@@ -309,7 +310,54 @@ def create_moc_memo(recommendation: str | None = None) -> dict[str, Any]:
         "shoe_fit_margin_ppg": round(f["casing"]["last_shoe"]["fit_ppg"] - sand["ecd_ppg"], 2),
         "approver_role": "Drilling Superintendent / Company Man",
         "governing_sop": "ONGC-MOC-SOP-07 (Approval Authority)",
+        "evidence": _memo_evidence(),
     }
+
+
+def _memo_evidence() -> list[dict[str, Any]]:
+    """Citations behind the memo: offset kick report + offset WCR + SOPs (from the corpus), plus live physics."""
+    kick = _offset("KICK")
+    out: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    queries = [
+        (f"gas kick {kick['incident']['md_m']} overpressure sand mud weight", {"doc_id_prefix": "INC-"}),
+        ("well completion report kick mud weight sand", {"doc_id_prefix": "WCR-"}),
+        ("management of change mud weight increase approval barite", {"doc_type": "SOP"}),
+    ]
+    for q, flt in queries:
+        try:
+            hits = retriever.search(q, filters=flt, k=2)
+        except Exception:
+            hits = []
+        for h in hits:
+            if h["doc_id"] in seen or "MN-SM-DW-01" in h["doc_id"]:  # never cite this well's own (future) reports
+                continue
+            seen.add(h["doc_id"])
+            snip = " ".join(str(h.get("snippet", "")).split())
+            snip = re.sub(r"^#+\s*", "", snip)
+            snip = re.sub(r"\\text\{([^}]*)\}", r"\1", snip).replace("$", "").replace("**", "")
+            if h.get("section") and snip.startswith(str(h["section"])):
+                snip = snip[len(str(h["section"])):].lstrip(" -:")
+            out.append({
+                "doc_id": h["doc_id"],
+                "doc_type": h.get("doc_type"),
+                "section": h.get("section"),
+                "page": h.get("page"),
+                "snippet": snip[:220] + ("…" if len(snip) > 220 else ""),
+                "provenance": h.get("provenance", "SYNTHETIC"),
+            })
+            break
+    # Offset documents named in offsets.yaml that the search did not surface
+    for d in kick.get("documents", []):
+        if d not in seen:
+            seen.add(d)
+            out.append({"doc_id": d, "doc_type": "OFFSET", "section": kick["id"], "page": None,
+                        "snippet": f"Offset {kick['id']} ({kick['distance_km']} km) — kick at {kick['incident']['md_m']:,} m.",
+                        "provenance": "SYNTHETIC"})
+    out.append({"doc_id": "LIVE-PPFG", "doc_type": "LIVE", "section": "Pressure window (live)", "page": None,
+                "snippet": "Pore-pressure forecast ahead of bit, ECD vs shoe FIT — computed live from the well data.",
+                "provenance": "LIVE"})
+    return out
 
 
 def request_approval(memo_id: str | None = None) -> dict[str, Any]:
@@ -326,21 +374,70 @@ def request_approval(memo_id: str | None = None) -> dict[str, Any]:
     }
 
 
+def _post_json(url: str, body: dict[str, Any], timeout: float = 4.0) -> None:  # facts-ok: network timeout (s)
+    import json as _json
+    import urllib.request
+
+    req = urllib.request.Request(url, data=_json.dumps(body).encode(), headers={"Content-Type": "application/json"})
+    with urllib.request.urlopen(req, timeout=timeout) as r:  # noqa: S310 — fixed https endpoints from env
+        if r.status >= 300:
+            raise RuntimeError(f"HTTP {r.status}")
+
+
+def _send_telegram(text: str) -> tuple[str, str]:
+    """Real Telegram push if TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID are set; else SIMULATED."""
+    import os
+
+    tok, chat = os.getenv("TELEGRAM_BOT_TOKEN"), os.getenv("TELEGRAM_CHAT_ID")
+    if not (tok and chat):
+        return "SIMULATED", "Simulated for the demo — shown on the phone mirror"
+    try:
+        _post_json(f"https://api.telegram.org/bot{tok}/sendMessage", {"chat_id": chat, "text": text})
+        return "DELIVERED", "Telegram push sent to Superintendent"
+    except Exception as e:  # pragma: no cover — network
+        return "FAILED", f"Telegram error: {e}"
+
+
+def _send_chat(text: str) -> tuple[str, str]:
+    """Real Google Chat post if GOOGLE_CHAT_WEBHOOK_URL is set; else SIMULATED."""
+    import os
+
+    url = os.getenv("GOOGLE_CHAT_WEBHOOK_URL")
+    if not url:
+        return "SIMULATED", "Simulated for the demo"
+    try:
+        _post_json(url, {"text": text})
+        return "DELIVERED", "Posted to RTOC Chat space"
+    except Exception as e:  # pragma: no cover — network
+        return "FAILED", f"Chat error: {e}"
+
+
 def dispatch_fanout(memo_id: str | None = None, channels: list[str] | None = None) -> dict[str, Any]:
-    """Dispatch approved MOC instructions to Mud Chemist, RTOC, Drilling Manager, and Rig Floor."""
+    """Dispatch approved MOC instructions to Mud Chemist, RTOC chat, Drilling Manager email and Superintendent phone."""
     f = facts()
     cids = f["ids"]["dispatch_ids"]
+    mid = memo_id or f["ids"]["memo_id"]
+    m1 = f["mud"]["weighted"]["mw_ppg"]
+    text = (f"{mid} APPROVED — {f['well']['id']}: weight up to {m1:.2f} ppg, "
+            f"mix {f['barite']['total_mt']} MT barite before {f['mud']['weight_up_location_m']:,} m.")
+    tg_status, tg_note = _send_telegram(text)
+    ch_status, ch_note = _send_chat(text)
     dispatches = [
-        {"id": cids[0], "channel": "Mud Chemist Console", "status": "DELIVERED", "action": f"Mix {f['barite']['total_mt']} MT barite"},
-        {"id": cids[1], "channel": "RTOC Space Alert", "status": "DELIVERED", "action": "Watch ECD/FIT window"},
-        {"id": cids[2], "channel": "Drilling Manager Email", "status": "SENT", "action": "Formal MOC notification"},
-        {"id": cids[3], "channel": "Rig Floor Push Alert", "status": "DELIVERED", "action": "Hold drilling ahead"},
+        {"id": cids[0], "channel": "Mud Chemist Console", "lane": "mud", "status": "DELIVERED",
+         "note": "Work order shown in the in-app mud console", "action": f"Mix {f['barite']['total_mt']} MT barite"},
+        {"id": cids[1], "channel": "RTOC Chat", "lane": "chat", "status": ch_status, "note": ch_note,
+         "action": "Watch ECD vs shoe FIT window"},
+        {"id": cids[2], "channel": "Drilling Manager Email", "lane": "email", "status": "SIMULATED",
+         "note": "Email is simulated in this demo", "action": "Formal MOC notification"},
+        {"id": cids[3], "channel": "Superintendent Phone", "lane": "phone", "status": tg_status, "note": tg_note,
+         "action": "Hold drilling ahead until weight-up confirmed"},
     ]
     return {
-        "memo_id": memo_id or f["ids"]["memo_id"],
+        "memo_id": mid,
         "status": "FANOUT_COMPLETED",
         "channels_dispatched": dispatches,
-        "next_step": f"Awaiting confirmation of {f['mud']['weighted']['mw_ppg']:.2f} ppg mud weight parity at flow line.",
+        "message_text": text,
+        "next_step": f"Awaiting confirmation of {m1:.2f} ppg mud weight parity at flow line.",
     }
 
 
@@ -360,6 +457,33 @@ def set_rop_cap(rop: float | None = None) -> dict[str, Any]:
         "sweeps": "High-viscosity sweeps per ONGC-HC-SOP-05 (Hole Cleaning & ECD Management)",
         "status": "ROP_RESTRICTION_ACTIVE",
     }
+
+
+def draft_shift_log() -> dict[str, Any]:
+    """Draft end-of-shift handover notes; every line carries its source so the WCR can link back."""
+    f = facts()
+    warn, sand = _warn(), checkpoint("Sand top (offset kick depth)")
+    brk, cap = checkpoint("Drilling break"), checkpoint("After ROP cap")
+    m0, m1 = f["mud"]["initial"]["mw_ppg"], f["mud"]["weighted"]["mw_ppg"]
+    fit = f["casing"]["last_shoe"]["fit_ppg"]
+    kick = _offset("KICK")
+    lines = [
+        {"md_m": warn["md_m"], "text": f"Pressure ramp flagged {warn['distance_to_hazard_m']} m above sand top; "
+                                        f"forecast PP {warn['pp_forecast_ppg']:.2f} ppg at {warn['pp_forecast_at_m']:,} m.",
+         "source": f"Watchdog T3 @ {warn['md_m']:,} m", "wcr_section": "4. Well Control Audit"},
+        {"md_m": warn["md_m"], "text": f"Offset {kick['id']} kicked at {kick['incident']['md_m']:,} m on {kick['incident']['mw_ppg']:.2f} ppg.",
+         "source": ", ".join(kick.get("documents", [])), "wcr_section": "1. Geological Summary"},
+        {"md_m": f["mud"]["weight_up_location_m"], "text": f"MOC {f['ids']['memo_id']} approved: MW {m0:.2f} → {m1:.2f} ppg, "
+                                                             f"{f['barite']['total_mt']} MT barite.",
+         "source": f"Ledger {f['ids']['memo_id']}", "wcr_section": "3. Mud Program"},
+        {"md_m": sand["md_m"], "text": f"Entered sand top at {sand['md_m']:,} m with +{sand['overbalance_psi']} psi overbalance. No influx.",
+         "source": f"Frames @ {sand['md_m']:,} m", "wcr_section": "4. Well Control Audit"},
+        {"md_m": brk["md_m"], "text": f"Drilling break at {brk['md_m']:,} m: ROP {brk['rop_m_hr']} m/hr, ECD {brk['ecd_ppg']:.2f} ppg vs FIT {fit:.2f}.",
+         "source": f"Watchdog T9 @ {brk['md_m']:,} m", "wcr_section": "2. Drilling Operations"},
+        {"md_m": cap["md_m"], "text": f"ROP capped at {f['drilling']['rop_cap_m_hr']} m/hr + sweep; ECD back to {cap['ecd_ppg']:.2f} ppg. No losses.",
+         "source": "Ledger ROP_CAP", "wcr_section": "2. Drilling Operations"},
+    ]
+    return {"doc_id": f"SHIFT-{f['well']['id']}", "status": "DRAFTED", "lines": lines}
 
 
 def generate_wcr() -> dict[str, Any]:
@@ -419,6 +543,7 @@ TOOL_MAP: dict[str, Any] = {
     "request_approval": request_approval,
     "dispatch_fanout": dispatch_fanout,
     "set_rop_cap": set_rop_cap,
+    "draft_shift_log": draft_shift_log,
     "generate_wcr": generate_wcr,
     "writeback_lessons": writeback_lessons,
 }

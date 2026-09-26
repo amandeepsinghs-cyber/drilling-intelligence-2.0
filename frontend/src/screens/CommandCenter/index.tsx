@@ -1,9 +1,7 @@
 /** CommandCenter — the live-well screen (SDD §12.2). */
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect } from 'react';
-import DispatchCard from '../../components/actions/DispatchCard';
 import MemoOverlay from '../../components/actions/MemoOverlay';
-import PhoneMirror from '../../components/actions/PhoneMirror';
 import AuditDrawer from '../../components/audit/AuditDrawer';
 import Toast from '../../components/common/Toast';
 import WhatIfDrawer from '../../components/whatif/WhatIfDrawer';
@@ -14,6 +12,7 @@ import { usePlayback } from '../../state/usePlayback';
 import { useUi } from '../../state/uiStore';
 import WcrOverlay from '../WcrViewer/WcrOverlay';
 import TakeawayCard from '../../components/common/TakeawayCard';
+import ClosingCard from '../../components/common/ClosingCard';
 import Cockpit from './Cockpit';
 
 
@@ -34,11 +33,11 @@ export default function CommandCenter() {
     <div className="relative h-full">
       <Cockpit />
       <TakeawayCard />
+      <ClosingCard />
       <MemoOverlay />
       <WhatIfDrawer />
       <AuditDrawer />
-      <PhoneMirror />
-      <DispatchCard />
+      {/* DispatchCard + PhoneMirror superseded by the inline Act 3 panel (WP-08); files kept, unmounted. */}
       <WcrOverlay />
       <HelpOverlay />
       <Toast />

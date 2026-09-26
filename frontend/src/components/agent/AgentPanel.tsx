@@ -10,6 +10,7 @@ import { liveClient, type LiveStatus } from '../../live/liveClient';
 import { useAgent, type AgentMessage } from '../../state/agentStore';
 import { toggleAgentMode } from '../../state/presenter';
 import { useScenario } from '../../state/scenarioStore';
+import { askAgent } from '../../state/turnMachine';
 import { useUi } from '../../state/uiStore';
 import CitationCard from './CitationCard';
 import VoiceRing from './VoiceRing';
@@ -27,10 +28,18 @@ const STEP: Record<string, string> = {
   request_approval: 'Asked for your approval',
   dispatch_fanout: 'Sent the instructions to the team',
   set_rop_cap: 'Set the ROP limit',
+  draft_shift_log: 'Drafted the shift handover notes',
   generate_wcr: 'Drafted the well completion report',
   writeback_lessons: 'Saved the lessons learned',
 };
 const EXAMPLES = ['Well ka status batao', 'Agle zone tak kitna time lagega?', 'Paas wale rig pe kya hua tha?'];
+/** Suggested next prompts per act (shown above the input; work in LIVE and SCRIPTED). */
+const NEXT_BY_ACT: Record<string, string[]> = {
+  act1: ['Well ka status batao', 'Kaunsi formation hai? Cuttings kab aayenge?'],
+  act2: ['Agle zone tak kitna time lagega?', 'Paas wale rig pe kya hua tha?'],
+  act3: ['MOC memo banao — mud weight badhao', 'Approve. Team ko bhej do.'],
+  act4: ['Shift handover notes banao', 'WCR draft karo'],
+};
 
 function StatusPill({ live, mode }: { live: LiveStatus; mode: string }) {
   const ok = live === 'connected' || live === 'reconnecting';
@@ -113,6 +122,7 @@ export default function AgentPanel() {
   const [live, setLive] = useState<LiveStatus>('disconnected');
   const [talking, setTalking] = useState(false);
   const [typed, setTyped] = useState('');
+  const act = useScenario((s) => s.act);
 
   useEffect(() => {
     liveClient.connect();
@@ -128,7 +138,7 @@ export default function AgentPanel() {
     try { setTalking(true); await liveClient.startTalking(); } catch (err) { console.warn('Microphone error:', err); setTalking(false); }
   };
   const stop = (e: React.SyntheticEvent) => { e.preventDefault(); if (talking) { setTalking(false); liveClient.stopTalking(); } };
-  const send = (text: string) => { if (text.trim()) liveClient.sendText(text.trim()); };
+  const send = (text: string) => askAgent(text);
 
   return (
     <aside className="panel flex min-h-0 flex-col overflow-hidden">
@@ -194,6 +204,13 @@ export default function AgentPanel() {
             <button onClick={() => liveClient.interrupt()} className="btn h-11 border-risk/40 px-3 text-[13px] text-risk" title="Interrupt the agent">Stop</button>
           )}
         </div>
+        {lastAgent && (
+          <div className="flex flex-wrap gap-1.5">
+            {(NEXT_BY_ACT[act] ?? []).map((q) => (
+              <button key={q} onClick={() => send(q)} className="rounded-full border border-accent/40 bg-accent/5 px-2.5 py-0.5 text-[12px] text-accent hover:bg-accent/15">“{q}”</button>
+            ))}
+          </div>
+        )}
         <form onSubmit={(e) => { e.preventDefault(); send(typed); setTyped(''); }} className="flex items-center gap-1.5">
           <input value={typed} onChange={(e) => setTyped(e.target.value)} placeholder="Or type a question…"
             className="flex-1 rounded-lg border border-line bg-app px-3 py-1.5 text-[13.5px] text-fg placeholder:text-faint focus:border-accent focus:outline-none" />

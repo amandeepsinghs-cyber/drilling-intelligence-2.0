@@ -1,4 +1,5 @@
 /** AuditDrawer — "what does this number rest on?": frame provenance, data sources, models, and the decision ledger. */
+import { useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { fmt, indexAt, num } from '../../lib/frames';
 import { useLedger } from '../../state/ledgerStore';
@@ -22,11 +23,24 @@ export default function AuditDrawer() {
   if (!data) return null;
   const i = indexAt(data, md);
   const lwd = data.meta.lwd_source as Record<string, unknown>;
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        close('audit');
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open, close]);
+
   return (
     <AnimatePresence>
       {open && (
         <motion.aside initial={{ x: 440, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: 440, opacity: 0 }} transition={{ duration: 0.18 }}
-          className="panel absolute bottom-3 right-3 top-3 z-30 flex w-[420px] flex-col overflow-hidden shadow-glow">
+          className="panel absolute bottom-3 right-3 top-3 z-50 flex w-[420px] flex-col overflow-hidden shadow-glow">
           <header className="flex items-center justify-between border-b border-line px-4 py-3">
             <div><div className="panel-title">Audit · basis of every figure</div><div className="num text-xs text-muted">frame @ {md.toFixed(1)} m · {source === 'api' ? 'live API' : 'offline mocks'}</div></div>
             <button className="kbd" onClick={() => close('audit')}>Esc</button>

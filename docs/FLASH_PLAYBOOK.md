@@ -136,7 +136,7 @@ VERIFY: same frontend + gate commands as P-06; screenshots ?act=2 and ?act=4.
 
 ---
 
-## P-08 · Act 3 action panel (mock-up #5)  — depends on WP-02, WP-05
+## P-08 · Act 3 action panel (mock-up #5)  — ✅ BUILT by Opus 2026-09-26 07:52 as `cockpit/act3/Act3ActionPanel.tsx` (ledger-driven, honest statuses). **Do not rebuild.** Polish only via P-FT batch B. Prompt below kept for history.
 
 ```
 GOAL
@@ -165,7 +165,7 @@ VERIFY: frontend commands + `node scratch/verify_acts.mjs` + screenshot ?act=3.
 
 ---
 
-## P-09 · Act 4 + Shift notes ⇄ WCR  — depends on WP-02, WP-05
+## P-09 · Act 4 + Shift notes ⇄ WCR  — ✅ BUILT by Opus 2026-09-26 07:52 as `cockpit/act4/Act4ShiftWcr.tsx` (notes from backend tool `draft_shift_log`). **Do not rebuild.** Prompt below kept for history.
 
 ```
 GOAL
@@ -304,6 +304,97 @@ cd frontend && npx tsc --noEmit -p . && npm test && npm run build
 ~/.local/bin/uv run --no-project --python 3.12 --with pyyaml python pipelines/synth/fact_gate.py
 cd frontend && node scratch/flicker_probe.mjs
 ```
+
+---
+
+## P-FT-B · Fine-tuning batch B (FT-9, FT-18, FT-19 + Act 3/4 tests) — independent, can start now
+
+```
+GOAL
+Finish the story polish around the new Act 3 / Act 4 panels. Read build.md §3.1 ("Act 3/4 data flow") first.
+Messaging is PARKED by the owner: do NOT add Telegram/Chat/calling code or env keys. Lanes stay SIMULATED.
+
+FILES (only these)
+- frontend/src/components/common/TakeawayCard.tsx, frontend/src/components/common/ClosingCard.tsx (new)  (FT-9)
+- frontend/src/screens/CommandCenter/index.tsx (only to mount ClosingCard)                                  (FT-9)
+- frontend/src/mocks/agentScript.ts (only the fan-out turn text) OR data/scenario/turns.yaml if the text lives there (FT-18)
+- frontend/src/components/cockpit/act3/Act3ActionPanel.tsx (layout only; do not change data logic)           (FT-19)
+- frontend/tests/unit/act3act4.test.ts (new)
+
+ITEMS
+FT-9  Takeaway card fits the cockpit (centred over the log area, not over the agent panel). After the WCR turn,
+      show a ClosingCard "4 layers of AI": Data (hi-res logs) · Physics (PP/FG, ECD) · ML (lithology, kick risk)
+      · Agent (voice, memo, actions). Text only, no numbers unless read from bundle.facts. Esc closes.
+FT-18 The scripted fan-out agent line must not claim delivery to a phone. Wording: "Instructions sent — mud
+      chemist console updated; RTOC, email and phone are simulated for the demo." Hindi version too.
+FT-19 At 1366×768 the Approve button must stay visible (memo card scrolls, Approve row sticky) and the four
+      lanes must not overflow. Check at 1920×1080 too.
+TESTS toChannelStatus('DELIVERED'|'FAILED'|'SIMULATED'|undefined) → delivered|failed|simulated|simulated;
+      scriptedTurnFor('Approve. Team ko bhej do.') = the 'approve' turn; ('Shift handover notes banao') = the
+      'draft_shift_log' turn; ('Agle zone tak kitna time lagega?') = 'eta_next_zone_query'.
+      (Import from state/ledgerStore and state/turnMachine; build a minimal bundle in the test.)
+
+ACCEPTANCE
+- tsc + unit tests + build green; fact gate 0/0.
+- node scratch/act34_flow.mjs scripted scratch/ftb  → screenshots show Approve, 4 lanes, notes ⇄ WCR.
+- Playwright screenshot at 1366×768 of ?act=3 after "MOC memo banao" → scratch/ftb_small.png
+
+VERIFY
+cd frontend && npx tsc --noEmit -p . && npm test && npm run build
+~/.local/bin/uv run --no-project --python 3.12 --with pyyaml python pipelines/synth/fact_gate.py
+cd frontend && node scratch/act34_flow.mjs scripted scratch/ftb
+```
+
+---
+
+## P-FB-1 · Review feedback on P-FT A + B (Opus review 2026-09-26 08:55) — do these before new work
+
+Verdict: batch A + B **accepted**. tsc, vitest 21/21, build, pytest 59/59, fact gate 0/0, no ₹, flicker probe blank 0,
+act34_flow scripted errors [] — all green. Fix the items below; none of them block the demo on a 1920×1080 screen.
+
+```
+GOAL
+Close the review findings on P-FT batch A/B. Change only the files listed per item. No data-logic changes.
+
+ITEMS (priority order)
+FB-1 [important if the venue screen is ≤1440 px wide] Header act stepper overlaps itself at 1366×768
+     ("Rock at the bit / Window closes / Decide & act / Loss side" collide; see scratch/ftb_small.png top bar).
+     Timeline act labels "Rock at the bit" and "Window closes" also collide at 1366.
+     Files: the header component that renders the act stepper (find it from screens/CommandCenter/index.tsx),
+            frontend/src/components/timeline/Timeline.tsx.
+     Done when: at 1366×768 the stepper shows numbers + the ACTIVE act's title only (others number-only), and
+            timeline labels never overlap (hide a label if it is < 90 px from its neighbour). 1920 unchanged.
+FB-2 [cosmetic] Act 3 fan-out lanes are spread top-to-bottom with large empty gaps at 1920×1080
+     (scratch/rv_3_act3_dispatched.png). Stack the 4 lanes at the top with an 8 px gap.
+     File: frontend/src/components/cockpit/act3/Act3ActionPanel.tsx (layout classes only).
+FB-3 [rule] TakeawayCard.tsx lost its header doc comment. Restore it at the top (update "Enter toggles, Esc hides"
+     only if behaviour changed):
+     /** TakeawayCard — the one sentence the board should remember from each act (checklist §A). Enter toggles, Esc hides. */
+FB-4 [cosmetic] ClosingCard copy: plain language, no overclaim.
+     - "Unified architecture powering autonomous deepwater operations" → "One system: the agent prepares, the engineer decides."
+     - "Subsurface petrophysical telemetry, LWD, MWD, and cuttings lag correction directly at the bit."
+       → "High-resolution well logs and cuttings, lined up to the bit depth."
+     - Replace hard-coded cyan/emerald/etc. Tailwind colours with theme tokens (text-accent, text-ok, text-warn,
+       text-ml, border-line, bg-panel) so the light theme reads correctly.
+     File: frontend/src/components/common/ClosingCard.tsx.
+FB-5 [claimed but missing] backend/tests/ml/test_models.py (asked for in P-12) does not exist. Add it (+ __init__.py):
+     - lithology.is_trained_model_loaded() is True when joblib is importable (skip test if joblib missing).
+     - build_frames(): grouped by truth.LITHO, ml.litho.class accuracy ≥ 0.9 for SHALE, SAND, LIMESTONE.
+     - build_frames(): median vol.SAND over truth.LITHO == SAND ≥ 0.6.
+     Do NOT assert the shale target (A-14 shale is 0.70 vs 0.75 target — parked with WP-15).
+
+VERIFY
+cd frontend && npx tsc --noEmit -p . && npm test && npm run build
+cd frontend && node scratch/act34_flow.mjs scripted scratch/fb && node scratch/flicker_probe.mjs   # blank must be 0
+~/.local/bin/uv run --no-project --python 3.12 --with pytest,fastapi,httpx,pyyaml,numpy,pandas,pyarrow,pydantic,google-genai,websockets,joblib,scikit-learn pytest backend/tests -q
+~/.local/bin/uv run --no-project --python 3.12 --with pyyaml python pipelines/synth/fact_gate.py
+Playwright 1366×768 screenshots of ?act=2 and ?act=3 → scratch/fb_small_act2.png, scratch/fb_small_act3.png
+```
+
+Opus-owned (not Flash): (a) `frames.py` hard-codes `meta.ml_status = "baseline_heuristic"` even when the trained
+lithology model is loaded → set it from `lithology.is_trained_model_loaded()`; (b) restart uvicorn with
+`joblib,scikit-learn` so the live demo uses the trained model; (c) trained `kick_risk` model is not wired — keep
+P(kick) on the story-controlled baseline on purpose (the 71 % moment must be deterministic); note this in build.md.
 
 ---
 

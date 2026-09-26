@@ -71,16 +71,16 @@ export default function WellboreColumn() {
       {H > 0 && (
         <svg width={W} height={H} className="absolute inset-0">
           <defs>
-            <linearGradient id="wb-sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#0E4A6B" /><stop offset="1" stopColor="#0A2A40" /></linearGradient>
+            <linearGradient id="wb-sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={p.isLight ? '#38BDF8' : '#0E4A6B'} /><stop offset="1" stopColor={p.isLight ? '#0284C7' : '#0A2A40'} /></linearGradient>
             <linearGradient id="wb-steel" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#64748B" /><stop offset="0.5" stopColor="#CBD5E1" /><stop offset="1" stopColor="#64748B" /></linearGradient>
-            <pattern id="wb-rock" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#2A2419" /><circle cx="1.5" cy="1.5" r="0.6" fill="#4A3F2C" /><circle cx="4.5" cy="4.5" r="0.6" fill="#4A3F2C" /></pattern>
+            <pattern id="wb-rock" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill={p.isLight ? '#EDE8DF' : '#2A2419'} /><circle cx="1.5" cy="1.5" r="0.6" fill={p.isLight ? '#D5CBBB' : '#4A3F2C'} /><circle cx="4.5" cy="4.5" r="0.6" fill={p.isLight ? '#D5CBBB' : '#4A3F2C'} /></pattern>
           </defs>
 
           {/* ===== Mini overview ===== */}
           <rect x={4} y={mTop} width={MINI_W - 8} height={my(wd) - mTop} fill="url(#wb-sea)" rx={2} />
           <rect x={4} y={my(wd)} width={MINI_W - 8} height={mBot - my(wd)} fill="url(#wb-rock)" />
           <line x1={4} x2={MINI_W - 4} y1={my(wd)} y2={my(wd)} stroke="#A16207" strokeWidth={1.2} />
-          <text x={6} y={mTop + 10} fontSize={9} fill="#7DD3FC">sea</text>
+          <text x={6} y={mTop + 10} fontSize={9} fill={p.isLight ? '#0369A1' : '#7DD3FC'}>sea</text>
           {casing.map((c) => {
             const hw = mhw(sizeIn(c.size));
             return (
@@ -108,13 +108,13 @@ export default function WellboreColumn() {
               return (
                 <g key={u.id}>
                   <rect x={MINI_W} y={y0} width={zoomW} height={y1 - y0} fill={p.litho[u.litho_class]} opacity={0.45} />
-                  <text x={W - 4} y={y0 + 13} fontSize={11} fontWeight={700} fill={p.text} textAnchor="end" opacity={0.85}>{u.id}</text>
+                  <text x={MINI_W + 5} y={y0 + 13} fontSize={11} fontWeight={700} fill={p.text} textAnchor="start" opacity={0.85}>{u.id}</text>
                 </g>
               );
             })}
             {/* planned hole ahead of the bit (outline only) */}
             <rect x={zcx - holeIn * kIn} y={bitY} width={holeIn * kIn * 2} height={Math.max(0, bodyTop + sc.heightPx - bitY)} fill="none" stroke={p.faint} strokeDasharray="3 4" />
-            {holePoly && <polygon points={holePoly} fill="#0B1620" stroke="#7DD3FC" strokeOpacity={0.55} strokeWidth={1} />}
+            {holePoly && <polygon points={holePoly} fill={p.isLight ? '#FFFFFF' : '#0B1620'} stroke={p.isLight ? '#0891B2' : '#7DD3FC'} strokeOpacity={0.55} strokeWidth={1} />}
             {/* drill string + bit */}
             <rect x={zcx - 3.5} y={bodyTop} width={7} height={Math.max(0, bitY - bodyTop - 10)} fill="url(#wb-steel)" />
             <path d={`M${zcx - holeIn * kIn * 0.8},${bitY - 10} L${zcx + holeIn * kIn * 0.8},${bitY - 10} L${zcx + 4},${bitY} L${zcx - 4},${bitY} Z`} fill={p.accent} />
@@ -125,11 +125,15 @@ export default function WellboreColumn() {
               if (y < bodyTop || y > bodyTop + sc.heightPx) return null;
               const kick = o.incident!.type === 'KICK';
               const col = kick ? p.risk : p.warn;
+              const label = `${kick ? 'KICK' : 'LOSS'} · ${o.id} · ${md.toLocaleString('en-IN')}`;
+              const pillW = label.length * 6.2 + 12;
               return (
                 <g key={o.id}>
                   <line x1={MINI_W} x2={W} y1={y} y2={y} stroke={col} strokeWidth={1.4} strokeDasharray="6 3" />
-                  <rect x={MINI_W + 2} y={y - 15} width={zoomW - 4} height={14} rx={3} fill="rgba(11,15,20,0.75)" />
-                  <text x={MINI_W + 5} y={y - 4} fontSize={10.5} fontWeight={700} fill={col}>{kick ? 'KICK' : 'LOSS'} · {o.id} · {md.toLocaleString('en-IN')}</text>
+                  <rect x={W - pillW - 4} y={y - 15} width={pillW} height={14} rx={3}
+                    fill={p.isLight ? 'rgba(255,255,255,0.92)' : 'rgba(11,15,20,0.85)'}
+                    stroke={p.isLight ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.1)'} strokeWidth={0.8} />
+                  <text x={W - 8} y={y - 4} fontSize={10.5} fontWeight={700} fill={col} textAnchor="end">{label}</text>
                 </g>
               );
             })}

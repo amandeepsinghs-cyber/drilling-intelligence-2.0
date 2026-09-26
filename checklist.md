@@ -10,11 +10,11 @@ Each box is ticked only after its **Verify** line in `build.md` / [`docs/FLASH_P
 - [x] **WP-02** Design system + cockpit grid + shared depth axis · Opus · V5, V6, V7
 - [x] **WP-03** Wellbore schematic column (casing to scale) · Opus · V2, V7
 - [x] **WP-04** Agent stage panel (never empty; captions, reasoning, citations) · Opus · V1, V3
-- [ ] **WP-05** Backend real-time API + show state + honest channel status · Opus · V4, "APIs work in real time"
+- [ ] **WP-05** Backend real-time API + show state + honest channel status · Opus · V4, "APIs work in real time" — **partial (07:52):** `POST /api/tools/{name}` + `GET /api/tools` live; dispatch reports DELIVERED/SIMULATED/FAILED honestly (Telegram/Chat real only if `TELEGRAM_BOT_TOKEN`+`TELEGRAM_CHAT_ID` / `GOOGLE_CHAT_WEBHOOK_URL` set). Still open: `/api/actions/*`, `/api/ledger`, ShowState on `/ws/events`, GZip, contract tests.
 - [x] **WP-06** Multi-log renderer (SAFIR, 10 tracks, Board/Engineer subsets, mudlog lag) · Flash · V5, V6
 - [x] **WP-07** Pressure track (kick + loss side, ML MW, look-ahead ghost) · Flash · V7
-- [x] **WP-08** Act 3 action panel (ActionTheatre, live MOC memo, animated APPROVED stamp, fan-out lanes, phone mirror) · Flash · V4
-- [x] **WP-09** Act 4 + Shift notes ⇄ WCR (targetMd 4,195 m, side-by-side with bidirectional cross-highlighting) · Flash · V9
+- [x] **WP-08** Act 3 action panel · Opus (07:52) — **replaced** Flash's ActionTheatre with `components/cockpit/act3/Act3ActionPanel.tsx` (memo + evidence + Approve → APPROVED stamp → 4 honest-status lanes → phone mirror → decision ledger). Verified `node scratch/act34_flow.mjs scripted scratch/scr` (screens `scratch/scr_2/3_*.png`).
+- [x] **WP-09** Act 4 + Shift notes ⇄ WCR · Opus (07:52) — `components/cockpit/act4/Act4ShiftWcr.tsx`: wellbore | pressure (loss side) | notes ⇄ WCR with hover cross-highlight; notes from new backend tool `draft_shift_log`. Old `WcrOverlay` kept as "Open full WCR". Verified same script (`scratch/scr_5_act4_docs.png`).
 - [x] **WP-10** Basin map offline (bundled GeoJSON coastline, shelf edge, deepwater block, non-overlapping labels) · Flash · map → live well
 - [x] **WP-11** Presenter console on show state (turn, act, md, next turn preview, dual BC + WS sync, latency meter) · Flash · stage control
 - [x] **WP-12** ML lithology fix + trained models (RandomForest lithology + GradientBoosting kick risk on offset wells, 1.0 accuracy, MODEL_INFERENCE label) · Flash → Opus review · V6, V7
@@ -25,14 +25,15 @@ Each box is ticked only after its **Verify** line in `build.md` / [`docs/FLASH_P
 ### §0.1 Front-end fine-tuning (FT-xx, build.md §3.1)
 - [ ] FT-1 wellbore label overlap · Flash
 - [ ] FT-2 favicon 404 · Flash
-- [ ] FT-3 memo evidence citations · Opus
+- [x] FT-3 memo evidence citations · Opus · verified: memo shows INC-MN-DW-02-KICK-4195, WCR-MN-DW-02, ONGC-MOC-SOP-07, LIVE-PPFG (`scratch/scr_2_act3_memo.png`)
 - [ ] FT-6 pressure labels · Flash
 - [ ] FT-7 smooth GR shading · Flash
 - [ ] FT-8 light theme pass · Flash
 - [ ] FT-9 takeaway + closing card · Flash
 - [ ] FT-10 scrubber markers · Flash
 - [ ] FT-11 remove old components (ask owner) · Opus
-- [ ] FT-12 scripted-mode chips → scripted turns · Opus
+- [x] FT-12 scripted-mode chips → scripted turns · Opus · verified: SCRIPTED (V) chips "MOC memo banao", "Approve", typed "Shift handover notes banao" each ran the right turn (`scratch/act34_flow.mjs scripted`)
+- [ ] FT-18 scripted fan-out line says "confirmation delivered to your device" even when phone lane is SIMULATED — make the scripted agent line honest · Flash · `mocks/agentScript.ts` / `data/scenario/turns.yaml`
 - [ ] FT-16 what-if / audit drawers on cockpit · Flash
 - [x] FT-17 play flicker fixed · Opus · verified `node scratch/flicker_probe.mjs` → 0 blank frames / 174
 

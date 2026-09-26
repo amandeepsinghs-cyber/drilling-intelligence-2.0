@@ -28,7 +28,7 @@ function BitLine({ y, width }: { y: number; width?: number }) {
   return (
     <div className="pointer-events-none absolute left-0 z-10" style={{ top: y, right: width ? undefined : 0, width }}>
       <div className="h-0 border-t-2 border-accent/90 shadow-[0_0_12px_rgba(34,211,238,0.6)]" />
-      <div className="num absolute -top-[11px] left-[226px] whitespace-nowrap rounded-full bg-accent px-2 py-[1px] text-[11.5px] font-bold text-app">
+      <div className={`num absolute -top-[11px] whitespace-nowrap rounded-full bg-accent px-2 py-[1px] text-[11.5px] font-bold text-app ${width && width < 260 ? 'right-1' : 'left-[226px]'}`}>
         BIT {md.toLocaleString('en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} m
       </div>
     </div>
