@@ -1,0 +1,10 @@
+services:
+  backend:
+    build: { context: ., dockerfile: infra/docker/backend.Dockerfile }
+    env_file: .env
+    ports: ["8080:8080"]
+    volumes: ["./data:/app/data", "./config:/app/config"]
+  frontend:
+    build: { context: ., dockerfile: infra/docker/frontend.Dockerfile }
+    ports: ["5173:80"]
+    depends_on: [backend]

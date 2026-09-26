@@ -1,0 +1,121 @@
+# Public data source registry (SDD §5.5, build.md Phase 6). Consumed by
+# pipelines/download/download_public_data.sh (zenodo entries) and DATA_PROVENANCE.md.
+schema_version: 1
+
+sources:
+  - id: iodp_348_c0002n
+    priority: 1
+    role: "Loader validation (tiny)"
+    provider: zenodo
+    record: 3942006
+    files: ["348-C0002N_logging_data.zip", "readme.docx"]
+    size_mb: 4
+    licence: CC0-1.0
+    target_dir: data/raw/logs/iodp_348_c0002n
+    attribution: "IODP Expedition 348 Scientists; Hole C0002N logging data (Zenodo 3942006)"
+
+  - id: iodp_348_c0002p
+    priority: 2
+    role: "PRIMARY live-well analog (deepwater riser well, LWD)"
+    provider: zenodo
+    record: 3942008
+    files: ["348-C0002P_logging_data.zip", "readme.docx"]
+    size_mb: 979
+    licence: CC0-1.0
+    target_dir: data/raw/logs/iodp_348_c0002p
+    attribution: "IODP Expedition 348 Scientists; Hole C0002P logging data (Zenodo 3942008)"
+
+  - id: iodp_353_u1445a
+    priority: 3
+    role: "Mahanadi Basin authenticity (map opener, top-hole)"
+    provider: zenodo
+    record: 5668873
+    files: ["353-U1445A_logging_data.zip", "readme.docx"]
+    size_mb: 1028
+    licence: CC0-1.0
+    target_dir: data/raw/logs/iodp_353_u1445a
+    attribution: "IODP Expedition 353 Scientists; Hole U1445A logging data (Zenodo 5668873)"
+
+  - id: iodp_354_u1450b
+    priority: 4
+    role: "Bengal Fan turbidite analog (small)"
+    provider: zenodo
+    record: 5668822
+    files: auto
+    size_mb: 8
+    licence: "verify on record"
+    target_dir: data/raw/logs/iodp_354_u1450b
+
+  - id: iodp_354_u1453a
+    priority: 4
+    role: "Bengal Fan turbidite analog"
+    provider: zenodo
+    record: 5668808
+    files: auto
+    size_mb: 361
+    licence: "verify on record"
+    target_dir: data/raw/logs/iodp_354_u1453a
+
+  - id: iodp_358_c0024_lwd
+    priority: 5
+    role: "Extra deepwater LWD (Nankai)"
+    provider: zenodo
+    record: 6909792
+    files: auto
+    size_mb: 127
+    licence: "verify on record"
+    target_dir: data/raw/logs/iodp_358_c0024
+
+  - id: force_2020
+    priority: 6
+    role: "Lithology classifier training/validation"
+    provider: git
+    uri: https://github.com/bolgebrygg/Force-2020-Machine-Learning-competition
+    licence: NOLD-2.0
+    target_dir: data/raw/logs/force_2020
+
+  - id: volve
+    priority: 7
+    role: "Optional: real DDRs / final well reports for RAG enrichment; WITSML"
+    provider: manual
+    uri: https://www.equinor.com/energy/volve-data-sharing
+    licence: "Equinor Open Data Licence"
+    target_dir: data/raw/documents/volve_reports
+
+  - id: iodp_proceedings
+    priority: 8
+    role: "Public-reference RAG text (Methods / Operations / Site chapters of Exp 348, 353, 354)"
+    provider: manual
+    uri: https://publications.iodp.org/
+    licence: "IODP open access"
+    target_dir: data/raw/documents/iodp_proceedings
+
+  - id: sodir_factpages
+    priority: 9
+    role: "Deepwater Norwegian Sea completion reports/logs (e.g. 6707/10-1 Aasta Hansteen)"
+    provider: manual
+    uri: https://factpages.sodir.no/
+    licence: NLOD
+    note: "Timed out from Cloudtop; download from another network"
+
+  - id: nopims
+    priority: 10
+    role: "Australian deepwater WCRs + LAS (e.g. Scarborough-1)"
+    provider: manual
+    uri: https://www.ga.gov.au/nopims
+    licence: "Open (release rules changed 28 Nov 2025)"
+
+  - id: gebco_natural_earth
+    priority: 11
+    role: "Offline basemap fallback (Bay of Bengal bathymetry, coastlines)"
+    provider: manual
+    uri: https://download.gebco.net/
+    licence: "Public domain"
+    target_dir: data/raw/basemap
+
+  - id: dgh_ndr_nghp02
+    priority: 12
+    role: "Real Indian deepwater LWD — PILOT data (not for demo)"
+    provider: restricted
+    uri: https://ndrdgh.gov.in/
+    licence: "Restricted (DGH/NDR)"

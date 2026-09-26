@@ -1,0 +1,16 @@
+# Run-of-show turns (brief §6). Drives the turn machine, snapshots, mock agent content
+# in Phase 1, and rehearsal checks. SDD §6.
+schema_version: 1
+
+turns:
+  - { n: 0,  md_m: 4120, leader: presenter, mode: typed,  intent: status_check,        tools: [get_well_status] }
+  - { n: 1,  md_m: 4120, leader: presenter, mode: voice,  intent: arm_watchdog,        tools: [] }
+  - { n: 2,  md_m: 4140, leader: presenter, mode: voice,  intent: status_lithology,    tools: [get_well_status, get_lithology] }
+  - { n: 3,  md_m: 4172, leader: agent,     mode: proactive, trigger: T3_PRESSURE_RAMP, tools: [forecast_pore_pressure, lookup_offset_events] }
+  - { n: 4,  md_m: 4172, leader: presenter, mode: voice,  intent: offsets_and_sop,     tools: [search_knowledge] }
+  - { n: 5,  md_m: 4172, leader: agent,     mode: voice,  intent: recommend_weight_up, tools: [compute_barite, compute_ecd, create_moc_memo] }
+  - { n: 6,  md_m: 4172, leader: presenter, mode: voice,  intent: approve,             tools: [request_approval] }
+  - { n: 7,  md_m: 4172, leader: presenter, mode: voice,  intent: fanout,              tools: [dispatch_fanout] }
+  - { n: 8,  md_m: 4195, leader: agent,     mode: proactive, trigger: T8_OFFSET_DEPTH,  tools: [get_well_status] }
+  - { n: 9,  md_m: 4205, leader: agent,     mode: proactive, trigger: T9_DRILLING_BREAK, tools: [compute_ecd, set_rop_cap] }
+  - { n: 10, md_m: 4450, leader: presenter, mode: voice,  intent: generate_wcr,        tools: [generate_wcr, writeback_lessons] }

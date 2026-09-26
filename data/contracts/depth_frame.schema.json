@@ -1,0 +1,317 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://drilling-intelligence-2/contracts/depth_frame.schema.json",
+  "title": "DepthFrame",
+  "description": "One depth sample of the live well. The ONLY data shape the UI and agent consume.",
+  "type": "object",
+  "required": [
+    "well_id",
+    "md_m",
+    "curves",
+    "derived",
+    "provenance"
+  ],
+  "properties": {
+    "well_id": {
+      "type": "string"
+    },
+    "md_m": {
+      "type": "number"
+    },
+    "tvd_m": {
+      "type": "number"
+    },
+    "t_rel_s": {
+      "type": "number",
+      "description": "Scenario clock (time-compressed)"
+    },
+    "curves": {
+      "type": "object",
+      "properties": {
+        "GR": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "RDEP": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "RMED": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "RHOB": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "NPHI": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "DT": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "PEF": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "CALI": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "drilling": {
+      "type": "object",
+      "properties": {
+        "ROP": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "WOB": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "RPM": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "TORQUE": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "SPP": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "HKLD": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "FLOW_IN": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "FLOW_OUT": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "DXC": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "mudlog": {
+      "type": "object",
+      "properties": {
+        "GAS_TOTAL": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "C1": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "C2": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "C3": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "C4": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "C5": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "CONN_GAS": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "mud": {
+      "type": "object",
+      "properties": {
+        "MW_IN_PPG": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "MW_OUT_PPG": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "PV": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "YP": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "PIT_VOL_BBL": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "derived": {
+      "type": "object",
+      "properties": {
+        "OBG": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "PP": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "FG": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "FIT": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "ECD": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "OVERBAL_PSI": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "ECD_FIT_MARGIN": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "ml": {
+      "type": "object",
+      "properties": {
+        "litho": {
+          "type": "object",
+          "properties": {
+            "class": {
+              "type": "string",
+              "enum": [
+                "SHALE",
+                "SILTSTONE",
+                "SAND",
+                "LIMESTONE",
+                "DOLOMITE"
+              ]
+            },
+            "probs": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "p_kick": {
+          "type": "number"
+        },
+        "p_loss": {
+          "type": "number"
+        },
+        "rop_max": {
+          "type": "number"
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "provenance.schema.json"
+      },
+      "description": "Map of field path (e.g. 'curves.GR') -> provenance label"
+    }
+  }
+}

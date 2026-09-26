@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+# Node
+node_modules/
+dist/
+.vite/
+*.tsbuildinfo
+# Env / secrets
+.env
+.env.*
+!.env.example
+frontend/.env.local
+# Data (large / regenerable / runtime)
+data/raw/**
+!data/raw/**/.gitkeep
+data/interim/**
+!data/interim/**/.gitkeep
+data/processed/**
+!data/processed/**/.gitkeep
+data/models/**
+!data/models/**/.gitkeep
+data/state/**
+!data/state/.gitkeep
+data/cache/**
+!data/cache/**/.gitkeep
+data/exports/**
+!data/exports/**/.gitkeep
+data/knowledge/embeddings/index.npy
+# Terraform
+infra/terraform/.terraform/
+*.tfstate*
+# OS
+.DS_Store

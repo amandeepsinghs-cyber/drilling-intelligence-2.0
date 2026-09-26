@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://drilling-intelligence-2/contracts/knowledge_doc.schema.json",
+  "title": "KnowledgeDoc",
+  "description": "Front-matter of a RAG corpus document (markdown in data/knowledge/source/).",
+  "type": "object",
+  "required": [
+    "doc_id",
+    "doc_type",
+    "title",
+    "authoring",
+    "version"
+  ],
+  "properties": {
+    "doc_id": {
+      "type": "string"
+    },
+    "doc_type": {
+      "type": "string",
+      "enum": [
+        "SOP",
+        "WCR",
+        "INCIDENT",
+        "DDR",
+        "MUD_PROGRAM",
+        "LESSON",
+        "PUBLIC_REF",
+        "LEGACY_SCAN"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "well_id": {
+      "type": "string"
+    },
+    "md_range": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "date": {
+      "type": "string"
+    },
+    "authoring": {
+      "type": "string",
+      "enum": [
+        "synthetic",
+        "public"
+      ]
+    },
+    "source_uri": {
+      "type": "string"
+    },
+    "licence": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "version": {
+      "type": "string"
+    }
+  }
+}

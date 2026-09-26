@@ -1,0 +1,35 @@
+# Curve manifest for IODP 348 C0002P. Contract: curve_manifest.schema.json
+# Drop-in steps: build.md Phase 6.3. Inventory: data/interim/curve_inventory/348-C0002P_*.json
+# Source zip (935 MB) extracted selectively on 2026-09-25: Standard Data (.dat), small DLIS, docs, plots.
+# Sonic waveform .bin/.gif and *_wf.dlis (~2.7 GB) were skipped (not needed; disk-constrained).
+dataset_id: iodp_348_c0002p
+source:
+  name: "IODP Expedition 348 — Hole C0002P logging data (LWD, D/V Chikyu, Nankai Trough)"
+  hole: C0002P
+  uri: https://zenodo.org/records/3942008
+  doi: "TBD (see Zenodo record)"
+licence: CC0-1.0
+attribution: "IODP Expedition 348 Scientists; logging data processed by CDEX/JAMSTEC"
+files:                         # paths relative to repo root (IODP Standard Data, tab-delimited)
+  - "data/raw/logs/iodp_348_c0002p/348-C0002P_logging_data/Standard Data/348-C0002P_gr-agr.dat"
+  - "data/raw/logs/iodp_348_c0002p/348-C0002P_logging_data/Standard Data/348-C0002P_res-phase-ewr5.dat"
+  - "data/raw/logs/iodp_348_c0002p/348-C0002P_logging_data/Standard Data/348-C0002P_vel-xbat.dat"
+  - "data/raw/logs/iodp_348_c0002p/348-C0002P_logging_data/Standard Data/348-C0002P_xcal-xbat.dat"
+depth_mnemonic: DEPTH_LSF      # metres below seafloor (LSF); 0.1524 m sampling
+max_gap_m: 2.0                 # gaps wider than this stay empty (never interpolated)
+curves:
+  - { source_mnemonic: "AGRCC",  canonical: "GR",   source_unit: "gAPI",  target_unit: "API" }    # azimuthal GR, corrected
+  - { source_mnemonic: "RH48PC", canonical: "RDEP", source_unit: "ohm.m", target_unit: "ohm.m" }  # EWR phase res, 48 in spacing (deep)
+  - { source_mnemonic: "RH32PC", canonical: "RMED", source_unit: "ohm.m", target_unit: "ohm.m" }  # EWR phase res, 32 in spacing (medium)
+  - { source_mnemonic: "XBCS",   canonical: "DT",   source_unit: "us/ft", target_unit: "us/ft" }  # compressional slowness (= 304.8 / VELP)
+  - { source_mnemonic: "XBEDA",  canonical: "CALI", source_unit: "in",    target_unit: "in" }     # XBAT ultrasonic caliper, average
+# Not in C0002P (no density-neutron run): RHOB, NPHI, PEF stay SYNTHETIC (labelled in UI).
+# Available but deliberately NOT mapped: ROPA (real ROP) — drilling channels stay scenario-driven (SDD §5.5).
+depth_registration:
+  # 2480–2940 m LSF: mudstone with a real resistivity decline 2600→2690 m (≈2.3→1.5 ohm.m) and recovery at 2695 m.
+  # With a pure +1520 m shift this lands at 4120→4210 m, bracketing the scenario's 4172 m alert and 4205 m break.
+  source_top_m: 2480
+  source_base_m: 2940
+  target_top_m: 4000
+  target_base_m: 4460
+  method: shift_stretch        # equal lengths (460 m → 460 m) ⇒ effectively a pure shift, no stretch

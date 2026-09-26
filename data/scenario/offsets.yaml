@@ -1,0 +1,66 @@
+# Offset wells & incidents (SYNTHETIC, illustrative). Referenced by RAG corpus generation,
+# map layers and the agent's lookup_offset_events tool. SDD §5.2.
+schema_version: 1
+
+offsets:
+  - id: MN-DW-01
+    status: COMPLETED
+    distance_km: 3.2
+    location: { lat: 19.47, lon: 87.32 }
+    summary: "Drilled to TD without well-control events (reference well)."
+    documents: ["WCR-MN-DW-01"]
+
+  - id: MN-DW-02
+    status: OFFSET_KICK
+    distance_km: 1.8
+    location: { lat: 19.46, lon: 87.36 }
+    incident:
+      type: KICK
+      md_m: 4195
+      formation: "Top Miocene channel sand (U3)"
+      mw_ppg: 11.15
+      mw_sg: 1.34
+      gain_bbl: 12
+      sidpp_psi: 236
+      formation_pressure_ppg: 11.48
+      kill_mw_ppg: 11.65
+      kill_mw_sg: 1.40
+      rop_restriction_m_hr: [11, 12]
+    documents: ["WCR-MN-DW-02", "INC-MN-DW-02-KICK-4195"]
+
+  - id: MN-DW-03
+    status: OFFSET_LOSSES
+    distance_km: 2.4
+    location: { lat: 19.44, lon: 87.37 }
+    incident:
+      type: LOSSES
+      md_m: 4222
+      formation: "Miocene channel sand (U3), drilling break"
+      ecd_ppg: 12.18
+      rop_m_hr: 26
+      loss_rate_bbl_hr: 28
+      cause: "No ROP cap or hole-cleaning sweeps during drilling break"
+    documents: ["WCR-MN-DW-03", "INC-MN-DW-03-LOSS-4222"]
+
+  - id: MH-112
+    status: REFERENCE_CARBONATE
+    basin: "Mumbai High (reference)"
+    location: { lat: 19.40, lon: 71.30 }
+    incident:
+      type: LOSSES_DIFF_STICKING
+      notes: "Vuggy carbonate losses and differential sticking precedent"
+    documents: ["WCR-MH-112"]
+
+sops:
+  - { id: "ONGC-SM-SOP-04", title: "Deepwater Narrow-Window Drilling: Pre-emptive Weight-Up, Flow-Check Triggers, ROP Cap at Drilling Breaks" }
+  - { id: "ONGC-MC-SOP-02", title: "Barite Weight-Up, Rheology Check, Barite-Volume Logging & Mud Chemist Sign-Off" }
+  - { id: "ONGC-MOC-SOP-07", title: "Mud Program Deviation: Management of Change & Approval Authority" }
+  - { id: "ONGC-WCR-SOP-09", title: "End-of-Well Completion Report Compilation" }
+  - { id: "ONGC-WC-SOP-01", title: "Flow Check & Shut-In Procedure" }
+  - { id: "ONGC-HC-SOP-05", title: "Hole Cleaning & ECD Management in Deepwater" }
+
+authenticity_markers:
+  - id: IODP-U1445
+    label: "IODP Exp. 353 Site U1445 — real log, Mahanadi Basin"
+    location: { lat: 17.74, lon: 84.79, note: "approximate; verify from IODP site summary" }
+    provenance: PUBLIC

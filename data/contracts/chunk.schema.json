@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://drilling-intelligence-2/contracts/chunk.schema.json",
+  "title": "Chunk",
+  "type": "object",
+  "required": [
+    "chunk_id",
+    "doc_id",
+    "text",
+    "section_path"
+  ],
+  "properties": {
+    "chunk_id": {
+      "type": "string"
+    },
+    "doc_id": {
+      "type": "string"
+    },
+    "doc_type": {
+      "type": "string"
+    },
+    "section_path": {
+      "type": "string"
+    },
+    "page": {
+      "type": "integer"
+    },
+    "text": {
+      "type": "string"
+    },
+    "tokens": {
+      "type": "integer"
+    },
+    "well_id": {
+      "type": "string"
+    },
+    "md_range": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "authoring": {
+      "type": "string",
+      "enum": [
+        "synthetic",
+        "public"
+      ]
+    },
+    "embedding": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "embedding_model": {
+      "type": "string"
+    }
+  }
+}

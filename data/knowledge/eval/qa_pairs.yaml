@@ -1,0 +1,27 @@
+# RAG evaluation set (SDD §9.8). Extend to 30 pairs in Phase 3.
+schema_version: 1
+pairs:
+  - id: q01
+    lang: en
+    query: "What happened at 4,195 m in MN-DW-02?"
+    expect: { doc_id: "INC-MN-DW-02-KICK-4195", section_contains: "Sequence of Events" }
+  - id: q02
+    lang: hi
+    query: "Pichhle wells mein is zone ke paas kya hua tha?"
+    expect: { doc_id_any: ["WCR-MN-DW-02", "INC-MN-DW-02-KICK-4195", "WCR-MN-DW-03"] }
+  - id: q03
+    lang: en
+    query: "What does the SOP say about drilling breaks in narrow windows?"
+    expect: { doc_id: "ONGC-SM-SOP-04" }
+  - id: q04
+    lang: en
+    query: "Why did MN-DW-03 have losses?"
+    expect: { doc_id_any: ["WCR-MN-DW-03", "INC-MN-DW-03-LOSS-4222"] }
+  - id: q05
+    lang: hi
+    query: "Mud weight badhane ka procedure kya hai? Barite kitna lagega?"
+    expect: { doc_id: "ONGC-MC-SOP-02" }
+  - id: q06
+    lang: en
+    query: "Who must approve a mud program deviation?"
+    expect: { doc_id: "ONGC-MOC-SOP-07" }

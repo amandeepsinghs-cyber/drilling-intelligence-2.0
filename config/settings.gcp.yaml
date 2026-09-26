@@ -1,0 +1,34 @@
+# DI_ENV=gcp  (SDD §4.2)
+env: gcp
+project_id: drilling-intelligence-2-509714
+region: asia-south1
+gcs:
+  raw_bucket: di2-raw-drilling-intelligence-2-509714
+  artifacts_bucket: di2-artifacts-drilling-intelligence-2-509714
+bigquery:
+  dataset: drilling_intel
+  tables: [lwd_logs, drilling_mudlog, mud_chemistry, depth_frames, rag_chunks]
+rag_engine:
+  corpus: di2-knowledge
+firestore:
+  database: "(default)"
+adapters:
+  storage: gcp.storage_gcs
+  tabular: gcp.tabular_bigquery
+  vector: gcp.vector_rag_engine
+  state: gcp.state_firestore
+  messaging: gcp.messaging_google
+models:
+  live: "gemini-3.8-live"
+  live_thinking: "gemini-3.8-live-extended-thinking"
+  pro: "gemini-3-pro"
+  flash: "gemini-3-flash"
+  embedding: "gemini-embedding-001"
+  embedding_dim: 768
+actions:
+  email: gmail_api
+  rtoc: google_chat
+  push: telegram
+  sms_dlt: disabled
+guardrails:
+  model_armor: true

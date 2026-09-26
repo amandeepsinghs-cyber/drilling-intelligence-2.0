@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://drilling-intelligence-2/contracts/provenance.schema.json",
+  "title": "Provenance",
+  "description": "Label describing what a figure rests on (EnergyFlow-style, 8 labels).",
+  "type": "string",
+  "enum": [
+    "MEASURED",
+    "DERIVED",
+    "SIMULATED",
+    "ASSUMED",
+    "PUBLIC",
+    "SYNTHETIC",
+    "MODEL_INFERENCE",
+    "NOT_RECORDED"
+  ]
+}

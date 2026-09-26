@@ -1,0 +1,1107 @@
+[
+  {
+    "chunk_id": "ONGC-SM-SOP-04-C00",
+    "doc_id": "ONGC-SM-SOP-04",
+    "doc_type": "SOP",
+    "section_path": "ONGC-SM-SOP-04: Deepwater Narrow-Window Drilling Protocol (illustrative)",
+    "page": 1,
+    "text": "# ONGC-SM-SOP-04: Deepwater Narrow-Window Drilling Protocol (illustrative)",
+    "tokens": 7,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "narrow-window",
+      "pore-pressure",
+      "transition-zone",
+      "rop-cap"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-SM-SOP-04-C01",
+    "doc_id": "ONGC-SM-SOP-04",
+    "doc_type": "SOP",
+    "section_path": "1. Purpose & Scope",
+    "page": 1,
+    "text": "## 1. Purpose & Scope\nThis Standard Operating Procedure establishes operational protocols for safely traversing narrow drilling margins in deepwater Mahanadi offshore prospects (including MN-SM-DW-01, water depth 1,620 m). It specifies mandatory triggers for pre-emptive mud weight increases, drilling break management, and flow checks.",
+    "tokens": 44,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "narrow-window",
+      "pore-pressure",
+      "transition-zone",
+      "rop-cap"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-SM-SOP-04-C02",
+    "doc_id": "ONGC-SM-SOP-04",
+    "doc_type": "SOP",
+    "section_path": "2. Responsibilities",
+    "page": 1,
+    "text": "## 2. Responsibilities\n- **Company Man / OIM**: Ultimate rig authority; enforces hold points and approves MOC submissions.\n- **Drilling Superintendent (RTOC)**: Real-time surveillance lead; monitors LWD sonic/resistivity trends and authorizes weight-up.\n- **Mud Engineer**: Formulates SOBM weighting schedule, supervises barite addition, and verifies mud density parity (in/out).\n- **Driller**: Immediately executes ROP restriction upon encountering lithological breaks.",
+    "tokens": 58,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "narrow-window",
+      "pore-pressure",
+      "transition-zone",
+      "rop-cap"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-SM-SOP-04-C03",
+    "doc_id": "ONGC-SM-SOP-04",
+    "doc_type": "SOP",
+    "section_path": "3. Definitions & Narrow Margin Context",
+    "page": 1,
+    "text": "## 3. Definitions & Narrow Margin Context\n- **Narrow Margin Drilling**: Intervals where the pore pressure (PP) and fracture gradient / casing shoe FIT margin is $\\le 0.65\\text{ ppg}$.\n- **13-3/8 in Casing Shoe**: Set at 3,850 m MD with Formation Integrity Test (FIT) established at 12.10 ppg (1.45 SG).\n- **Safe Drilling Envelope**: Maximum permissible Equivalent Circulating Density (ECD) must remain below 12.00 ppg to protect the 13-3/8 in shoe.",
+    "tokens": 71,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "narrow-window",
+      "pore-pressure",
+      "transition-zone",
+      "rop-cap"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-SM-SOP-04-C04",
+    "doc_id": "ONGC-SM-SOP-04",
+    "doc_type": "SOP",
+    "section_path": "4. Operational Hold Points & Mandatory Triggers",
+    "page": 2,
+    "text": "## 4. Operational Hold Points & Mandatory Triggers\n1. **Transition Zone Identification (4,150 m to 4,195 m MD)**:\n   - When compressional slowness ($DT$) increases above the Normal Compaction Trend (NCT) by $> 8\\ \\mu\\text{s/ft}$, or resistivity ($R_{\\text{deep}}$) departs below NCT, enter **High Alert Status**.\n   - Background gas trending upward from baseline requires continuous chromatograph inspection ($C_1$ through $C_5$).\n2. **Pre-emptive Weight-Up Trigger (4,172 m MD)**:\n   - In accordance with offset incident `INC-MN-DW-02-KICK-4195`, mud weight must NOT be kept at 11.20 ppg (1.34 SG) entering the pay sand.\n   - Mud weight must be raised pre-emptively from 11.20 ppg (1.34 SG) to **11.65 ppg (1.40 SG)** prior to crossing 4,195 m MD.\n   - This provides a minimum +0.17 ppg (+100 psi) overbalance against the projected sand pore pressure of 11.48 ppg (1.38 SG).",
+    "tokens": 131,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "narrow-window",
+      "pore-pressure",
+      "transition-zone",
+      "rop-cap"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-SM-SOP-04-C05",
+    "doc_id": "ONGC-SM-SOP-04",
+    "doc_type": "SOP",
+    "section_path": "5. Drilling Break Protocol & ROP Cap",
+    "page": 2,
+    "text": "## 5. Drilling Break Protocol & ROP Cap\n- **Sand Entry at 4,195 m MD**:\n  - Main reservoir pay (Miocene slope-channel turbidite sandstone) exhibits instantaneous ROP acceleration up to 34 m/hr.\n  - **Mandatory Action**: The driller must immediately throttle WOB/RPM to cap ROP at **$\\le 12\\text{ m/hr}$**.\n  - **Flow Check**: Perform a mandatory 15-minute static flow check at 4,196 m MD (pumps off, trip tank monitoring).\n  - Uncapped ROP in narrow windows generates heavy cuttings loading and annular friction surges that cause catastrophic losses (reference: `INC-MN-DW-03-LOSS-4222`).",
+    "tokens": 86,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "narrow-window",
+      "pore-pressure",
+      "transition-zone",
+      "rop-cap"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-SM-SOP-04-C06",
+    "doc_id": "ONGC-SM-SOP-04",
+    "doc_type": "SOP",
+    "section_path": "6. Records & Regulatory References",
+    "page": 2,
+    "text": "## 6. Records & Regulatory References\n- MOC records must be logged into RTOC digital ledger.\n- References: ONGC Deepwater Drilling Manual \u00a714; API RP 13B-1; IWCF Deepwater Well Control Compendium \u00a74.",
+    "tokens": 32,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "narrow-window",
+      "pore-pressure",
+      "transition-zone",
+      "rop-cap"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-HC-SOP-05-C00",
+    "doc_id": "ONGC-HC-SOP-05",
+    "doc_type": "SOP",
+    "section_path": "ONGC-HC-SOP-05: Hole Cleaning & ECD Management in Deepwater (illustrative)",
+    "page": 1,
+    "text": "# ONGC-HC-SOP-05: Hole Cleaning & ECD Management in Deepwater (illustrative)",
+    "tokens": 10,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "hole-cleaning",
+      "ecd",
+      "hydraulics",
+      "losses"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-HC-SOP-05-C01",
+    "doc_id": "ONGC-HC-SOP-05",
+    "doc_type": "SOP",
+    "section_path": "1. Scope",
+    "page": 1,
+    "text": "## 1. Scope\nApplies to large-diameter deepwater hole sections (12-1/4 in and 17-1/2 in) where annular fluid velocities must balance hole cleaning against excessive Equivalent Circulating Density (ECD).",
+    "tokens": 28,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "hole-cleaning",
+      "ecd",
+      "hydraulics",
+      "losses"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-HC-SOP-05-C02",
+    "doc_id": "ONGC-HC-SOP-05",
+    "doc_type": "SOP",
+    "section_path": "2. Hydraulic Limits for 12-1/4 in Section at 4,200 m MD",
+    "page": 1,
+    "text": "## 2. Hydraulic Limits for 12-1/4 in Section at 4,200 m MD\n- Nominal flow rate: 850 gpm.\n- Maximum allowable ECD: 12.00 ppg (shoe FIT: 12.10 ppg).\n- Dynamic annular pressure loss must not exceed 0.35 ppg equivalent over static mud weight.",
+    "tokens": 43,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "hole-cleaning",
+      "ecd",
+      "hydraulics",
+      "losses"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-HC-SOP-05-C03",
+    "doc_id": "ONGC-HC-SOP-05",
+    "doc_type": "SOP",
+    "section_path": "3. High-ROP Cuttings Management",
+    "page": 1,
+    "text": "## 3. High-ROP Cuttings Management\n- When ROP exceeds 25 m/hr, cuttings concentration in the annulus escalates rapidly, elevating ECD by up to 0.40 ppg.\n- High-viscosity low-shear sweeps (20 bbl tandem pills) must be pumped every 100 m drilled.\n- If ECD approaches within 0.10 ppg of fracture limit (12.00 ppg), immediately reduce flow rate or cap ROP.",
+    "tokens": 59,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "hole-cleaning",
+      "ecd",
+      "hydraulics",
+      "losses"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-WCR-SOP-09-C00",
+    "doc_id": "ONGC-WCR-SOP-09",
+    "doc_type": "SOP",
+    "section_path": "ONGC-WCR-SOP-09: End-of-Well Completion Report Compilation Standard (illustrative)",
+    "page": 1,
+    "text": "# ONGC-WCR-SOP-09: End-of-Well Completion Report Compilation Standard (illustrative)",
+    "tokens": 8,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "wcr",
+      "reporting",
+      "post-well-analysis",
+      "compliance"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-WCR-SOP-09-C01",
+    "doc_id": "ONGC-WCR-SOP-09",
+    "doc_type": "SOP",
+    "section_path": "1. Overview",
+    "page": 1,
+    "text": "## 1. Overview\nPrescribes the structure, minimum engineering content, and analytical deliverables required for the Well Completion Report (WCR) upon reaching section Total Depth (TD) or final well TD.",
+    "tokens": 29,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "wcr",
+      "reporting",
+      "post-well-analysis",
+      "compliance"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-WCR-SOP-09-C02",
+    "doc_id": "ONGC-WCR-SOP-09",
+    "doc_type": "SOP",
+    "section_path": "2. Standard Document Structure",
+    "page": 1,
+    "text": "## 2. Standard Document Structure\n- **Section 1**: Well Summary Data (coordinates, water depth, spud date, rig specs, casing points).\n- **Section 2**: Stratigraphic & Geological Summary (formation tops, lithology descriptions, reservoir evaluation).\n- **Section 3**: Drilling Operations Diary (interval-by-interval progress, bit performance, BHA records).\n- **Section 4**: Pore Pressure & Geomechanics Review (NCT baselines, Eaton calculations, kick/loss analysis).\n- **Section 5**: Mud Performance & Consumption (fluid properties, barite consumption, disposal records).\n- **Section 6**: Wellbore Integrity & Safety Events (casing tests, FIT results, MOC logs).\n- **Section 7**: Lessons Learned & Best Practices.",
+    "tokens": 94,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "wcr",
+      "reporting",
+      "post-well-analysis",
+      "compliance"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-WCR-SOP-09-C03",
+    "doc_id": "ONGC-WCR-SOP-09",
+    "doc_type": "SOP",
+    "section_path": "3. Data Integrity & Automated Compilation",
+    "page": 1,
+    "text": "## 3. Data Integrity & Automated Compilation\n- Real-time logging data (DLIS/LAS) must be cross-verified against depth frame repositories.\n- All non-standard events (e.g. pre-emptive weight-up, ROP capping) must link directly to the corresponding MOC incident memos.",
+    "tokens": 37,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "wcr",
+      "reporting",
+      "post-well-analysis",
+      "compliance"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-MOC-SOP-07-C00",
+    "doc_id": "ONGC-MOC-SOP-07",
+    "doc_type": "SOP",
+    "section_path": "ONGC-MOC-SOP-07: Mud Program Deviation: Management of Change & Approval Authority (illustrative)",
+    "page": 1,
+    "text": "# ONGC-MOC-SOP-07: Mud Program Deviation: Management of Change & Approval Authority (illustrative)",
+    "tokens": 12,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "moc",
+      "management-of-change",
+      "approvals",
+      "governance"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-MOC-SOP-07-C01",
+    "doc_id": "ONGC-MOC-SOP-07",
+    "doc_type": "SOP",
+    "section_path": "1. Objective",
+    "page": 1,
+    "text": "## 1. Objective\nDefines formal governance and digital audit trail protocols when operational conditions dictate alteration of approved Well Operations Programs in deepwater blocks.",
+    "tokens": 24,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "moc",
+      "management-of-change",
+      "approvals",
+      "governance"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-MOC-SOP-07-C02",
+    "doc_id": "ONGC-MOC-SOP-07",
+    "doc_type": "SOP",
+    "section_path": "2. Thresholds Requiring Level 2 MOC",
+    "page": 1,
+    "text": "## 2. Thresholds Requiring Level 2 MOC\nAny of the following conditions triggers mandatory Level 2 MOC approval:\n- Mud density increase $> 0.2\\text{ ppg}$ above approved program.\n- Planned entry into overpressured sands with narrow margin $< 1.0\\text{ ppg}$.\n- Implementation of mechanical ROP caps during drilling breaks.",
+    "tokens": 49,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "moc",
+      "management-of-change",
+      "approvals",
+      "governance"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-MOC-SOP-07-C03",
+    "doc_id": "ONGC-MOC-SOP-07",
+    "doc_type": "SOP",
+    "section_path": "3. Required Approval Chain",
+    "page": 1,
+    "text": "## 3. Required Approval Chain\n1. **Initiator**: Drilling Superintendent / RTOC AI Co-pilot generates MOC memo with technical justification.\n2. **Technical Endorsement**: Mud Chemist confirms barite inventory, hopper throughput, and rheological stability.\n3. **Operational Endorsement**: Offshore Rig Company Man verifies surface pit room, trip tank integrity, and well-control readiness.\n4. **Final Approval Authority**: Asset Lead / General Manager (Drilling), ONGC RTOC.",
+    "tokens": 61,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "moc",
+      "management-of-change",
+      "approvals",
+      "governance"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-MOC-SOP-07-C04",
+    "doc_id": "ONGC-MOC-SOP-07",
+    "doc_type": "SOP",
+    "section_path": "4. Digital Ledger & Compliance",
+    "page": 1,
+    "text": "## 4. Digital Ledger & Compliance\nAll MOC requests, automated risk assessments, and signature hashes are recorded in the immutable RTOC ledger to satisfy Directorate General of Hydrocarbons (DGH) regulatory standards.",
+    "tokens": 31,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "moc",
+      "management-of-change",
+      "approvals",
+      "governance"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-WC-SOP-01-C00",
+    "doc_id": "ONGC-WC-SOP-01",
+    "doc_type": "SOP",
+    "section_path": "ONGC-WC-SOP-01: Deepwater Well Control: Flow Check & Shut-In Procedure (illustrative)",
+    "page": 1,
+    "text": "# ONGC-WC-SOP-01: Deepwater Well Control: Flow Check & Shut-In Procedure (illustrative)",
+    "tokens": 11,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "well-control",
+      "flow-check",
+      "shut-in",
+      "bop"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-WC-SOP-01-C01",
+    "doc_id": "ONGC-WC-SOP-01",
+    "doc_type": "SOP",
+    "section_path": "1. Principles of Deepwater Well Control",
+    "page": 1,
+    "text": "## 1. Principles of Deepwater Well Control\nIn deepwater operations from floating vessels, gas influxes dissolve readily in synthetic oil-based mud (SOBM) until reaching shallow depth or riser entry, making early detection at the mudline essential.",
+    "tokens": 36,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "well-control",
+      "flow-check",
+      "shut-in",
+      "bop"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-WC-SOP-01-C02",
+    "doc_id": "ONGC-WC-SOP-01",
+    "doc_type": "SOP",
+    "section_path": "2. Warning Signs of Influx",
+    "page": 1,
+    "text": "## 2. Warning Signs of Influx\n- Sudden drilling break (ROP increase $> 50\\%$).\n- Increase in flowline return rate.\n- Pit gain on active system ($> 5\\text{ bbl}$).\n- Decrease in pump pressure at constant strokes.",
+    "tokens": 37,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "well-control",
+      "flow-check",
+      "shut-in",
+      "bop"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-WC-SOP-01-C03",
+    "doc_id": "ONGC-WC-SOP-01",
+    "doc_type": "SOP",
+    "section_path": "3. Soft Shut-In Procedure (Drilling Ahead)",
+    "page": 1,
+    "text": "## 3. Soft Shut-In Procedure (Drilling Ahead)\n1. Pick up off bottom to space out tool joint across the subsea BOP stack.\n2. Stop rotary and shut down mud pumps.\n3. Check for flow on trip tank. If flow detected:\n   a. Open remote choke line HCR valve.\n   b. Close upper annular preventer.\n   c. Close remote choke valve.\n   d. Notify Company Man and RTOC immediately.\n4. Record Shut-In Drill Pipe Pressure (SIDPP), Shut-In Casing Pressure (SICP), and pit gain.",
+    "tokens": 78,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "well-control",
+      "flow-check",
+      "shut-in",
+      "bop"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-MC-SOP-02-C00",
+    "doc_id": "ONGC-MC-SOP-02",
+    "doc_type": "SOP",
+    "section_path": "ONGC-MC-SOP-02: Barite Weight-Up & Rheology Sign-Off Procedure (illustrative)",
+    "page": 1,
+    "text": "# ONGC-MC-SOP-02: Barite Weight-Up & Rheology Sign-Off Procedure (illustrative)",
+    "tokens": 9,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "mud-chemistry",
+      "barite",
+      "rheology",
+      "sobm"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-MC-SOP-02-C01",
+    "doc_id": "ONGC-MC-SOP-02",
+    "doc_type": "SOP",
+    "section_path": "1. Purpose & Application",
+    "page": 1,
+    "text": "## 1. Purpose & Application\nEstablishes standardized procedures for synthetic oil-based mud (SOBM) density adjustments using API high-grade barite ($4.20\\text{ g/cm}^3$) in deepwater drilling systems. Specifically governs the 11.20 ppg to 11.65 ppg weight-up at 4,172 m MD.",
+    "tokens": 38,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "mud-chemistry",
+      "barite",
+      "rheology",
+      "sobm"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-MC-SOP-02-C02",
+    "doc_id": "ONGC-MC-SOP-02",
+    "doc_type": "SOP",
+    "section_path": "2. Theoretical Formula & Volume Calculations",
+    "page": 1,
+    "text": "## 2. Theoretical Formula & Volume Calculations\nMud weight increase formula:\n$$\\text{Barite (lb/bbl)} = 1470 \\times \\frac{W_2 - W_1}{35 - W_2}$$\nWhere:\n- $W_1 = 11.20\\text{ ppg}$ (current density)\n- $W_2 = 11.65\\text{ ppg}$ (target density)\n- Barite requirement $= 28.3\\text{ lb/bbl}$ of active system.\n\nFor MN-SM-DW-01 active pit volume of 3,100 bbl:\n- Total Barite Required: **87,700 lb (39.8 metric tons / 796 bags of 50 kg)**.\n- Expected Pit Volume Gain: **60 bbl**.",
+    "tokens": 75,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "mud-chemistry",
+      "barite",
+      "rheology",
+      "sobm"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-MC-SOP-02-C03",
+    "doc_id": "ONGC-MC-SOP-02",
+    "doc_type": "SOP",
+    "section_path": "3. Operational Mixing Execution",
+    "page": 1,
+    "text": "## 3. Operational Mixing Execution\n1. **Addition Rate Limit**:\n   - Barite addition rate via mixing hopper must not exceed 15 MT/hr to prevent sagging and polymer shock.\n   - Recommended addition duration: 2.5 to 3.0 hours across ~1.5 full circulations.\n2. **Rheology Control Targets**:\n   - Plastic Viscosity ($PV$): target 28 cP.\n   - Yield Point ($YP$): maintain target 18 lb/100 ft$^2$.\n   - Gel Strengths ($10\\text{s} / 10\\text{m}$): 12 / 22 lb/100 ft$^2$.\n   - Viscosifier / organophilic clay additions to be balanced simultaneously with barite.",
+    "tokens": 82,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "mud-chemistry",
+      "barite",
+      "rheology",
+      "sobm"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "ONGC-MC-SOP-02-C04",
+    "doc_id": "ONGC-MC-SOP-02",
+    "doc_type": "SOP",
+    "section_path": "4. Verification & Sign-Off Criteria",
+    "page": 1,
+    "text": "## 4. Verification & Sign-Off Criteria\n- Mud balance density readings taken every 15 minutes at suction and flowline.\n- Drilling SHALL NOT resume until suction and flowline density show parity at $11.65 \\pm 0.05\\text{ ppg}$ for one complete bottoms-up cycle.\n- Mud Chemist and Drilling Superintendent sign-off required on MOC Checklist.",
+    "tokens": 52,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "mud-chemistry",
+      "barite",
+      "rheology",
+      "sobm"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "LL-MN-DW-03-ECD-MANAGEMENT-C00",
+    "doc_id": "LL-MN-DW-03-ECD-MANAGEMENT",
+    "doc_type": "LESSON",
+    "section_path": "LL-MN-DW-03-ECD-MANAGEMENT: Lesson Learned (illustrative)",
+    "page": 1,
+    "text": "# LL-MN-DW-03-ECD-MANAGEMENT: Lesson Learned (illustrative)",
+    "tokens": 5,
+    "well_id": "MN-DW-03",
+    "tags": [
+      "lesson",
+      "rop-cap",
+      "ecd",
+      "cuttings-load"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "LL-MN-DW-03-ECD-MANAGEMENT-C01",
+    "doc_id": "LL-MN-DW-03-ECD-MANAGEMENT",
+    "doc_type": "LESSON",
+    "section_path": "Context & Finding",
+    "page": 1,
+    "text": "## Context & Finding\nFast penetration in clean sands ($> 25\\text{ m/hr}$) generates dense annular cuttings packs that surge ECD beyond the shoe FIT. In narrow margin drilling, driller must proactively limit ROP to 12 m/hr regardless of drillability.",
+    "tokens": 39,
+    "well_id": "MN-DW-03",
+    "tags": [
+      "lesson",
+      "rop-cap",
+      "ecd",
+      "cuttings-load"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "LL-MN-DW-02-OVERBALANCE-C00",
+    "doc_id": "LL-MN-DW-02-OVERBALANCE",
+    "doc_type": "LESSON",
+    "section_path": "LL-MN-DW-02-OVERBALANCE: Lesson Learned (illustrative)",
+    "page": 1,
+    "text": "# LL-MN-DW-02-OVERBALANCE: Lesson Learned (illustrative)",
+    "tokens": 5,
+    "well_id": "MN-DW-02",
+    "tags": [
+      "lesson",
+      "overbalance",
+      "transition-zone"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "LL-MN-DW-02-OVERBALANCE-C01",
+    "doc_id": "LL-MN-DW-02-OVERBALANCE",
+    "doc_type": "LESSON",
+    "section_path": "Context & Finding",
+    "page": 1,
+    "text": "## Context & Finding\nRelying on mud weight increases after penetrating overpressured deepwater sands guarantees a kick due to high transmissibility and fast drilling breaks. Transition zones must be identified early via sonic slowness excursions ($DT > 8\\ \\mu\\text{s/ft}$) and Eaton exponent reversals, triggering weight-up at least 20 m above sand contact.",
+    "tokens": 52,
+    "well_id": "MN-DW-02",
+    "tags": [
+      "lesson",
+      "overbalance",
+      "transition-zone"
+    ],
+    "authoring": "synthetic"
+  },
+  {
+    "chunk_id": "WCR-MH-112-C00",
+    "doc_id": "WCR-MH-112",
+    "doc_type": "WCR",
+    "section_path": "WCR-MH-112: Well Completion Report: Mumbai High Precedent Well MH-112 (illustrative)",
+    "page": 1,
+    "text": "# WCR-MH-112: Well Completion Report: Mumbai High Precedent Well MH-112 (illustrative)",
+    "tokens": 11,
+    "well_id": "MH-112",
+    "tags": [
+      "precedent",
+      "mumbai-high",
+      "carbonate",
+      "differential-sticking"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      0,
+      2850
+    ]
+  },
+  {
+    "chunk_id": "WCR-MH-112-C01",
+    "doc_id": "WCR-MH-112",
+    "doc_type": "WCR",
+    "section_path": "1. Overview",
+    "page": 1,
+    "text": "## 1. Overview\nHistoric reference well from Mumbai High Basin documenting severe differential sticking and vuggy carbonate losses under excessive overbalance conditions ($> 400\\text{ psi}$).",
+    "tokens": 25,
+    "well_id": "MH-112",
+    "tags": [
+      "precedent",
+      "mumbai-high",
+      "carbonate",
+      "differential-sticking"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      0,
+      2850
+    ]
+  },
+  {
+    "chunk_id": "WCR-MH-112-C02",
+    "doc_id": "WCR-MH-112",
+    "doc_type": "WCR",
+    "section_path": "2. Relevance to Deepwater Drilling",
+    "page": 1,
+    "text": "## 2. Relevance to Deepwater Drilling\nServes as an operational reminder that excessive mud overbalance in permeable sands severely amplifies differential sticking risks and torque spikes.",
+    "tokens": 26,
+    "well_id": "MH-112",
+    "tags": [
+      "precedent",
+      "mumbai-high",
+      "carbonate",
+      "differential-sticking"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      0,
+      2850
+    ]
+  },
+  {
+    "chunk_id": "WCR-MN-DW-03-C00",
+    "doc_id": "WCR-MN-DW-03",
+    "doc_type": "WCR",
+    "section_path": "WCR-MN-DW-03: Well Completion Report: Offset Loss Incident Well MN-DW-03 (illustrative)",
+    "page": 1,
+    "text": "# WCR-MN-DW-03: Well Completion Report: Offset Loss Incident Well MN-DW-03 (illustrative)",
+    "tokens": 11,
+    "well_id": "MN-DW-03",
+    "tags": [
+      "offset",
+      "wcr",
+      "lost-circulation",
+      "fracture"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      0,
+      4480
+    ]
+  },
+  {
+    "chunk_id": "WCR-MN-DW-03-C01",
+    "doc_id": "WCR-MN-DW-03",
+    "doc_type": "WCR",
+    "section_path": "1. Executive Summary",
+    "page": 1,
+    "text": "## 1. Executive Summary\nDrilled 2.4 km south-southeast of MN-SM-DW-01. At depth 4,222 m MD, well experienced severe mud losses (28 bbl/hr) following an unmanaged drilling break (ROP 26 m/hr), where annular ECD reached **12.18 ppg**, exceeding the shoe fracture integrity limit (12.10 ppg).",
+    "tokens": 44,
+    "well_id": "MN-DW-03",
+    "tags": [
+      "offset",
+      "wcr",
+      "lost-circulation",
+      "fracture"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      0,
+      4480
+    ]
+  },
+  {
+    "chunk_id": "WCR-MN-DW-03-C02",
+    "doc_id": "WCR-MN-DW-03",
+    "doc_type": "WCR",
+    "section_path": "2. Sequence of Events",
+    "page": 1,
+    "text": "## 2. Sequence of Events\n- Mud weight was elevated to 11.70 ppg to protect against sand overpressure.\n- At 4,220 m MD, the bit entered a highly porous sand streak; ROP doubled from 13 m/hr to 26 m/hr without driller intervention.\n- Cuttings loading in the 12-1/4 in annulus caused downhole ECD to spike to 12.18 ppg.\n- The 13-3/8 in casing shoe at 3,860 m broke down, sustaining 28 bbl/hr continuous loss.\n- Total mud lost to formation: 310 bbl before LCM pill (calcium carbonate blend 40 ppb) restored partial integrity.",
+    "tokens": 93,
+    "well_id": "MN-DW-03",
+    "tags": [
+      "offset",
+      "wcr",
+      "lost-circulation",
+      "fracture"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      0,
+      4480
+    ]
+  },
+  {
+    "chunk_id": "WCR-MN-DW-03-C03",
+    "doc_id": "WCR-MN-DW-03",
+    "doc_type": "WCR",
+    "section_path": "3. Crucial Lessons",
+    "page": 1,
+    "text": "## 3. Crucial Lessons\n- In ultra-narrow operating margins ($11.65\\text{ ppg PP}$ vs $12.10\\text{ ppg FIT}$), drilling breaks must be immediately choked by imposing an ROP limit of $\\le 12\\text{ m/hr}$.",
+    "tokens": 31,
+    "well_id": "MN-DW-03",
+    "tags": [
+      "offset",
+      "wcr",
+      "lost-circulation",
+      "fracture"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      0,
+      4480
+    ]
+  },
+  {
+    "chunk_id": "WCR-MN-DW-01-C00",
+    "doc_id": "WCR-MN-DW-01",
+    "doc_type": "WCR",
+    "section_path": "WCR-MN-DW-01: Well Completion Report: Offset Reference Well MN-DW-01 (illustrative)",
+    "page": 1,
+    "text": "# WCR-MN-DW-01: Well Completion Report: Offset Reference Well MN-DW-01 (illustrative)",
+    "tokens": 10,
+    "well_id": "MN-DW-01",
+    "tags": [
+      "offset",
+      "wcr",
+      "reference-well",
+      "mahanadi"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      0,
+      4650
+    ]
+  },
+  {
+    "chunk_id": "WCR-MN-DW-01-C01",
+    "doc_id": "WCR-MN-DW-01",
+    "doc_type": "WCR",
+    "section_path": "1. Well Summary",
+    "page": 1,
+    "text": "## 1. Well Summary\n- **Operator**: ONGC Deepwater Operations.\n- **Location**: 19.47\u00b0N, 87.32\u00b0E (3.2 km NW of MN-SM-DW-01).\n- **Water Depth**: 1,595 m.\n- **Total Depth**: 4,650 m MD.\n- **Status**: Safely drilled to TD without significant well-control incidents; plugged and abandoned as an exploration discovery.",
+    "tokens": 46,
+    "well_id": "MN-DW-01",
+    "tags": [
+      "offset",
+      "wcr",
+      "reference-well",
+      "mahanadi"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      0,
+      4650
+    ]
+  },
+  {
+    "chunk_id": "WCR-MN-DW-01-C02",
+    "doc_id": "WCR-MN-DW-01",
+    "doc_type": "WCR",
+    "section_path": "2. Geological & Stratigraphic Evaluation",
+    "page": 1,
+    "text": "## 2. Geological & Stratigraphic Evaluation\n- Encountered Upper Miocene compact marine shale from 3,980 m to 4,145 m MD.\n- Transition zone observed at 4,145 m with slight dxc reversal.\n- Miocene channel sand entered at 4,188 m MD; sand thickness 75 m net pay with high porosity (22-26%).",
+    "tokens": 50,
+    "well_id": "MN-DW-01",
+    "tags": [
+      "offset",
+      "wcr",
+      "reference-well",
+      "mahanadi"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      0,
+      4650
+    ]
+  },
+  {
+    "chunk_id": "WCR-MN-DW-01-C03",
+    "doc_id": "WCR-MN-DW-01",
+    "doc_type": "WCR",
+    "section_path": "3. Drilling Fluid Performance",
+    "page": 1,
+    "text": "## 3. Drilling Fluid Performance\n- 13-3/8 in casing set at 3,820 m MD (FIT 12.15 ppg).\n- 12-1/4 in section drilled with 11.30 ppg SOBM.\n- Pore pressure in channel sand measured via wireline formation tester at 11.42 ppg.\n- Minor connection gas noted (up to 4.2%), no kick sustained.",
+    "tokens": 51,
+    "well_id": "MN-DW-01",
+    "tags": [
+      "offset",
+      "wcr",
+      "reference-well",
+      "mahanadi"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      0,
+      4650
+    ]
+  },
+  {
+    "chunk_id": "WCR-MN-DW-02-C00",
+    "doc_id": "WCR-MN-DW-02",
+    "doc_type": "WCR",
+    "section_path": "WCR-MN-DW-02: Well Completion Report: Offset Incident Well MN-DW-02 (illustrative)",
+    "page": 1,
+    "text": "# WCR-MN-DW-02: Well Completion Report: Offset Incident Well MN-DW-02 (illustrative)",
+    "tokens": 10,
+    "well_id": "MN-DW-02",
+    "tags": [
+      "offset",
+      "wcr",
+      "kick",
+      "gas-influx"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      0,
+      4520
+    ]
+  },
+  {
+    "chunk_id": "WCR-MN-DW-02-C01",
+    "doc_id": "WCR-MN-DW-02",
+    "doc_type": "WCR",
+    "section_path": "1. Executive Summary",
+    "page": 1,
+    "text": "## 1. Executive Summary\nDrilled in Mahanadi deepwater block 1.8 km east of MN-SM-DW-01. At depth 4,195 m MD, while drilling ahead with 11.15 ppg SOBM, the well encountered an underbalanced Miocene turbidite channel sand resulting in a **12 bbl gas influx** with 236 psi SIDPP.",
+    "tokens": 46,
+    "well_id": "MN-DW-02",
+    "tags": [
+      "offset",
+      "wcr",
+      "kick",
+      "gas-influx"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      0,
+      4520
+    ]
+  },
+  {
+    "chunk_id": "WCR-MN-DW-02-C02",
+    "doc_id": "WCR-MN-DW-02",
+    "doc_type": "WCR",
+    "section_path": "2. Influx Event Analysis",
+    "page": 1,
+    "text": "## 2. Influx Event Analysis\n- **Casing Shoe**: 13-3/8 in shoe at 3,840 m MD (FIT 12.05 ppg).\n- **Encountered Condition**: Normal compaction trend baseline departed at 4,152 m MD. Resistivity declined from 2.8 ohm-m to 1.4 ohm-m; compressional sonic increased from 86 us/ft to 104 us/ft.\n- **Kick Mechanism**: Mud weight was kept at initial 11.15 ppg. Top Miocene sand (U3) pressure was 11.48 ppg, creating a 0.33 ppg (150 psi) underbalance.\n- **Well Kill Execution**: The well was shut in with the subsea annular preventer. Wait & Weight kill method executed using **11.65 ppg (1.40 SG)** kill mud. 36 hours of NPT incurred.",
+    "tokens": 105,
+    "well_id": "MN-DW-02",
+    "tags": [
+      "offset",
+      "wcr",
+      "kick",
+      "gas-influx"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      0,
+      4520
+    ]
+  },
+  {
+    "chunk_id": "WCR-MN-DW-02-C03",
+    "doc_id": "WCR-MN-DW-02",
+    "doc_type": "WCR",
+    "section_path": "3. Key Operational Recommendations",
+    "page": 1,
+    "text": "## 3. Key Operational Recommendations\n- **Mandatory Pre-emptive Weight-Up**: For future deepwater wells in this fault compartment, mud weight must be raised to 11.65 ppg *before* penetrating 4,195 m MD.\n- **ROP Restriction**: Impose 11\u201312 m/hr ROP restriction across the sand boundary.",
+    "tokens": 42,
+    "well_id": "MN-DW-02",
+    "tags": [
+      "offset",
+      "wcr",
+      "kick",
+      "gas-influx"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      0,
+      4520
+    ]
+  },
+  {
+    "chunk_id": "MP-MN-SM-DW-01-SEC4-C00",
+    "doc_id": "MP-MN-SM-DW-01-SEC4",
+    "doc_type": "MUD_PROGRAM",
+    "section_path": "MP-MN-SM-DW-01-SEC4: Drilling Fluid Program: 12-1/4 in Hole Section (illustrative)",
+    "page": 1,
+    "text": "# MP-MN-SM-DW-01-SEC4: Drilling Fluid Program: 12-1/4 in Hole Section (illustrative)",
+    "tokens": 10,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "mud-program",
+      "sobm",
+      "rheology",
+      "barite"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4120,
+      4450
+    ]
+  },
+  {
+    "chunk_id": "MP-MN-SM-DW-01-SEC4-C01",
+    "doc_id": "MP-MN-SM-DW-01-SEC4",
+    "doc_type": "MUD_PROGRAM",
+    "section_path": "1. Section Details & Mud Specifications",
+    "page": 1,
+    "text": "## 1. Section Details & Mud Specifications\n- **Hole Size**: 12-1/4 in\n- **Interval**: 3,850 m to 4,450 m MD (Section TD)\n- **Base Mud**: Low-toxicity Synthetic Oil-Based Mud (SOBM, 80/20 Oil/Water ratio).\n- **Initial Mud Density**: 11.20 ppg (1.34 SG).\n- **Contingency Weighted Density**: 11.65 ppg (1.40 SG).\n- **Target Plastic Viscosity**: 26\u201330 cP.\n- **Target Yield Point**: 16\u201320 lb/100 ft$^2$.",
+    "tokens": 62,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "mud-program",
+      "sobm",
+      "rheology",
+      "barite"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4120,
+      4450
+    ]
+  },
+  {
+    "chunk_id": "MP-MN-SM-DW-01-SEC4-C02",
+    "doc_id": "MP-MN-SM-DW-01-SEC4",
+    "doc_type": "MUD_PROGRAM",
+    "section_path": "2. Barite Weighting Protocol",
+    "page": 1,
+    "text": "## 2. Barite Weighting Protocol\n- At 4,172 m MD, raise active system density to 11.65 ppg using 87,700 lb API barite.\n- Active system volume: 3,100 bbl; Riser volume: 1,950 bbl.\n- Verify zero sag and mud weight parity before entering sand at 4,195 m MD.",
+    "tokens": 47,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "mud-program",
+      "sobm",
+      "rheology",
+      "barite"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4120,
+      4450
+    ]
+  },
+  {
+    "chunk_id": "INC-MN-DW-02-KICK-4195-C00",
+    "doc_id": "INC-MN-DW-02-KICK-4195",
+    "doc_type": "INCIDENT",
+    "section_path": "INC-MN-DW-02-KICK-4195: Influx Incident Report (illustrative)",
+    "page": 1,
+    "text": "# INC-MN-DW-02-KICK-4195: Influx Incident Report (illustrative)",
+    "tokens": 6,
+    "well_id": "MN-DW-02",
+    "tags": [
+      "incident",
+      "gas-kick",
+      "influx",
+      "underbalance"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4190,
+      4200
+    ]
+  },
+  {
+    "chunk_id": "INC-MN-DW-02-KICK-4195-C01",
+    "doc_id": "INC-MN-DW-02-KICK-4195",
+    "doc_type": "INCIDENT",
+    "section_path": "1. Event Identification",
+    "page": 1,
+    "text": "## 1. Event Identification\n- **Well**: MN-DW-02\n- **Date & Time**: 14-Oct-2024, 03:42 IST\n- **Depth**: 4,195 m MD\n- **Event Type**: Hydrocarbon Influx / Well Control Event",
+    "tokens": 28,
+    "well_id": "MN-DW-02",
+    "tags": [
+      "incident",
+      "gas-kick",
+      "influx",
+      "underbalance"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4190,
+      4200
+    ]
+  },
+  {
+    "chunk_id": "INC-MN-DW-02-KICK-4195-C02",
+    "doc_id": "INC-MN-DW-02-KICK-4195",
+    "doc_type": "INCIDENT",
+    "section_path": "2. Description of Influx",
+    "page": 1,
+    "text": "## 2. Description of Influx\nWhile drilling 12-1/4 in section with 11.15 ppg (1.34 SG) SOBM, the bit penetrated top Miocene turbidite channel sand at 4,195 m MD. Mud log recorded instantaneous gas peak of 18.4% (methane 88%, ethane 7%, propane 5%).\nA 12 bbl pit gain was confirmed on the active PVT system.\nWell was shut in via soft shut-in protocol:\n- SIDPP: 236 psi\n- SICP: 310 psi\nCalculated formation pore pressure: **11.48 ppg (1.38 SG)**.",
+    "tokens": 78,
+    "well_id": "MN-DW-02",
+    "tags": [
+      "incident",
+      "gas-kick",
+      "influx",
+      "underbalance"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4190,
+      4200
+    ]
+  },
+  {
+    "chunk_id": "INC-MN-DW-02-KICK-4195-C03",
+    "doc_id": "INC-MN-DW-02-KICK-4195",
+    "doc_type": "INCIDENT",
+    "section_path": "3. Root Cause Analysis",
+    "page": 1,
+    "text": "## 3. Root Cause Analysis\n1. Failure to recognize transition zone geophysical indicators (sonic slowness excursion $> 12\\ \\mu\\text{s/ft}$).\n2. Delayed mud weight adjustment due to missing pre-emptive weight-up protocol.\n3. Influx killed successfully with 11.65 ppg (1.40 SG) mud. Total NPT: 36.5 hours.",
+    "tokens": 44,
+    "well_id": "MN-DW-02",
+    "tags": [
+      "incident",
+      "gas-kick",
+      "influx",
+      "underbalance"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4190,
+      4200
+    ]
+  },
+  {
+    "chunk_id": "INC-MN-DW-03-LOSS-4222-C00",
+    "doc_id": "INC-MN-DW-03-LOSS-4222",
+    "doc_type": "INCIDENT",
+    "section_path": "INC-MN-DW-03-LOSS-4222: Lost Circulation Incident Report (illustrative)",
+    "page": 1,
+    "text": "# INC-MN-DW-03-LOSS-4222: Lost Circulation Incident Report (illustrative)",
+    "tokens": 7,
+    "well_id": "MN-DW-03",
+    "tags": [
+      "incident",
+      "losses",
+      "fracture",
+      "ecd-spike"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4215,
+      4230
+    ]
+  },
+  {
+    "chunk_id": "INC-MN-DW-03-LOSS-4222-C01",
+    "doc_id": "INC-MN-DW-03-LOSS-4222",
+    "doc_type": "INCIDENT",
+    "section_path": "1. Event Identification",
+    "page": 1,
+    "text": "## 1. Event Identification\n- **Well**: MN-DW-03\n- **Date & Time**: 11-Feb-2025, 21:15 IST\n- **Depth**: 4,222 m MD\n- **Event Type**: Annular Overpressure & Formation Breakdown",
+    "tokens": 27,
+    "well_id": "MN-DW-03",
+    "tags": [
+      "incident",
+      "losses",
+      "fracture",
+      "ecd-spike"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4215,
+      4230
+    ]
+  },
+  {
+    "chunk_id": "INC-MN-DW-03-LOSS-4222-C02",
+    "doc_id": "INC-MN-DW-03-LOSS-4222",
+    "doc_type": "INCIDENT",
+    "section_path": "2. Description of Losses",
+    "page": 1,
+    "text": "## 2. Description of Losses\nDrilling ahead at 4,222 m MD with 11.70 ppg mud. Bit entered porous channel facies and ROP spiked to 26 m/hr. Annular cuttings loading increased dynamic ECD from 11.88 ppg to **12.18 ppg**, exceeding the 13-3/8 in shoe FIT of 12.10 ppg.\nReturns dropped by 28 bbl/hr. PWD tool confirmed shoe breakdown.",
+    "tokens": 57,
+    "well_id": "MN-DW-03",
+    "tags": [
+      "incident",
+      "losses",
+      "fracture",
+      "ecd-spike"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4215,
+      4230
+    ]
+  },
+  {
+    "chunk_id": "INC-MN-DW-03-LOSS-4222-C03",
+    "doc_id": "INC-MN-DW-03-LOSS-4222",
+    "doc_type": "INCIDENT",
+    "section_path": "3. Corrective Actions & Recommendations",
+    "page": 1,
+    "text": "## 3. Corrective Actions & Recommendations\n- Enforce rigid ROP restriction of 12 m/hr during all drilling breaks in 12-1/4 in hole.\n- Implement real-time PWD ECD alarm thresholds set 0.10 ppg below shoe FIT.",
+    "tokens": 35,
+    "well_id": "MN-DW-03",
+    "tags": [
+      "incident",
+      "losses",
+      "fracture",
+      "ecd-spike"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4215,
+      4230
+    ]
+  }
+]

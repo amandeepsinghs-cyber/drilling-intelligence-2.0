@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://drilling-intelligence-2/contracts/action.schema.json",
+  "title": "Action",
+  "type": "object",
+  "required": [
+    "action_id",
+    "kind",
+    "status"
+  ],
+  "properties": {
+    "action_id": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "MEMO",
+        "DISPATCH",
+        "WCR",
+        "WRITEBACK",
+        "ROP_CAP"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "DRAFTED",
+        "AWAITING_APPROVAL",
+        "APPROVED",
+        "REJECTED",
+        "DISPATCHED",
+        "FAILED",
+        "DONE"
+      ]
+    },
+    "approver": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "type": "string"
+        },
+        "method": {
+          "type": "string",
+          "enum": [
+            "voice",
+            "phone",
+            "ui"
+          ]
+        },
+        "ts": {
+          "type": "string"
+        }
+      }
+    },
+    "basis_snapshot_id": {
+      "type": "string"
+    },
+    "channel_results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "channel": {
+            "type": "string",
+            "enum": [
+              "MUD_CHEMIST",
+              "RTOC_CHAT",
+              "EMAIL",
+              "TELEGRAM",
+              "SMS",
+              "GOOGLE_DOC"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "message_id": {
+            "type": "string"
+          },
+          "ts": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

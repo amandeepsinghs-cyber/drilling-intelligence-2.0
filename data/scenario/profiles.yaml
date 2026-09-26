@@ -1,0 +1,83 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# PROFILE SHAPES (SYNTHETIC / ASSUMED) — how channels vary *between* the canonical
+# checkpoints in mn_sm_dw_01.yaml. These are not presented as facts: every value the
+# UI headlines or the agent speaks is still a checkpoint in mn_sm_dw_01.yaml, and
+# backend/tests/scenario/test_frames.py asserts the generated frames reproduce them.
+#
+# Real-data drop-in (SDD §5.5): the `lwd:` block is ONLY used when no PUBLIC log has
+# been registered at data/processed/lwd/<well>.parquet. Everything else (drilling,
+# mud-log, mud, pressure) stays scenario-driven by design.
+# ─────────────────────────────────────────────────────────────────────────────
+schema_version: 1
+grid: { top_m: 4000, base_m: 4460, step_m: 0.5 }
+seed_salt: "di2-stub-v1"
+
+pressure:
+  pp_ramp_exponent: 2.0          # convex ramp U2: slow start, steep toward sand top
+  pp_sand_base_ppg: 11.40        # centroid effect: EMW falls down-dip in the connected sand
+  pp_td_ppg: 11.35
+  fg_ki: 0.60                    # Matthews–Kelly matrix stress coefficient (ASSUMED)
+
+rop:
+  compaction_per_m: 0.0005       # relative ROP decline with depth in U1
+  transition_rise_from_m: 4155
+  transition_peak_m_hr: 26       # undercompacted shale drills faster → dxc reversal
+  controlled_from_m: 4172.5      # first depth after MOC approval + weight-up
+  break_interval_m: [4203.5, 4205.0]
+  limestone_m_hr: 8
+  residual_cuttings_until_m: 4290
+
+ops:
+  bit_size_in: 12.25
+  wob_klb:      { SHALE: 25, SILTSTONE: 24, SAND: 18, LIMESTONE: 30 }
+  rpm:          { SHALE: 140, SILTSTONE: 140, SAND: 140, LIMESTONE: 120 }
+  torque_kftlb: { SHALE: 20, SILTSTONE: 21, SAND: 16, LIMESTONE: 27 }
+  spp_psi_at_initial_mw: 3600
+  hookload_klb_at_top: 420
+  hookload_klb_per_m: 0.02
+  dxc_normal_mw_ppg: 8.7         # normal hydrostatic used in the dxc correction
+  connection_every_m: 28.5
+  connection_anchor_m: 4172      # a connection lands on the T3 alert depth
+  connection_minutes: 15
+  flow_out_break_delta_pct: -0.5 # faint seepage signature during the drilling break
+
+mudlog:
+  background_gas_pct: { U1: 0.4, U2_end: 0.9, post_weightup: 0.6, U3: 3.5, U3_break_peak: 5.0, U4: 0.8 }
+  conn_gas_pct_overrides: [ { md_m: 4143.5, pct: 0.6 }, { md_m: 4172, pct: 1.1 } ]
+  conn_gas_excess_pct: 0.3       # default connection-gas bump over background elsewhere
+  composition: { C1: 0.82, C2: 0.09, C3: 0.05, C4: 0.025, C5: 0.015 }
+
+mud:
+  pv_weighted_cp: 30
+  yp_weighted_lb_100ft2: 19
+  mw_out_gascut_sand_ppg: 0.02
+
+ml_baseline:                     # heuristic stand-ins until Phase 6 trained models
+  p_kick_anchors: [[4000, 0.04], [4120, 0.04], [4150, 0.05], [4160, 0.10], [4172, 0.71],
+                   [4172.5, 0.06], [4195, 0.06], [4205, 0.05], [4205.5, 0.04], [4460, 0.04]]
+  p_kick_logistic: { floor: 0.04, span: 0.90, u0_ppg: 0.2266, scale_ppg: 0.05, lookahead_m: 30 }
+  p_loss_logistic: { floor: 0.02, span: 0.60, m0_ppg: 0.10, scale_ppg: 0.03 }
+  ecd_margin_target_ppg: 0.24
+  rop_max_clip_m_hr: 40
+  stringers_m: [4158, 4166, 4181, 4188]
+  stringer_thickness_m: 1.0
+
+lwd:                             # SYNTHETIC stand-in petrophysics (replaced by PUBLIC on drop-in)
+  smooth_sigma_samples: 1.5
+  noise_sigma_samples: 3
+  dt_nct: { top_m: 4000, top_us_ft: 90.0, per_m: -0.0133 }   # normal compaction trend
+  rdep_nct: { top_m: 4000, top_ohmm: 2.6, per_m: 0.002 }
+  U1: { GR: [105, 5], RHOB: [2.38, 0.015], NPHI: [0.33, 0.01], PEF: [3.1, 0.1], CALI: [12.35, 0.03] }
+  U2:
+    GR: [88, 6]
+    RHOB_anchors: [[4150, 2.38], [4194.5, 2.30]]
+    NPHI_anchors: [[4150, 0.33], [4194.5, 0.37]]
+    DT_anchors: [[4150, 88.0], [4160, 92.5], [4172, 101.0], [4194.5, 106.0]]
+    RDEP_anchors: [[4150, 2.9], [4172, 1.9], [4194.5, 1.6]]
+    PEF: [3.2, 0.1]
+    CALI: [12.7, 0.06]
+    stringer: { GR: 40, RDEP: 8.0, RHOB: 2.62, NPHI: 0.12, PEF: 4.8, DT: 70 }
+  U3: { GR: [45, 4], RDEP: [36, 4], RHOB: [2.22, 0.02], NPHI: [0.19, 0.012], DT: [93, 1.5], PEF: [2.0, 0.1], CALI: [12.30, 0.02] }
+  U4: { GR: [58, 6], RDEP: [14, 3], RHOB: [2.55, 0.02], NPHI: [0.11, 0.01], DT: [68, 2], PEF: [4.9, 0.15], CALI: [12.30, 0.02] }
+  noise_sd: { DT: 1.0, RDEP_log10: 0.04 }
+  rmed_ratio: { SHALE: 0.92, SILTSTONE: 0.92, SAND: 0.60, LIMESTONE: 0.85 }

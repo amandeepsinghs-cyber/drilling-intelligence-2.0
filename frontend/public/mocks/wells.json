@@ -1,0 +1,105 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.35,
+          19.45
+        ]
+      },
+      "properties": {
+        "id": "MN-SM-DW-01",
+        "status": "LIVE",
+        "label": "MN-SM-DW-01 (illustrative)",
+        "provenance": "SYNTHETIC"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.32,
+          19.47
+        ]
+      },
+      "properties": {
+        "id": "MN-DW-01",
+        "status": "COMPLETED",
+        "incident": null,
+        "incident_md_m": null,
+        "provenance": "SYNTHETIC"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.36,
+          19.46
+        ]
+      },
+      "properties": {
+        "id": "MN-DW-02",
+        "status": "OFFSET_KICK",
+        "incident": "KICK",
+        "incident_md_m": 4195,
+        "provenance": "SYNTHETIC"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.37,
+          19.44
+        ]
+      },
+      "properties": {
+        "id": "MN-DW-03",
+        "status": "OFFSET_LOSSES",
+        "incident": "LOSSES",
+        "incident_md_m": 4222,
+        "provenance": "SYNTHETIC"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          71.3,
+          19.4
+        ]
+      },
+      "properties": {
+        "id": "MH-112",
+        "status": "REFERENCE_CARBONATE",
+        "incident": "LOSSES_DIFF_STICKING",
+        "incident_md_m": null,
+        "provenance": "SYNTHETIC"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          84.79,
+          17.74
+        ]
+      },
+      "properties": {
+        "id": "IODP-U1445",
+        "status": "AUTHENTICITY",
+        "label": "IODP Exp. 353 Site U1445 \u2014 real log, Mahanadi Basin",
+        "provenance": "PUBLIC"
+      }
+    }
+  ]
+}

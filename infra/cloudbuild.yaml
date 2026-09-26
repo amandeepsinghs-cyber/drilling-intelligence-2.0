@@ -1,0 +1,53 @@
+# Google Cloud Build — Sagar Drishti 2.0 (Phase 7)
+# Builds and deploys the unified production container to Cloud Run in asia-south1.
+steps:
+  # 1. Build unified container (multi-stage: Node 20 frontend build + Python 3.12 FastAPI/ADK backend)
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - "build"
+      - "-f"
+      - "infra/docker/backend.Dockerfile"
+      - "-t"
+      - "${_AR}/sagar-drishti:$SHORT_SHA"
+      - "-t"
+      - "${_AR}/sagar-drishti:latest"
+      - "."
+
+  # 2. Push container image to Artifact Registry
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - "push"
+      - "--all-tags"
+      - "${_AR}/sagar-drishti"
+
+  # 3. Deploy unified application to Cloud Run
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: gcloud
+    args:
+      - "run"
+      - "deploy"
+      - "${_SERVICE_NAME}"
+      - "--image"
+      - "${_AR}/sagar-drishti:$SHORT_SHA"
+      - "--region"
+      - "${_REGION}"
+      - "--platform"
+      - "managed"
+      - "--allow-unauthenticated"
+      - "--port"
+      - "8080"
+      - "--memory"
+      - "2Gi"
+      - "--cpu"
+      - "2"
+      - "--set-env-vars"
+      - "DI_ENV=gcp,DI_PROJECT_ID=drilling-intelligence-2-509714,DI_REGION=asia-south1"
+
+substitutions:
+  _AR: asia-south1-docker.pkg.dev/drilling-intelligence/drilling-dashboard
+  _SERVICE_NAME: sagar-drishti
+  _REGION: asia-south1
+
+images:
+  - "${_AR}/sagar-drishti:$SHORT_SHA"
+  - "${_AR}/sagar-drishti:latest"

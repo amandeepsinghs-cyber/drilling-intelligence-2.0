@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://drilling-intelligence-2/contracts/event.schema.json",
+  "title": "Event",
+  "type": "object",
+  "required": [
+    "event_id",
+    "type",
+    "ts"
+  ],
+  "properties": {
+    "event_id": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "TRIGGER",
+        "ACTION",
+        "APPROVAL",
+        "DISPATCH",
+        "NOTE",
+        "TURN"
+      ]
+    },
+    "md_m": {
+      "type": "number"
+    },
+    "ts": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "payload": {
+      "type": "object"
+    },
+    "provenance": {
+      "$ref": "provenance.schema.json"
+    }
+  }
+}

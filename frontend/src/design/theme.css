@@ -1,0 +1,49 @@
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/noto-sans-devanagari';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/600.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Mission control, not sci-fi (docs/design/design_system.md). One accent; semantic colours only for real states. */
+:root.dark {
+  --bg-app: #0B0F14; --bg-panel: #111821; --bg-raised: #16202B; --line-subtle: #1E2A36; --line-strong: #2A3947;
+  --text-primary: #E6EDF3; --text-muted: #8B9BAB; --text-faint: #5B6B7B;
+  --accent: #22D3EE; --ok: #34D399; --warn: #F59E0B; --risk: #EF4444; --ml: #C084FC;
+  --glow: 0 0 0 1px rgba(34, 211, 238, 0.25), 0 8px 30px -12px rgba(34, 211, 238, 0.25);
+  --accent-rgb: 34 211 238; --ok-rgb: 52 211 153; --warn-rgb: 245 158 11; --risk-rgb: 239 68 68; --ml-rgb: 192 132 252;
+  color-scheme: dark;
+}
+:root.light {
+  --bg-app: #F5F7FA; --bg-panel: #FFFFFF; --bg-raised: #F0F3F7; --line-subtle: #D8E0E8; --line-strong: #B8C4D0;
+  --text-primary: #0B1520; --text-muted: #4A5B6B; --text-faint: #7A8A9A;
+  --accent: #0891B2; --ok: #059669; --warn: #D97706; --risk: #DC2626; --ml: #9333EA;
+  --glow: 0 0 0 1px rgba(8, 145, 178, 0.25), 0 8px 30px -12px rgba(8, 145, 178, 0.2);
+  --accent-rgb: 8 145 178; --ok-rgb: 5 150 105; --warn-rgb: 217 119 6; --risk-rgb: 220 38 38; --ml-rgb: 147 51 234;
+  color-scheme: light;
+}
+
+html, body, #root { height: 100%; }
+body { font-feature-settings: 'cv11', 'ss01'; overflow: hidden; }
+.num { font-family: 'JetBrains Mono', ui-monospace, 'Noto Sans Devanagari Variable', monospace; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.devanagari { font-family: 'Noto Sans Devanagari Variable', 'Noto Sans Devanagari', 'Mangal', 'Nirmala UI', 'Inter Variable', sans-serif; }
+
+@layer components {
+  .panel { @apply bg-panel border border-line rounded-xl; }
+  .panel-title { @apply text-[11px] uppercase tracking-[0.14em] text-muted font-medium; }
+  .chip { @apply inline-flex items-center gap-1 rounded-full border px-2 py-[1px] text-[10px] font-medium uppercase tracking-wider; }
+  .btn { @apply inline-flex items-center gap-2 rounded-lg border border-line bg-raised px-3 py-1.5 text-sm text-fg transition-colors hover:border-accent/60 disabled:opacity-40; }
+  .btn-primary { @apply btn border-accent/70 bg-accent/10 text-accent hover:bg-accent/20; }
+  .kbd { @apply num rounded border border-line bg-raised px-1.5 text-[10px] text-muted; }
+}
+
+/* subtle scanline-free grid backdrop for the map/empty states */
+.grid-bg {
+  background-image: linear-gradient(var(--line-subtle) 1px, transparent 1px), linear-gradient(90deg, var(--line-subtle) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 8px; }
+::-webkit-scrollbar-track { background: transparent; }

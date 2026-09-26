@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://drilling-intelligence-2/contracts/curve_manifest.schema.json",
+  "title": "CurveManifest",
+  "description": "How a real public dataset maps into the DepthFrame contract.",
+  "type": "object",
+  "required": [
+    "dataset_id",
+    "source",
+    "licence",
+    "curves",
+    "depth_registration"
+  ],
+  "properties": {
+    "dataset_id": {
+      "type": "string"
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "hole": {
+          "type": "string"
+        },
+        "uri": {
+          "type": "string"
+        },
+        "doi": {
+          "type": "string"
+        }
+      }
+    },
+    "licence": {
+      "type": "string"
+    },
+    "attribution": {
+      "type": "string"
+    },
+    "curves": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "source_mnemonic",
+          "canonical"
+        ],
+        "properties": {
+          "source_mnemonic": {
+            "type": "string"
+          },
+          "canonical": {
+            "type": "string"
+          },
+          "source_unit": {
+            "type": "string"
+          },
+          "target_unit": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "depth_registration": {
+      "type": "object",
+      "properties": {
+        "source_top_m": {
+          "type": "number"
+        },
+        "source_base_m": {
+          "type": "number"
+        },
+        "target_top_m": {
+          "type": "number"
+        },
+        "target_base_m": {
+          "type": "number"
+        },
+        "method": {
+          "type": "string",
+          "enum": [
+            "shift",
+            "shift_stretch"
+          ]
+        }
+      }
+    }
+  }
+}
