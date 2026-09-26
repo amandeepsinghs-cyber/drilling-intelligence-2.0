@@ -63,8 +63,8 @@ export default function AuditDrawer() {
               <div className="text-muted">Petrophysics: <span className="text-fg">{String(lwd.dataset_id ?? lwd.source ?? 'synthetic_stub')}</span>{lwd.licence ? ` · ${String(lwd.licence)}` : ''}</div>
               <div className="text-muted">Curves: {Object.entries(data.meta.curve_sources).map(([c, s]) => `${c}=${s}`).join(' · ')}</div>
               <div className="text-muted">Physics: Eaton / Matthews–Kelly / Jorden–Shirley dxc / scenario-calibrated ECD</div>
-              <div className="text-muted">ML: {data.meta.ml_status} (trained FORCE-2020 models replace in Phase 6)</div>
-              <div className="text-muted">Agent: Gemini Live (Phase 4) · RAG over synthetic corpus (Phase 3)</div>
+              <div className="text-muted">ML: {data.meta.ml_status === 'trained_rf_lithology' ? 'lithology = RandomForest trained on offset wells; kick risk = scenario baseline' : `${data.meta.ml_status} (trained model not loaded)`}</div>
+              <div className="text-muted">Agent: Gemini Live · search over synthetic offset reports, SOPs and WCRs</div>
             </section>
             <section>
               <div className="panel-title mb-2">Decision ledger · append-only</div>

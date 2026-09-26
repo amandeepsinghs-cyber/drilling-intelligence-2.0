@@ -71,13 +71,14 @@ FUNCTION_DECLARATIONS_DATA = [
     },
     {
         "name": "compute_barite",
-        "description": "Calculate barite addition (lb/bbl, MT, sacks) to weight up active mud system.",
+        "description": ("Calculate barite addition (lb/bbl, MT, 50 kg bags) to weight up the well's active mud system. "
+                        "For the planned weight-up call it with NO arguments: it uses the well's real active-system volume "
+                        "and the current/planned mud weights. Pass w1/w2 only if the user states different mud weights."),
         "parameters": {
             "type": "OBJECT",
             "properties": {
-                "w1": {"type": "NUMBER", "description": "Initial mud weight in ppg"},
-                "w2": {"type": "NUMBER", "description": "Target mud weight in ppg"},
-                "vol_bbl": {"type": "NUMBER", "description": "Active system volume in barrels"},
+                "w1": {"type": "NUMBER", "description": "Initial mud weight in ppg (omit to use current)"},
+                "w2": {"type": "NUMBER", "description": "Target mud weight in ppg (omit to use the planned weighted mud)"},
             },
         },
     },
@@ -208,6 +209,43 @@ async def _safe_send_json(websocket: WebSocket, payload: dict) -> bool:
         return False
 
 
+RECAP_KEEP_FIRST = 4    # always keep the opening exchange (the soak showed it can drop after resumes)
+RECAP_KEEP_LAST = 16
+RECAP_MAX_CHARS = 320
+
+
+def _log_turn(state: dict[str, Any], role: str, text: str) -> None:
+    """Append one line to the per-browser conversation log used for the reconnect recap."""
+    text = " ".join((text or "").split())
+    if text:
+        state.setdefault("log", []).append((role, text[:RECAP_MAX_CHARS]))
+
+
+def _recap_turns(state: dict[str, Any], types: Any) -> list[Any] | None:
+    """Past turns re-sent after a reconnect so early turns survive resumption + context compression.
+
+    Sent as alternating user/model history (not one text blob): a single user blob made the model
+    answer the recap by repeating its last reply.
+    """
+    log = state.get("log") or []
+    if not log:
+        return None
+    if len(log) > RECAP_KEEP_FIRST + RECAP_KEEP_LAST:
+        lines = log[:RECAP_KEEP_FIRST] + log[-RECAP_KEEP_LAST:]
+    else:
+        lines = list(log)
+    turns: list[Any] = []
+    for role, text in lines:
+        r = "model" if role == "Agent" else "user"
+        if turns and turns[-1].role == r:  # merge consecutive same-role lines
+            turns[-1].parts.append(types.Part.from_text(text=text))
+        else:
+            turns.append(types.Content(role=r, parts=[types.Part.from_text(text=text)]))
+    if turns and turns[0].role == "user":
+        turns[0].parts.insert(0, types.Part.from_text(text="[Earlier in this conversation — history only]"))
+    return turns
+
+
 def _build_live_config(types: Any, system_prompt: str, tools: list[Any], handle: str | None) -> Any:
     """LiveConnectConfig with session resumption + sliding-window compression (P0-1)."""
     return types.LiveConnectConfig(
@@ -318,6 +356,13 @@ async def _run_resilient_live(websocket: WebSocket, inbound: asyncio.Queue, sett
                     "memory": bool(handle),
                 })
                 ever_connected = True
+                recap = _recap_turns(state, types) if resuming else None
+                if recap:
+                    try:
+                        await session.send_client_content(turns=recap, turn_complete=False)
+                        logger.info(f"Sent session recap ({len(state.get('log', []))} lines)")
+                    except Exception as e:  # recap is best-effort; never fail the resume
+                        logger.warning(f"Recap send failed: {type(e).__name__}: {e}")
                 reason = await _run_bidi_stream(websocket, session, inbound, state)
             logger.info(f"Gemini Live session ended: {reason}")
             if reason == "browser_closed":
@@ -372,6 +417,7 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any, inbound: asyncio.
             if msg_type == "context":
                 continue
             if msg_type in ("text", "prompt"):
+                _log_turn(state, "Presenter", data.get("text", ""))
                 await _safe_send_json(websocket, {"type": "voice_state", "state": "thinking"})
                 await session.send_client_content(
                     turns=[types.Content(role="user", parts=[types.Part.from_text(text=data.get("text", ""))])],
@@ -499,6 +545,10 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any, inbound: asyncio.
                             tool_since_output = False
                             full_text = " ".join(current_caption).strip()
                             current_caption = []
+                            heard = "".join(state.pop("heard", [])).strip()
+                            if heard:
+                                _log_turn(state, "Presenter", heard)
+                            _log_turn(state, "Agent", full_text)
                             await websocket.send_json({
                                 "type": "turn_complete",
                                 "full_text": full_text,
@@ -508,6 +558,7 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any, inbound: asyncio.
                         # Presenter speech transcription (Hindi/Hinglish) for on-screen captions
                         it = getattr(sc, "input_transcription", None)
                         if it is not None and getattr(it, "text", None):
+                            state.setdefault("heard", []).append(it.text)
                             await _safe_send_json(websocket, {"type": "input_transcript", "text": it.text})
 
                 if not got_any:

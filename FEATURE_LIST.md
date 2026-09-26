@@ -32,7 +32,7 @@ Legend: ✅ built & verified · 🟡 built, needs polish · ⬜ not built · ✖
 | 19b | Scripted fallback: chips / typed text → matching scripted turn | ✅ | FT-12 | `state/turnMachine.ts › askAgent` |
 | 20 | Presenter console synced to the stage | 🟡 old | WP-11 | `screens/PresenterConsole/index.tsx` |
 | 21 | Basin map: offline basemap, no label overlap, click → live well | 🟡 | WP-10 | `screens/BasinMap/*` |
-| 22 | Trained ML models (RF lithology, kick risk) | 🟡 in progress | WP-12 | `backend/app/ml/*`, `data/models/*` |
+| 22 | Trained ML models (RF lithology, kick risk) | ✅ lithology live (`ml_status=trained_rf_lithology`, tests 6/6); kick risk kept on story baseline by design | WP-12 | `backend/app/ml/*`, `data/models/*`, `backend/tests/ml/` |
 | 23 | Takeaway card per act; "4 layers of AI" closing card | ✅ | FT-9 | `common/TakeawayCard.tsx`, `common/ClosingCard.tsx` |
 | 24 | What-if and audit drawers (keys W, A) on new layout | ✅ | FT-16 | `whatif/*`, `audit/*` |
 | 25 | Verification harness (per act, API, 15-turn Live, adversarial 5, soak, offline) | 🟡 probes exist | WP-14 | `frontend/scratch/*.mjs`, `backend/scratch/live_smoke.py` |

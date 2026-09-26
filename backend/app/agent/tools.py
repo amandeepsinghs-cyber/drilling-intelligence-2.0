@@ -226,7 +226,7 @@ def compute_barite(w1: float | None = None, w2: float | None = None, vol_bbl: fl
         "barite_lb_per_bbl": lb_bbl,
         "total_barite_mt": round(tot["mt"], 1),
         "total_barite_lb": int(round(tot["lb"])),
-        "bags_50kg": int(round(tot["mt"] * 20)),
+        "bags_50kg": int(round(round(tot["mt"], 1) * 20)),  # from the displayed MT so it matches the memo
         "bags_100lb": int(round(tot["bags"])),
         "volume_gain_bbl": round(barite_volume_gain_bbl(tot["lb"]), 1),
         "estimated_mixing_time_hours": f["mud"]["weight_up_duration_h"],

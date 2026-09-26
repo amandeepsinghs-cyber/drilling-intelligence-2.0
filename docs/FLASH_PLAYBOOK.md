@@ -347,7 +347,7 @@ cd frontend && node scratch/act34_flow.mjs scripted scratch/ftb
 
 ---
 
-## P-FB-1 · Review feedback on P-FT A + B (Opus review 2026-09-26 08:55) — do these before new work
+## P-FB-1 · Review feedback on P-FT A + B (Opus review 2026-09-26 08:55) — ✅ DONE by Opus 09:37 (FB-2..5; FB-1 dropped: venue screen is high-res). **Do not redo.** Kept for history.
 
 Verdict: batch A + B **accepted**. tsc, vitest 21/21, build, pytest 59/59, fact gate 0/0, no ₹, flicker probe blank 0,
 act34_flow scripted errors [] — all green. Fix the items below; none of them block the demo on a 1920×1080 screen.

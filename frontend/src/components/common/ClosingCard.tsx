@@ -9,26 +9,26 @@ const LAYERS = [
   {
     layer: 'Data',
     title: 'Hi-res logs',
-    desc: 'Subsurface petrophysical telemetry, LWD, MWD, and cuttings lag correction directly at the bit.',
-    accent: 'text-cyan-400 border-cyan-500/30 bg-cyan-950/20',
+    desc: 'High-resolution well logs and cuttings, lined up to the bit depth.',
+    accent: 'text-accent border-accent/30 bg-accent/5',
   },
   {
     layer: 'Physics',
     title: 'PP/FG · ECD',
-    desc: 'Real-time geomechanical pore pressure, fracture gradient, and calibrated ECD drilling window.',
-    accent: 'text-emerald-400 border-emerald-500/30 bg-emerald-950/20',
+    desc: 'Pore pressure, fracture limit and mud pressure computed live — the safe window at every metre.',
+    accent: 'text-ok border-ok/30 bg-ok/5',
   },
   {
     layer: 'ML',
     title: 'Lithology · Kick risk',
-    desc: 'Pre-cuttings lithology volume classification and look-ahead kick hazard prediction from offset wells.',
-    accent: 'text-purple-400 border-purple-500/30 bg-purple-950/20',
+    desc: 'Rock type at the bit before cuttings arrive, learned from the offset wells; kick risk flagged ahead of the sand.',
+    accent: 'text-ml border-ml/30 bg-ml/5',
   },
   {
     layer: 'Agent',
     title: 'Voice · Memo · Actions',
-    desc: 'Bilingual dialogue, grounded MOC memo generation, and auditable multi-channel dispatch with decision ledger.',
-    accent: 'text-amber-400 border-amber-500/30 bg-amber-950/20',
+    desc: 'Answers in Hindi or English, drafts the memo with its sources, and sends instructions only after approval.',
+    accent: 'text-warn border-warn/30 bg-warn/5',
   },
 ] as const;
 
@@ -82,7 +82,7 @@ export default function ClosingCard() {
               Four Layers of AI
             </h2>
             <p className="mt-1 text-[13px] text-muted">
-              Unified architecture powering autonomous deepwater operations: Human decides, agent executes.
+              One system: the agent prepares, the engineer decides.
             </p>
 
             <div className="mt-6 grid grid-cols-2 gap-3 text-left">

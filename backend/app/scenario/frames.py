@@ -122,7 +122,7 @@ def build_frames(well_id: str | None = None) -> FrameSet:
         "grid": {"top_m": float(md[0]), "base_m": float(md[-1]), "step_m": float(md[1] - md[0]), "n": len(md)},
         "lwd_source": hw["meta"],
         "curve_sources": {c: "synthetic" for c in CURVES},
-        "ml_status": "baseline_heuristic",
+        "ml_status": "trained_rf_lithology" if lithology.is_trained_model_loaded() else "baseline_heuristic",
         "connections_m": ops.connection_depths(md).tolist(),
         "provenance_footer": facts()["provenance_footer"],
     }

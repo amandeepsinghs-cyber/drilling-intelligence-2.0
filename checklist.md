@@ -23,18 +23,19 @@ Each box is ticked only after its **Verify** line in `build.md` / [`docs/FLASH_P
 - [ ] **WP-15** LAS calibration + DT Option A + narrative · Opus · **parked until last** (owner)
 
 ### §0.1 Front-end fine-tuning (FT-xx, build.md §3.1)
-- [ ] FT-1 wellbore label overlap · Flash
-- [ ] FT-2 favicon 404 · Flash
+- [x] FT-1 wellbore label overlap · Flash · verified 08:55 review screenshots (KICK/LOSS pills right-aligned)
+- [x] FT-2 favicon 404 · Flash · verified: `public/favicon.svg` + index.html link
 - [x] FT-3 memo evidence citations · Opus · verified: memo shows INC-MN-DW-02-KICK-4195, WCR-MN-DW-02, ONGC-MOC-SOP-07, LIVE-PPFG (`scratch/scr_2_act3_memo.png`)
-- [ ] FT-6 pressure labels · Flash
-- [ ] FT-7 smooth GR shading · Flash
-- [ ] FT-8 light theme pass · Flash
-- [ ] FT-9 takeaway + closing card · Flash
-- [ ] FT-10 scrubber markers · Flash
+- [x] FT-6 pressure labels · Flash · verified: header strip + label pills (`scratch/ft_act2_light.png`)
+- [x] FT-7 smooth GR shading · Flash · verified: 1 m running mean from `step_m`
+- [x] FT-8 light theme pass · Flash · verified `scratch/ft_act2_light.png`
+- [x] FT-9 takeaway + closing card · Flash + Opus copy fix 09:37 · verified: card left of agent panel, Esc closes; closing card after WCR
+- [x] FT-10 scrubber markers · Flash · verified: act labels + turn ticks (1920 px)
 - [ ] FT-11 remove old components (ask owner) · Opus
 - [x] FT-12 scripted-mode chips → scripted turns · Opus · verified: SCRIPTED (V) chips "MOC memo banao", "Approve", typed "Shift handover notes banao" each ran the right turn (`scratch/act34_flow.mjs scripted`)
-- [ ] FT-18 scripted fan-out line says "confirmation delivered to your device" even when phone lane is SIMULATED — make the scripted agent line honest · Flash · `mocks/agentScript.ts` / `data/scenario/turns.yaml`
-- [ ] FT-16 what-if / audit drawers on cockpit · Flash
+- [x] FT-18 scripted fan-out line honest · Flash · verified: "RTOC, email and phone are simulated for the demo" (`scratch/rv_3_act3_dispatched.png`)
+- [x] FT-16 what-if / audit drawers on cockpit · Flash · verified `scratch/ft_act2_whatif.png`, Esc closes
+- [x] FT-19 Act 3 Approve visible / lanes fit · Flash + Opus 09:37 (lanes stacked) · verified `scratch/ftb_small.png`, `scratch/rv_3_act3_dispatched.png`
 - [x] FT-17 play flicker fixed · Opus · verified `node scratch/flicker_probe.mjs` → 0 blank frames / 174
 
 > Sections below are the v0.5 history (P0/P1/P2). Items there that are not ticked are now covered by the WPs above.
@@ -102,7 +103,7 @@ Each box is ticked only after its **Verify** line in `build.md` / [`docs/FLASH_P
 - [x] Session resumption (`SessionResumptionConfig`) + context-window compression enabled in `live_session.py` (+ input-audio transcription)
 - [x] `go_away` handled: reconnect with resumption handle, browser socket stays open; conversation memory preserved — *proved by `tests/api/test_live_resilience.py::test_goaway_resumes_with_handle_and_keeps_socket` (fake Gemini)*
 - [x] Mid-session failure → retry ×3 → visible `fallback` status + rehearsal engine on the same socket — *proved by `test_outage_falls_back_to_rehearsal_on_same_socket`; also observed live when ADC expired*
-- [ ] **Verify (real network):** soak ≥ 30 min through ≥ 1 real GoAway, still answers a question referring to turn 1. *Blocked: ADC expired → run `gcloud auth application-default login`.* Debug aid: start backend with `DI_DEBUG_RECONNECT=1` and send `{"type":"debug_reconnect"}` to force a resume.
+- [ ] **Verify (real network):** soak ≥ 30 min through ≥ 1 real GoAway, still answers a question referring to turn 1. *2026-09-26 10:08 run: 30 min, 3 resumes, 13/13 answered — but turn-1 recall FAILED → fixed with `_recap_turns`; short re-test with forced resume recalls turn 1 ✓. Full 30-min re-run after the fix still to do (`backend/scratch/live_soak.py`).* Debug aid: start backend with `DI_DEBUG_RECONNECT=1` and send `{"type":"debug_reconnect"}` to force a resume.
 
 ### P0-2 · One source of truth for what the agent says · **Opus** · V1, V8 — *code done, in-browser LIVE check pending*
 - [x] Explicit `LIVE | SCRIPTED` agent mode (`uiStore.agentMode`, persisted), hotkey **V**, chip in AgentPanel, button in Presenter Console

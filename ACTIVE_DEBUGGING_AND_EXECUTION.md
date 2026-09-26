@@ -19,8 +19,10 @@ _Last updated: 2026-09-26 07:33 UTC · by Opus_
 | WP-08 / 09 | Opus | Act 3 action panel / Act 4 notes ⇄ WCR | ✅ rebuilt 07:52 as `cockpit/act3/Act3ActionPanel.tsx`, `cockpit/act4/Act4ShiftWcr.tsx` (Flash's ActionTheatre/WcrCompareView kept, unmounted / behind "Open full WCR") |
 | WP-11 | Flash | Presenter console | ✅ done (PresenterConsole sync) |
 | WP-10 | Flash | Basin map offline | ✅ done (bundled GeoJSON, shelf edge, collision-free labels) |
-| WP-12 | Flash | ML lithology fix + trained models | 🟡 review 08:55: RF lithology model loads and is used in frames; `backend/tests/ml/test_models.py` missing (FB-5); `meta.ml_status` hard-coded (Opus); kick_risk model not wired (kept on baseline on purpose) |
-| P-FB-1 | Flash (+Opus a/b/c) | Review feedback on P-FT A+B — see docs/FLASH_PLAYBOOK.md §P-FB-1 (FB-1 small-screen overlap, FB-2 lane gaps, FB-3 doc comment, FB-4 ClosingCard copy/colours, FB-5 ML tests) | ⬜ open |
+| WP-12 | Flash + Opus | ML lithology fix + trained models | ✅ 09:37: RF lithology model loads and drives `ml.litho.*`; `meta.ml_status = trained_rf_lithology`; backend runs with joblib/scikit-learn; `backend/tests/ml/test_models.py` 6/6. **Decision:** trained kick_risk model deliberately NOT wired — P(kick) stays on the story-controlled baseline so the 71 % moment is deterministic |
+| P-FB-1 | Opus (did it instead of Flash) | Review feedback on P-FT A+B | ✅ 09:37: FB-2 lanes stacked, FB-3 comment restored, FB-4 ClosingCard plain copy + theme tokens, FB-5 ML tests. FB-1 (1366 px overlap) dropped — owner: venue screen is high-res |
+| Agent prompt | Opus | Rules 8 (answer only what was asked) + 9 (never claim a simulated message was delivered); `draft_shift_log` routed | ✅ 09:36 · prompt renders |
+| Live soak | Opus | 32 min, forced resume at 5 min, final memory question (`backend/scratch/live_soak.py`) | ✅ 10:08: 13/13 answered, 0 empty, 3 reconnects (1 forced + 2 natural) all resumed, first audio median 1.1 s / max 3.4 s. **Found + fixed:** (1) agent invented a 1,000 bbl volume → barite 12.9 MT vs memo 39.8 MT — `compute_barite` Live declaration no longer takes `vol_bbl`, prompt says call with no args, bags from rounded MT (796); (2) first question forgotten after resumes → backend keeps a turn log and re-seeds it as user/model history after every reconnect (`_recap_turns`). Re-test (`backend/scratch/live_retest.py`) 10:12: barite 39.8 MT / 796 bags ✓, status fresh after reconnect ✓, first question recalled ✓ |
 
 ## 2 · Open issues
 | ID | Sev | Symptom | Owner | Serves |
@@ -33,6 +35,7 @@ _Last updated: 2026-09-26 07:33 UTC · by Opus_
 ## 3 · Parked (owner decision: last step)
 - WP-15: LAS calibration of curve shapes; **DT Option A** (porosity drives density + sonic together, remove DT-only transition term, T3 departure ≈ 3 µs/ft); final narrative.
 - **Real messaging + phone call — PARKED (owner, 2026-09-26 08:21).** No Telegram bot, no Google Chat webhook, no calling service (Twilio etc.) on the Argolis project. Reason: avoid any third-party bot/credential risk on demo day. Lanes stay **SIMULATED** by design. Do NOT set `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` / `GOOGLE_CHAT_WEBHOOK_URL`; without them the backend makes no outbound call. Revisit only on owner request.
+- **WeatherNext cyclone early warning — PARKED (owner, 2026-09-26 10:06).** Kept out of the demo: it shifts the story away from the connected drilling engineer. Design if revisited: optional encore, weather-site style wind field + 64-member ensemble tracks + "decision window" (storm ETA vs time to secure well), labelled "illustrative forecast"; tool `get_metocean_outlook`; ~6 h. Mock-ups: `frontend/public/mockups/live/metocean_panel_v1.jpg`, `metocean_panel_v2.jpg`. Never claim metre-level accuracy (WeatherNext 2 ≈ 0.25° grid).
 
 ## 4 · Blocked / waiting on owner
 - (none)

@@ -1,3 +1,4 @@
+/** TakeawayCard — the one sentence the board should remember from each act (checklist §A). Enter toggles, Esc hides. */
 import { useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ACTS, useScenario } from '../../state/scenarioStore';

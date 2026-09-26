@@ -132,7 +132,7 @@ export default function Act3ActionPanel() {
         {/* B) Fan-out */}
         <section className="flex min-h-0 flex-col">
           <div className="mb-1 text-[10.5px] font-bold uppercase tracking-[0.18em] text-muted">B · Fan-out {approvedMw ? '' : '· after approval'}</div>
-          <div className="flex min-h-0 flex-1 flex-col justify-between gap-1.5 overflow-hidden">
+          <div className="flex min-h-0 flex-1 flex-col justify-start gap-2 overflow-y-auto">
             {lanes.map(({ lane, ch }, i) => {
               const m = LANE_META[lane];
               const st = STATUS[ch?.status ?? 'queued'];
