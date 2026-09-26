@@ -1,0 +1,22 @@
+# What `gcloud builds submit` uploads. Written explicitly because the default falls back to .gitignore,
+# which excludes data/processed and data/models — the image would then ship without the well logs / ML models.
+.gcloudignore
+.git/
+.gitignore
+**/node_modules/
+**/.venv/
+**/__pycache__/
+**/scratch/
+# frontend/dist is INCLUDED on purpose (prebuilt locally, see backend.Dockerfile)
+frontend/.env.local
+.env
+.env.*
+!.env.example
+data/raw/
+data/interim/
+data/cache/
+data/exports/
+data/state/*.sqlite
+docs/archive/
+**/.terraform/
+infra/terraform/

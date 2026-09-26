@@ -52,7 +52,10 @@ async def recv_until_done(ws, ts, limit=60):
 async def main():
     t_start = time.time()
     results, all_status, forced = [], [], False
-    async with websockets.connect("ws://localhost:8765/ws/live", max_size=None, ping_interval=20) as ws:
+    url = os.environ.get("SOAK_URL", "ws://localhost:8765/ws/live")
+    tok = os.environ.get("SOAK_TOKEN")
+    hdrs = {"Authorization": f"Bearer {tok}"} if tok else None
+    async with websockets.connect(url, max_size=None, ping_interval=20, additional_headers=hdrs) as ws:
         while time.time() - t_start < 25:
             m = json.loads(await ws.recv())
             if m.get("type") == "status":

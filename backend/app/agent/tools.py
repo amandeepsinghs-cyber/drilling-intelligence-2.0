@@ -497,7 +497,7 @@ def generate_wcr() -> dict[str, Any]:
         "basin": f["well"]["basin"],
         "program": f["well"]["program"],
         "status": "COMPILED",
-        "google_doc_url": "https://docs.google.com/document/d/1wcr-mn-sm-dw-01-ongc-preview",
+        "report_url": "/reports/WCR-MN-SM-DW-01.html",  # full report hosted in-app (dummy report for a demo)
         "sections_included": [
             "1. Geological Summary & Stratigraphy",
             "2. Drilling Operations & ROP Log",

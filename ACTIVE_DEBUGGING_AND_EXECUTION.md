@@ -100,3 +100,19 @@ google-chrome --headless=new --no-sandbox --window-size=1920,1080 --virtual-time
 - Open: owner to confirm closing ask (90-day pilot placeholder) and Hinglish lines; 30-min re-soak not yet run.
 - 11:13 Brand wording per Y26 guide: agent badge "Gemini Live"→"Live"; "Built with Google Gemini" under agent input; audit line → "Gemini Enterprise Agent Platform (Live API)"; run_of_show closing + README drop "Vertex AI". No new logos. tsc ✓ vitest 21/21.
 - 11:35 Cockpit polish: agent title "Sagar Drishti AI Agent" 20px; top-bar LIVE chip removed (agent-panel badge stays); Well-at-a-glance card removed; log headers 72→84 px + group strip 22→26 px, no-wrap labels, headers clipped per track; ML badge solid; Cuttings 128 px.
+- 11:48 Region latency probe (backend/scratch/region_latency.py, from Cloudtop asia-southeast1-b): gemini-3.8-live served ONLY in us-central1 (connect 2.3 s, first audio 0.60 s, turn 2.2 s median n=3). Not found in asia-south1, asia-southeast1, global, us-east1/4/5, us-south1, us-west1/4, europe-west1/2/4, me-central1. => Cloud Run must go in us-central1.
+
+## 2026-09-26 12:30 UTC — Cloud Run deploy (project drilling-intelligence-2-509714, us-central1)
+- APIs enabled: run, artifactregistry, cloudbuild, aiplatform, iam. Gemini Live verified in this project (us-central1: connect 2330 ms, first audio 612 ms, n=3).
+- SAs: sagar-drishti-run (roles/aiplatform.user), sagar-drishti-build (cloudbuild.builds.builder, logging.logWriter, artifactregistry.writer, objectViewer on _cloudbuild bucket). Default compute SA could not read the build upload.
+- AR repo us-central1/sagar-drishti; image sagar-drishti:v0-4 (build 482b9e3d). Frontend is prebuilt locally: package-lock resolves via corp Airlock proxy, npm crashes in Cloud Build.
+- Service: https://sagar-drishti-248430093579.us-central1.run.app (rev 00001-s5d; min 1, no CPU throttling, session affinity, timeout 3600, 2 CPU/2 GiB, DI_ENV=cloudrun).
+- allUsers invoker BLOCKED by org policy (DRS) -> service is auth-only (403 without token).
+- Verify: health/pages/deep links/frames 200 with ID token; Live over wss: 2 turns OK, first audio 1.5 s (2 tools) / 0.7 s, memory OK.
+- Data lake: gs://sagar-drishti-data snapshot archived to _archive/snapshot_2026-09-25/ (912 KB), then rsync (no delete) -> 58 MB incl. models/, scenario/, full knowledge/, processed/.
+- Code fixes: WS URL same-origin (was :8765 fallback), SPA deep-link fallback, settings.cloudrun.yaml, Dockerfile, .gcloudignore, cloudbuild(.image).yaml; soak + latency scripts accept URL/project env.
+- OPEN: browser access path (IAP vs local proxy); 30-min soak on Cloud Run; README update; commit+push on user OK.
+- 12:55 UTC: IAP enabled on Cloud Run (iap.googleapis.com + cloudresourcemanager enabled; IAP agent granted run.invoker; admin@amandeepsinghs.altostrat.com granted roles/iap.httpsResourceAccessor). Unauth request now 302 -> Google sign-in. Browser LIVE test pending (user).
+- 15:06 UTC: WCR report attached. docs/wcr/WCR-MN-SM-DW-01_v1.html (original, untouched) -> frontend/public/reports/WCR-MN-SM-DW-01.html with banner "Dummy report for a demo" (+ title). WCR overlay button now "Open full report ↗" (new tab). Fake Google Doc URLs replaced in tools.py / dispatch.py / docs_wcr.py. tsc OK, vitest 21/21, validate_facts 25/25. Deployed image v0-4-1, rev sagar-drishti-00002-7w4; IAP still on, min instances 1.
+- 15:15 UTC: visible 'Dummy report for a demo' label added directly above ONGC crest (public copy only); deployed v0-4-2.
+- 15:20 UTC: top banner restored to original 'Draft for Review • Confidential Operational Release' + original <title> (user: it signals human-review draft). Only change vs original = 'Dummy report for a demo' label above crest. Deployed v0-4-3.

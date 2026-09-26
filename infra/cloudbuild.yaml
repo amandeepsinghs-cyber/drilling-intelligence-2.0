@@ -1,14 +1,16 @@
-# Google Cloud Build — Sagar Drishti 2.0 (Phase 7)
-# Builds and deploys the unified production container to Cloud Run in asia-south1.
+# Google Cloud Build — Sagar Drishti AI Agent (unified container)
+# Builds and deploys to Cloud Run in us-central1 — the only region serving gemini-3.8-live
+# (measured 2026-09-26, backend/scratch/region_latency.py). Earlier revision targeted asia-south1.
+# Usage (repo root):  gcloud builds submit --config infra/cloudbuild.yaml --project drilling-intelligence-2-509714 .
 steps:
-  # 1. Build unified container (multi-stage: Node 20 frontend build + Python 3.12 FastAPI/ADK backend)
+  # 1. Build unified container (multi-stage: Node 20 frontend build + Python 3.12 FastAPI backend)
   - name: gcr.io/cloud-builders/docker
     args:
       - "build"
       - "-f"
       - "infra/docker/backend.Dockerfile"
       - "-t"
-      - "${_AR}/sagar-drishti:$SHORT_SHA"
+      - "${_AR}/sagar-drishti:${_TAG}"
       - "-t"
       - "${_AR}/sagar-drishti:latest"
       - "."
@@ -27,27 +29,32 @@ steps:
       - "run"
       - "deploy"
       - "${_SERVICE_NAME}"
-      - "--image"
-      - "${_AR}/sagar-drishti:$SHORT_SHA"
-      - "--region"
-      - "${_REGION}"
-      - "--platform"
-      - "managed"
-      - "--allow-unauthenticated"
-      - "--port"
-      - "8080"
-      - "--memory"
-      - "2Gi"
-      - "--cpu"
-      - "2"
-      - "--set-env-vars"
-      - "DI_ENV=gcp,DI_PROJECT_ID=drilling-intelligence-2-509714,DI_REGION=asia-south1"
+      - "--image=${_AR}/sagar-drishti:${_TAG}"
+      - "--region=${_REGION}"
+      - "--service-account=${_RUN_SA}"
+      - "--port=8080"
+      - "--memory=2Gi"
+      - "--cpu=2"
+      - "--min-instances=1"
+      - "--max-instances=3"
+      - "--no-cpu-throttling"
+      - "--session-affinity"
+      - "--timeout=3600"
+      - "--concurrency=40"
+      - "--execution-environment=gen2"
+      - "--set-env-vars=DI_ENV=cloudrun"
+      - "--labels=app=sagar-drishti,env=demo"
 
 substitutions:
-  _AR: asia-south1-docker.pkg.dev/drilling-intelligence/drilling-dashboard
+  _AR: us-central1-docker.pkg.dev/drilling-intelligence-2-509714/sagar-drishti
   _SERVICE_NAME: sagar-drishti
-  _REGION: asia-south1
+  _REGION: us-central1
+  _TAG: v0-4
+  _RUN_SA: sagar-drishti-run@drilling-intelligence-2-509714.iam.gserviceaccount.com
 
 images:
-  - "${_AR}/sagar-drishti:$SHORT_SHA"
+  - "${_AR}/sagar-drishti:${_TAG}"
   - "${_AR}/sagar-drishti:latest"
+
+options:
+  logging: CLOUD_LOGGING_ONLY

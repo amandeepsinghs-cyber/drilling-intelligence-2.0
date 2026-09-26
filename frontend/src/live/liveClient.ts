@@ -88,8 +88,9 @@ class LiveClient {
     const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const host = window.location.hostname || 'localhost';
     // When running Vite dev server (port 5173), API is proxied/running on 8765
-    const port = window.location.port === '5173' ? '8765' : (window.location.port || '8765');
-    return `${proto}//${host}:${port}/ws/live`;
+    if (window.location.port === '5173') return `${proto}//${host}:8765/ws/live`;
+    // Cloud Run / single-container: same origin (default port → no ":port" suffix)
+    return `${proto}//${window.location.host || 'localhost:8765'}/ws/live`;
   }
 
   public connect(): void {

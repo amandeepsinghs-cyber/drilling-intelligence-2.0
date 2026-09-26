@@ -1,0 +1,16 @@
+# Build + push only (deploy is done from the CLI with `gcloud run deploy`, so Cloud Build needs no
+# Cloud Run admin rights). Usage from repo root:
+#   gcloud builds submit --config infra/cloudbuild.image.yaml --region us-central1 --project drilling-intelligence-2-509714 .
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args: ["build", "-f", "infra/docker/backend.Dockerfile",
+           "-t", "${_AR}/sagar-drishti:${_TAG}", "-t", "${_AR}/sagar-drishti:latest", "."]
+substitutions:
+  _AR: us-central1-docker.pkg.dev/drilling-intelligence-2-509714/sagar-drishti
+  _TAG: v0-4
+images:
+  - "${_AR}/sagar-drishti:${_TAG}"
+  - "${_AR}/sagar-drishti:latest"
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: E2_HIGHCPU_8

@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Well Completion Report — Well MN-SM-DW-01 | ONGC Deepwater</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #f8fafc;
+      --bg-paper: #ffffff;
+      --text-black: #09090b;
+      --text-heading: #0f172a;
+      --text-body: #1e293b;
+      --text-muted: #64748b;
+      --ongc-red: #a41d23;
+      --ongc-gold: #c59b27;
+      --line-dark: #0f172a;
+      --line-subtle: #cbd5e1;
+      --line-light: #e2e8f0;
+      --table-header: #f1f5f9;
+      --card-bg: #f8fafc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Arial', 'Helvetica Neue', 'Segoe UI', -apple-system, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-body);
+      line-height: 1.72;
+      font-size: 15px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Borderless Top Classification Header */
+    .top-classification-banner {
+      width: 100%;
+      background: transparent;
+      padding: 16px 20px 4px 20px;
+      text-align: center;
+      font-family: 'Arial', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: #64748b;
+      border: none;
+    }
+
+    /* Floating Executive Controls */
+    .floating-actions {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1000;
+      display: flex;
+      gap: 8px;
+      background: #0f172a;
+      padding: 6px 12px;
+      border-radius: 6px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    }
+
+    .action-btn {
+      appearance: none;
+      background: transparent;
+      border: 1px solid #475569;
+      color: #ffffff;
+      padding: 6px 12px;
+      font-family: 'Arial', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .action-btn:hover {
+      background: #1e293b;
+      border-color: #94a3b8;
+    }
+
+    .action-btn.active {
+      background: #ffffff;
+      color: #0f172a;
+      border-color: #ffffff;
+    }
+
+    /* Executive Document Sheet */
+    .report-sheet {
+      max-width: 980px;
+      margin: 18px auto 100px auto;
+      background: var(--bg-paper);
+      padding: 70px 84px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+      border: 1px solid var(--line-subtle);
+    }
+
+    .report-sheet.is-editing {
+      outline: 2px solid #0284c7;
+    }
+
+    /* ========================================================
+       COVER / TITLE PAGE (Clean Executive Presentation)
+       ======================================================== */
+    .cover-page {
+      text-align: center;
+      padding: 40px 0 60px 0;
+      border-bottom: 2px solid var(--line-dark);
+      margin-bottom: 48px;
+      page-break-after: always;
+    }
+
+    .cover-logo-wrap {
+      margin-bottom: 24px;
+    }
+
+    .cover-logo {
+      width: 140px;
+      height: 140px;
+      display: inline-block;
+    }
+
+    .company-name-heading {
+      font-family: 'Arial', 'Helvetica Neue', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: var(--text-black);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .operating-asset-line {
+      font-family: 'Arial', sans-serif;
+      font-size: 13.5px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--ongc-red);
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+
+    .cover-divider {
+      height: 2px;
+      width: 120px;
+      margin: 0 auto 36px auto;
+      background: var(--ongc-red);
+    }
+
+    .wcr-big-title {
+      font-family: 'Arial Black', 'Arial', sans-serif;
+      font-size: 40px;
+      font-weight: 900;
+      letter-spacing: 2.5px;
+      color: var(--text-black);
+      line-height: 1.15;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+    }
+
+    .wcr-well-title {
+      font-family: 'Arial', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: var(--text-heading);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .wcr-subtitle {
+      font-family: 'Arial', sans-serif;
+      font-size: 14.5px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      color: var(--text-muted);
+      margin-bottom: 40px;
+      text-transform: uppercase;
+    }
+
+    .cover-meta-footer {
+      margin-top: 80px;
+      padding-top: 28px;
+      border-top: 1.5px solid var(--line-subtle);
+      font-size: 11.5px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      line-height: 1.85;
+      font-family: 'Arial', sans-serif;
+    }
+
+    /* ========================================================
+       EXECUTIVE SUMMARY (100% PURE PARAGRAPHS - ZERO TABLES)
+       ======================================================== */
+    .executive-summary-page {
+      page-break-after: always;
+      margin-bottom: 48px;
+      padding-bottom: 40px;
+      border-bottom: 1.5px solid var(--line-subtle);
+    }
+
+    .exec-summary-header {
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 2.5px solid var(--ongc-red);
+    }
+
+    .exec-summary-title {
+      font-family: 'Arial', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text-black);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .exec-summary-sub {
+      font-family: 'Arial', sans-serif;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Headings for Standard Chapters */
+    h1.exec-chapter {
+      font-family: 'Arial', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text-black);
+      letter-spacing: 0.5px;
+      margin: 48px 0 18px 0;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--ongc-red);
+      text-transform: uppercase;
+    }
+
+    h2.exec-section {
+      font-family: 'Arial', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-heading);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin: 32px 0 14px 0;
+    }
+
+    h3.exec-subsection {
+      font-family: 'Arial', sans-serif;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin: 24px 0 10px 0;
+    }
+
+    /* Prose Paragraphs (NO BULLETS) */
+    p.exec-p {
+      margin-bottom: 18px;
+      text-align: justify;
+      hyphens: auto;
+      text-indent: 1.5em;
+    }
+
+    p.exec-p.no-indent {
+      text-indent: 0;
+    }
+
+    /* Clean Card (NO LEFT BARS - Pure subtle border) */
+    .exec-data-card {
+      border: 1px solid var(--line-subtle);
+      border-radius: 4px;
+      padding: 18px 22px;
+      margin: 24px 0;
+      background: var(--card-bg);
+      font-size: 14.5px;
+    }
+
+    .exec-data-card-title {
+      font-family: 'Arial', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      color: var(--ongc-red);
+    }
+
+    .exec-data-card p {
+      margin-bottom: 10px;
+      text-indent: 0;
+    }
+
+    .exec-data-card p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Formal Tables (Booktabs style) */
+    .table-box {
+      width: 100%;
+      margin: 28px 0;
+      overflow-x: auto;
+    }
+
+    .table-caption {
+      font-family: 'Arial', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text-black);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    table.exec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+      line-height: 1.5;
+      border-top: 2px solid var(--line-dark);
+      border-bottom: 2px solid var(--line-dark);
+      text-align: left;
+    }
+
+    table.exec-table th {
+      background-color: var(--table-header);
+      color: var(--text-black);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 10.5px;
+      letter-spacing: 0.5px;
+      padding: 8px 10px;
+      border-bottom: 1.5px solid var(--line-dark);
+    }
+
+    table.exec-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--line-light);
+      color: var(--text-body);
+      vertical-align: middle;
+    }
+
+    table.exec-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    table.exec-table tr:hover td {
+      background-color: #f8fafc;
+    }
+
+    /* Technical Schematics & Diagrams */
+    .diagram-container {
+      margin: 32px 0;
+      border: 1px solid var(--line-dark);
+      background: #ffffff;
+      padding: 16px;
+    }
+
+    .diagram-header {
+      font-family: 'Arial', sans-serif;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--line-dark);
+      padding-bottom: 8px;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .composite-log-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    pre.ascii-tech {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      line-height: 1.45;
+      background: #ffffff;
+      padding: 14px;
+      overflow-x: auto;
+      color: #0f172a;
+    }
+
+    /* Endorsement Sign-off Grid */
+    .signature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 36px;
+    }
+
+    .sig-box {
+      font-family: 'Arial', sans-serif;
+      font-size: 12px;
+    }
+
+    .sig-line {
+      width: 100%;
+      height: 1px;
+      background: var(--line-dark);
+      margin-bottom: 8px;
+    }
+
+    .sig-box .name {
+      font-weight: 700;
+      color: var(--text-black);
+      margin-bottom: 2px;
+    }
+
+    .sig-box .role {
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-size: 10.5px;
+      letter-spacing: 0.5px;
+    }
+
+    /* Print Formatting */
+    @media print {
+      body {
+        background: #ffffff !important;
+        font-size: 10pt;
+      }
+      .top-classification-banner {
+        display: block !important;
+        position: static !important;
+      }
+      .floating-actions {
+        display: none !important;
+      }
+      .report-sheet {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+      }
+      .cover-page, .executive-summary-page, h1.exec-chapter {
+        page-break-before: always;
+      }
+      table.exec-table {
+        font-size: 8pt;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Borderless Top Document Classification Header -->
+  <div class="top-classification-banner">
+    Draft for Review &bull; Confidential Operational Release
+  </div>
+
+  <!-- Document Sheet -->
+  <div class="report-sheet">
+    <main id="reportCanvas">
+
+      <!-- ========================================================
+           COVER / TITLE PAGE (Clean Executive Presentation)
+           ======================================================== -->
+      <section class="cover-page">
+        <div class="demo-dummy-label" style="display:block;width:fit-content;margin:0 auto 22px auto;padding:8px 22px;border:2px solid #A41D23;border-radius:6px;background:#FDECEC;color:#A41D23;font:700 18px/1.2 Arial,Helvetica,sans-serif;letter-spacing:0.14em;text-transform:uppercase;-webkit-print-color-adjust:exact;print-color-adjust:exact;">Dummy report for a demo</div>
+        <div class="cover-logo-wrap">
+          <img class="cover-logo" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcKICAgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIgogICB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIgogICB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiCiAgIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAgeG1sbnM6c29kaXBvZGk9Imh0dHA6Ly9zb2RpcG9kaS5zb3VyY2Vmb3JnZS5uZXQvRFREL3NvZGlwb2RpLTAuZHRkIgogICB4bWxuczppbmtzY2FwZT0iaHR0cDovL3d3dy5pbmtzY2FwZS5vcmcvbmFtZXNwYWNlcy9pbmtzY2FwZSIKICAgd2lkdGg9IjMwMCIKICAgaGVpZ2h0PSIzMDAiCiAgIHZpZXdCb3g9IjAgMCAxMDAwIDEwMDAiPgogICAgPHBhdGgKICAgICAgIGQ9Ik0gMCwwIEwgMTAwMCwwIEwgMTAwMCwxMDAwIEwgMCwxMDAwIEwgMCwwIE0gNjQ4Ljg2LDM1Ljc4IEMgNjQwLDM5LjU1IDYzMS40Nyw0NS44NCA2MjcuODksNTUuMDkgQyA2MjUuMDQsNjEuOTQgNjI2LjcyLDY5Ljg0IDYzMC41NSw3NS45NiBDIDU5Ny45Miw3NS45NCA1NjUuMjksNzUuOTUgNTMyLjY2LDc1Ljk2IEMgNTMyLjY1LDgzLjM3IDUzMi42NSw5MC43OSA1MzIuNjYsOTguMjEgQyA1NjcuODYsOTguMjEgNjAzLjA1LDk4LjIxIDYzOC4yNSw5OC4yIEMgNjM4LjMyLDEwMy45NSA2MzguMjgsMTA5LjcgNjM4LjI4LDExNS40NSBDIDYxNC45NywxMTUuNDggNTkxLjY2LDExNS40NiA1NjguMzUsMTE1LjQ2IEMgNTY4LjM1LDEyMi44OSA1NjguMzYsMTMwLjMyIDU2OC4zNSwxMzcuNzUgQyA1NzQuOCwxMzguMjYgNTgxLjk0LDEzNi4xIDU4Ny43NywxMzkuODMgQyA1OTQuNjcsMTQ0Ljc3IDU5Ny4wMSwxNTQuMDMgNTk1Ljg3LDE2Mi4xIEMgNTk1LjAxLDE2OC42NSA1OTEuNTIsMTc1LjU3IDU4NS4wNywxNzguMDggQyA1ODAuMTIsMTgwLjE0IDU3NC40MSwxNzcuNzQgNTcxLjI2LDE3My43MSBDIDU2Ni4zOSwxNjcuNyA1NjUuMzcsMTU5LjQ3IDU2Ni42NSwxNTIuMDUgQyA1NTYuNzQsMTUyLjEzIDU0Ni44NCwxNTIuMDYgNTM2LjkzLDE1Mi4wOSBDIDUzNS41MSwxNjAuMjMgNTM2LjEsMTY4LjgyIDUzOS4zNywxNzYuNDcgQyA1NDQuOTksMTkwLjMyIDU1OC4yLDIwMC43IDU3Mi45NSwyMDMuMDMgQyA1ODQuMzUsMjA0Ljk0IDU5Ni41MSwyMDIuNDIgNjA1Ljk5LDE5NS43NSBDIDYxNi4xNiwxODguOCA2MjMuMjIsMTc3LjM3IDYyNC41MywxNjUuMDkgQyA2MjUuNzUsMTU1LjU4IDYyMy4xOCwxNDUuODcgNjE4LjMzLDEzNy42OSBDIDYyNC45NSwxMzcuNyA2MzEuNTgsMTM3LjU5IDYzOC4yMSwxMzcuNzggQyA2MzguMjMsMTU5LjI4IDYzOC4yLDE4MC43NyA2MzguMjMsMjAyLjI3IEMgNjQ3LjY0LDIwMi4yNiA2NTcuMDUsMjAyLjI3IDY2Ni40NiwyMDIuMjcgQyA2NjYuNDcsMTY3LjU5IDY2Ni40NiwxMzIuOTEgNjY2LjQ2LDk4LjIzIEMgNjcyLjczLDk4LjI1IDY3OS4wMSw5OC4wOCA2ODUuMjgsOTguMzIgQyA2ODUuMTUsMTMyLjk3IDY4NS4yLDE2Ny42MiA2ODUuMjksMjAyLjI3IEMgNjk0LjY0LDIwMi4yNiA3MDMuOTksMjAyLjI3IDcxMy4zNCwyMDIuMjcgQyA3MTMuMzUsMTY3LjU5IDcxMy4zNCwxMzIuOTEgNzEzLjM1LDk4LjIzIEMgNzE4LjMsOTguMTkgNzIzLjI2LDk4LjE5IDcyOC4yMiw5OC4yOCBDIDcyOC4zNSw5MC44MiA3MjguMjcsODMuMzYgNzI4LjI4LDc1LjkgQyA3MjUuNDgsNzUuOTUgNzIyLjY5LDc1Ljk2IDcxOS45LDc1Ljk3IEMgNzIzLjQzLDcwLjEzIDcyNS4yNCw2Mi44MiA3MjIuOTQsNTYuMTkgQyA3MTkuNTYsNDYuMzMgNzEwLjY0LDM5LjU3IDcwMS4zMiwzNS42OSBDIDY4NC43LDI5LjAyIDY2NS40NCwyOC45MyA2NDguODYsMzUuNzggTSA4NTMuNjMsMzUuMzcgQyA4NDQuNDYsMzkuMDcgODM1LjU3LDQ1LjM4IDgzMS43Nyw1NC44NSBDIDgyOC44Miw2MS43MyA4MzAuNDIsNjkuNzMgODM0LjMxLDc1LjkgQyA4MDQuMzcsNzUuODcgNzc0LjQzLDc1Ljk0IDc0NC40OSw3NS45NSBDIDc0NC40Nyw4My4zNyA3NDQuNDcsOTAuNzkgNzQ0LjQ5LDk4LjIxIEMgNzU2Ljk3LDk4LjIgNzY5LjQ1LDk4LjIgNzgxLjk0LDk4LjI2IEMgNzg0LjA0LDk4LjM0IDc4Ni4zNCw5Ny44OSA3ODguMjUsOTkuMDcgQyA3OTcuODEsMTAzLjkxIDgwMi4wNSwxMTYuMTUgNzk5LjI0LDEyNi4yIEMgNzk3LjYzLDEzMS43OCA3OTMuMDcsMTM2Ljk3IDc4Ny4wNywxMzcuNjUgQyA3ODIuMTIsMTM4LjM2IDc3Ny42MSwxMzUuNiA3NzMuNzksMTMyLjgxIEMgNzczLjc5LDEyNi40NyA3NzMuNjcsMTIwLjEzIDc3My43MSwxMTMuNzkgQyA3NjQuMzIsMTEzLjc5IDc1NC45MywxMTMuNzkgNzQ1LjU0LDExMy43OSBDIDc0NS41NiwxMzEuODQgNzQ1LjQ5LDE0OS44OCA3NDUuNTgsMTY3LjkzIEMgNzQ1Ljc2LDE3Ny44OCA3NDcuOTcsMTg4LjU4IDc1NC45NSwxOTYuMDggQyA3NTkuMjUsMjAwLjgyIDc2NS43NCwyMDIuODggNzcyLDIwMi44MSBDIDc5MC43MywyMDIuODIgODA5LjQ2LDIwMi45MSA4MjguMTksMjAyLjc2IEMgODI4LjA3LDE5NS4zMyA4MjguMTYsMTg3LjkgODI4LjE0LDE4MC40NyBDIDgxMy4xMywxODAuNTMgNzk4LjEzLDE4MC41NiA3ODMuMTMsMTgwLjMxIEMgNzgwLjA3LDE4MC4wNSA3NzUuNzIsMTc5Ljg3IDc3NC43NCwxNzYuMjcgQyA3NzMuMywxNzAuMTcgNzczLjgzLDE2My44MyA3NzMuNzEsMTU3LjYyIEMgNzg3Ljc5LDE2Ni41NyA4MDcuMDEsMTYxLjUxIDgxOC4xMywxNTAuMDcgQyA4MjcuODksMTUwIDgzNy42NSwxNDkuOTggODQ3LjQxLDE1MCBDIDg0Ny40NywxNjcuNDQgODQ3LjMyLDE4NC44OCA4NDcuNDksMjAyLjMxIEMgODU2LjgyLDIwMi4yNSA4NjYuMTYsMjAyLjIzIDg3NS40OSwyMDIuMzIgQyA4NzUuNzIsMTY3LjYyIDg3NS40OCwxMzIuOTEgODc1LjYxLDk4LjIgQyA4ODEuMzIsOTguMjIgODg3LjA0LDk4LjE5IDg5Mi43Niw5OC4yMiBDIDg5Mi43OCwxMzIuOSA4OTIuNzUsMTY3LjU4IDg5Mi43NywyMDIuMjcgQyA5MDIuMTgsMjAyLjI3IDkxMS41OCwyMDIuMjcgOTIxLDIwMi4yNyBDIDkyMSwxNjcuNTggOTIxLDEzMi45IDkyMSw5OC4yMiBDIDkyNC44Niw5OC4wMyA5MjguODYsOTguNTMgOTMyLjY2LDk3Ljk0IEMgOTMyLjc4LDkwLjYzIDkzMi43LDgzLjMxIDkzMi42Niw3NiBDIDkyOS42NSw3NS45MyA5MjYuNjUsNzUuOTMgOTIzLjY1LDc1Ljk2IEMgOTI3LjUyLDY5Ljc4IDkyOS4xNCw2MS43OCA5MjYuMjMsNTQuODkgQyA5MjIuNDMsNDUuNDUgOTEzLjYsMzkuMTMgOTA0LjQ1LDM1LjQxIEMgODg4LjMxLDI5LjEgODY5Ljc5LDI5LjA5IDg1My42MywzNS4zNyBNIDE3My4wOCwzMi45MSBDIDE3My4wOCw0MC4xNyAxNzMuMDYsNDcuNDMgMTczLjA5LDU0LjY5IEMgMTgxLjc3LDU0LjgzIDE5MS4yMiw1My40NSAxOTkuMDgsNTggQyAyMDUuMzksNjEuNzcgMjA2Ljk0LDY5LjQ3IDIwOS4wOCw3NS45MyBDIDE5MS43MSw3NS45OCAxNzQuMzQsNzUuOTMgMTU2Ljk3LDc1Ljk2IEMgMTU2Ljk2LDgzLjM3IDE1Ni45Niw5MC43OSAxNTYuOTcsOTguMiBDIDE2MC4zNSw5OC4yMSAxNjMuNzMsOTguMjEgMTY3LjEyLDk4LjIxIEMgMTY3LjE4LDExOC4xNiAxNjcuMTQsMTM4LjEyIDE2Ny4xNCwxNTguMDggQyAxNjMuNDIsMTU4LjA5IDE1OS42OSwxNTguMDkgMTU1Ljk3LDE1OC4wOCBDIDE1NC43OSwxNDkuNTYgMTUxLjI1LDE0MS4zOSAxNDUuNTgsMTM0Ljg5IEMgMTQ5LjA3LDEyOS4xNiAxNTEuOTYsMTIyLjggMTUyLjI5LDExNiBDIDE1My4wNCwxMDYuMjIgMTQ5LjY1LDk2LjI2IDE0My4yOSw4OC44MiBDIDEzNC43Niw3OC42MyAxMjEuMjIsNzMuMTQgMTA4LjAzLDczLjY4IEMgOTUuMDMsNzMuOTIgODIuMjEsODAuMzQgNzQuNDQsOTAuODEgQyA2OC44Miw5OC4yMSA2Ni4zLDEwNy42OCA2Ni45NiwxMTYuOTEgQyA3NS45MywxMTYuOTQgODQuOSwxMTYuODggOTMuODcsMTE2Ljk1IEMgOTMuNDUsMTEyLjgxIDk0LjE4LDEwOC40NSA5Ni42OCwxMDUuMDUgQyAxMDEuNjgsOTcuNTYgMTEzLjA2LDk2LjI3IDExOS43NywxMDIuMTkgQyAxMjYuODYsMTA3LjczIDEyNywxMTkuNDYgMTIwLjI2LDEyNS4zMyBDIDExNS45OCwxMjkuNDkgMTA5LjUzLDEyNy45NCAxMDQuMTUsMTI4LjI0IEMgMTA0LjE5LDEzNS42OCAxMDQuMDYsMTQzLjEyIDEwNC4yMiwxNTAuNTUgQyAxMDkuMzQsMTUwLjcxIDExNC42NSwxNDkuNzYgMTE5LjYxLDE1MS4zNyBDIDEyNi4wOCwxNTQuOTEgMTI4LjU4LDE2My40NiAxMjYuMywxNzAuMjUgQyAxMjQuMTQsMTc2LjY2IDExNy44OCwxODEuNDQgMTExLjEyLDE4MS43OCBDIDEwMi45MSwxODIuNDEgOTQuNzksMTc2LjIzIDkzLjMzLDE2OC4xMSBDIDkyLjYsMTY0Ljg0IDkzLjQ4LDE2MS41NSA5NC4xMSwxNTguMzQgQyA4NC41NiwxNTguNDcgNzUuMDEsMTU4LjM2IDY1LjQ1LDE1OC40IEMgNjMuODgsMTc0LjQgNzIuNTEsMTkwLjYxIDg2LjMxLDE5OC43IEMgOTkuNTUsMjA2Ljc4IDExNi45LDIwNy43MyAxMzAuODgsMjAwLjk2IEMgMTQxLjQ5LDE5NS45OCAxNTAuMDMsMTg2LjcgMTUzLjkyLDE3NS42MyBDIDE1OC4zMiwxNzUuNDMgMTYyLjc0LDE3NS41NyAxNjcuMTUsMTc1LjU1IEMgMTY3LjE2LDE4NC40NSAxNjcuMTMsMTkzLjM2IDE2Ny4xNiwyMDIuMjcgQyAxNzYuNTUsMjAyLjI2IDE4NS45NSwyMDIuMjcgMTk1LjM0LDIwMi4yNyBDIDE5NS4zNiwxNjcuNTkgMTk1LjMzLDEzMi45IDE5NS4zNiw5OC4yMiBDIDIwMS4wOCw5OC4yIDIwNi44MSw5OC4xOSAyMTIuNTQsOTguMjMgQyAyMTIuNTQsMTMyLjkxIDIxMi41MywxNjcuNTkgMjEyLjU0LDIwMi4yNyBDIDIyMS45MywyMDIuMjcgMjMxLjMyLDIwMi4yNyAyNDAuNzEsMjAyLjI3IEMgMjQwLjcyLDE2Ny42IDI0MC43MSwxMzIuOTIgMjQwLjcxLDk4LjI0IEMgMjQ0LjIzLDk4LjE5IDI0Ny43Niw5OC4yIDI1MS4yOSw5OC4yMSBDIDI1MS4yOSw5MC43NyAyNTEuMjksODMuMzQgMjUxLjI4LDc1LjkgQyAyNDcuMjUsNzUuOSAyNDMuMjMsNzUuOTEgMjM5LjIsNzUuODkgQyAyMzYuMTEsNjkuMDEgMjMzLDYyLjE0IDIzMC4wNSw1NS4yIEMgMjI4LjE4LDUwLjA2IDIyNi4zMiw0NC42MiAyMjIuMjcsNDAuNzUgQyAyMTYuNzQsMzUuMTUgMjA4LjY0LDMzLjAxIDIwMC45OCwzMi45MSBDIDE5MS42OCwzMi44OCAxODIuMzgsMzIuOTEgMTczLjA4LDMyLjkxIE0gMjYyLjcyLDc1LjkgQyAyNjIuNyw4My4zNCAyNjIuNzEsOTAuNzcgMjYyLjcxLDk4LjIxIEMgMjY2LjQxLDk4LjIxIDI3MC4xMSw5OC4yIDI3My44LDk4LjIyIEMgMjczLjgzLDEyMS43OSAyNzMuOCwxNDUuMzYgMjczLjgyLDE2OC45MyBDIDI3My44LDE3OC4xNSAyNzYuMTQsMTg3Ljk2IDI4Mi42OSwxOTQuNzkgQyAyODcuNiwyMDAuMDggMjk1LjAxLDIwMi4zIDMwMi4wNywyMDIuMjUgQyAzMjUuMjIsMjAyLjI5IDM0OC4zNywyMDIuMjYgMzcxLjUyLDIwMi4yNyBDIDM3MS41MiwxOTQuODEgMzcxLjUzLDE4Ny4zNiAzNzEuNTEsMTc5LjkgQyAzNTMuNywxNzkuODkgMzM1Ljg4LDE3OS45MiAzMTguMDYsMTc5Ljg5IEMgMzEzLjYsMTc5LjY5IDMwOC4yNSwxNzkuNyAzMDUuMDksMTc2IEMgMzAyLjExLDE3Mi4wMyAzMDIuMzIsMTY2Ljc4IDMwMi4xLDE2Mi4wNyBDIDMwMi4wNSwxNDAuNzggMzAyLjE0LDExOS40OSAzMDIuMDUsOTguMiBDIDMxMS4wNSw5OC4yNSAzMjAuMDUsOTguMTIgMzI5LjA1LDk4LjI5IEMgMzMzLjM1LDk4LjI4IDMzNi43NSwxMDEuNTkgMzM4LjgsMTA1LjA4IEMgMzQzLjU3LDExMi44OSAzNDUuMTYsMTIzLjM3IDM0MC41LDEzMS42IEMgMzM2LjcyLDEzOC4wNiAzMjcuMTksMTQwLjE3IDMyMS4yOSwxMzUuMjkgQyAzMTkuMDgsMTQzLjk3IDMxNi4zMSwxNTIuNSAzMTMuOCwxNjEuMSBDIDMyNy42MywxNjYuMTkgMzQzLjksMTYzLjY0IDM1NS42NSwxNTQuNzggQyAzNjQuNDYsMTQ4LjI0IDM3MS4xMiwxMzguMTYgMzcxLjc4LDEyNy4wMSBDIDM3Mi42MSwxMTYuNjEgMzY4LjM0LDEwNi41NCAzNjIuNDEsOTguMjIgQyA0MDAuNjMsOTguMiA0MzguODUsOTguMjEgNDc3LjA3LDk4LjIxIEMgNDc3LjA4LDEwNC44IDQ3Ny4wNywxMTEuNCA0NzcuMDcsMTE4IEMgNDU4LjAzLDExOC4xMSA0MzguOTksMTE3Ljc4IDQxOS45NSwxMTguMTggQyA0MTAuMDIsMTE4LjI0IDM5OS42NywxMjAuMzcgMzkxLjc0LDEyNi42OCBDIDM3OS45MywxMzUuNTkgMzc1LjcsMTUyLjEzIDM3OS40MSwxNjYuMSBDIDM4Mi42MiwxNzguMjkgMzkyLjM0LDE4OC4yOSA0MDQuMSwxOTIuNTggQyA0MTUuNCwxOTYuODcgNDI4LjUyLDE5Ni4wNSA0MzkuMTgsMTkwLjM1IEMgNDQ5LjEzLDE4NS4xMiA0NTYuODMsMTc1LjU4IDQ1OS4zLDE2NC41NiBDIDQ2MS4zNCwxNTYuNDUgNDU5Ljc3LDE0Ny45NSA0NTYuNzEsMTQwLjMxIEMgNDYzLjQ3LDE0MC40NSA0NzAuMjMsMTQwLjQgNDc2Ljk5LDE0MC4zNyBDIDQ3Ny4xOCwxNjEgNDc3LjAyLDE4MS42MyA0NzcuMDcsMjAyLjI2IEMgNDg2LjQ4LDIwMi4xNSA0OTUuODgsMjAyLjI0IDUwNS4yOSwyMDIuMjEgQyA1MDUuMywxNjcuNTQgNTA1LjI3LDEzMi44OCA1MDUuMyw5OC4yMiBDIDUwOS4zOSw5OC4yIDUxMy40OCw5OC4yMSA1MTcuNTgsOTguMjEgQyA1MTcuNTksOTAuNzkgNTE3LjU5LDgzLjM3IDUxNy41OCw3NS45NSBDIDQzMi42Miw3NS45NCAzNDcuNjcsNzUuOTkgMjYyLjcyLDc1LjkgTSAzNzkuNTMsMjc0LjM5IEMgMzMyLjI2LDMwMC42MyAyOTQuMTEsMzQyLjg3IDI3Mi43LDM5Mi41IEMgMjUzLjg2LDQzNi40MyAyNDcuODIsNDg1LjkzIDI1Ni44Myw1MzIuOTYgQyAyNTkuNjMsNTQ3LjE2IDI2Mi45NSw1NjEuMzkgMjY4LjI0LDU3NC44NyBDIDI2OS43Myw1NzkuNTkgMjc1LjE2LDU3OC4xNiAyNzguOTMsNTc4LjIgQyAzMDYuNjMsNTc3Ljk5IDMzNC4zMyw1NzcuOTEgMzYyLjAyLDU3Ny42NyBDIDM4OC41OCw1NzcuNzEgNDE1LjE0LDU3Ny4wNCA0NDEuNjksNTc3LjUyIEMgNDQzLjU3LDU3Ni4yOSA0NDQuMjgsNTczLjg3IDQ0NC43Nyw1NzEuNzkgQyA0NDcuNDgsNTUwLjggNDUwLjUxLDUyOS44NiA0NTMuMzUsNTA4Ljg5IEMgNDU5LjExLDQ2Ny44NSA0NjQuNDUsNDI2LjczIDQ3MC42NiwzODUuNzYgQyA0NzEuNSw0NTUuNDUgNDcxLjg0LDUyNS4xNSA0NzIuMzQsNTk0Ljg1IEMgNDA3Ljk1LDU5NC44NSAzNDMuNTcsNTk0Ljg1IDI3OS4xOCw1OTQuODQgQyAyODIuODcsNjAwLjIyIDI4Ni43NCw2MDUuNDYgMjkwLjMyLDYxMC45MSBDIDMzMS44Nyw2MTEuMTUgMzczLjQzLDYxMSA0MTQuOTksNjExLjA2IEMgNDEyLjc4LDYxMi42NSA0MTAuNDEsNjE0LjAzIDQwOC4zNCw2MTUuOCBMIDQwOC40LDYxNi43MyBMIDQwOC4wOSw2MTUuODkgQyAzODIuNTIsNjM0LjUgMzYxLjc0LDY1OS44NSAzNDkuMjYsNjg4Ljk1IEMgMzU1LjA0LDY5MS4yNyAzNjAuODEsNjkzLjU5IDM2Ni41Nyw2OTUuOTUgQyAzODMuMTgsNjU4LjAyIDQxNS4xNCw2MjYuOTcgNDUzLjc5LDYxMS45NyBDIDQ1OS44Nyw2MTAuMTkgNDY2LjMyLDYxMS4zMyA0NzIuNTcsNjExLjEgQyA0NzIuNDYsNjE5LjUxIDQ3Mi43Miw2MjcuOTMgNDcyLjYyLDYzNi4zNCBDIDQzNS42Nyw2NDUuODUgNDA0LjczLDY3NS43MyAzOTQuMTgsNzEyLjQzIEMgNDAwLjE0LDcxNC4xNCA0MDYuMTcsNzE1LjYzIDQxMi4xNiw3MTcuMjkgQyA0MjAuODYsNjg4LjY4IDQ0NC4wOSw2NjQuNTggNDcyLjgsNjU1Ljg1IEMgNDcyLjc1LDY2NC4xMiA0NzMuMDYsNjcyLjQgNDcyLjg0LDY4MC42NyBDIDQ1NS40MSw2OTAuMzcgNDQ0LjY0LDcxMC40MiA0NDUuNDEsNzMwLjI3IEMgNDgxLjgzLDczMC4yMyA1MTguMjUsNzMwLjAzIDU1NC42Nyw3MzAgQyA1NTUuMzcsNzA5Ljk1IDU0NC4yNCw2ODkuODggNTI2LjU4LDY4MC4yNyBDIDUyNi4zMiw2NzIgNTI2LjQ2LDY2My43MyA1MjYuMzYsNjU1LjQ3IEMgNTU1LjA3LDY2NC4yNSA1NzguNzEsNjg3Ljc1IDU4Ny43NCw3MTYuMzggQyA1OTMuNjksNzE0LjcgNTk5LjY3LDcxMy4wOCA2MDUuNjMsNzExLjQgQyA1OTQuNzEsNjc0LjcxIDU2My4zLDY0NS4zMiA1MjYuMjcsNjM2LjAzIEMgNTI2LjM3LDYyNy42MyA1MjYuMTIsNjE5LjIyIDUyNi4yNCw2MTAuODIgQyA1MzQuNiw2MTAuNzggNTQzLjUyLDYwOS41MiA1NTEuMTEsNjEzLjk0IEMgNTg3LjAyLDYyOS41OSA2MTYuOTQsNjU4LjcyIDYzMy4wNSw2OTQuNDggQyA2MzguODEsNjkyLjA5IDY0NC42MSw2ODkuNzcgNjUwLjMzLDY4Ny4yOCBDIDY0Mi41Niw2NzAuMDYgNjMyLjA0LDY1NC4wOSA2MTkuMjMsNjQwLjE5IEMgNjA4Ljg0LDYyOC43MSA1OTYuNzEsNjE4Ljk2IDU4My45Niw2MTAuMjQgQyA2MjUuMzMsNjEwLjE3IDY2Ni43LDYxMC4yMiA3MDguMDcsNjEwLjIxIEMgNzExLjg2LDYwNC44MSA3MTUuNiw1OTkuMzggNzE5LjM2LDU5My45NiBDIDY1NC45NSw1OTQuMDUgNTkwLjU1LDU5NC4yMyA1MjYuMTUsNTk0LjY2IEMgNTI1LjkyLDUyNS4zOSA1MjUuNDQsNDU2LjEyIDUyNS4yMywzODYuODUgTCA1MjYuNSwzODkuODQgQyA1MzUuMTcsNDQ5LjYgNTQ0LjM5LDUwOS4yOCA1NTMuMTEsNTY5LjAzIEMgNTUzLjM1LDU3MS45NCA1NTQuMjgsNTc0Ljc3IDU1Ni4xNCw1NzcuMDYgQyA1NjYuNCw1NzYuMTkgNTc2LjcyLDU3Ni43MiA1ODcuMDEsNTc2LjQ3IEMgNjMzLjA0LDU3Ni4xNiA2NzkuMDYsNTc2LjA3IDcyNS4wOSw1NzUuOCBDIDcyOS4yNCw1NzYuMjIgNzMwLjQzLDU3MS40MiA3MzEuNTYsNTY4LjQgQyA3NDEuOTksNTM1LjQ3IDc0Ni45Niw1MDAuNTMgNzQzLjQxLDQ2Ni4wNSBDIDczOS41LDQyNC44MyA3MjQuODEsMzg0LjczIDcwMS4zMiwzNTAuNjYgQyA2ODIuMjMsMzIyLjg5IDY1Ny40NSwyOTkuMDQgNjI4Ljg4LDI4MS4xNiBDIDU5Mi4yNSwyNTguMDIgNTQ5LjMsMjQ1LjAxIDUwNS45OSwyNDMuODEgQyA1MDcuMTEsMjgyLjUyIDUwNi42MywzMjEuMjYgNTA2LjkxLDM1OS45OSBDIDUwNy40Myw0NjQuNjEgNTA3Ljc0LDU2OS4yNCA1MDguMjMsNjczLjg3IEMgNTAyLjU1LDY3My4yNCA0OTYuODMsNjczLjMxIDQ5MS4xNyw2NzMuOTUgQyA0OTAuNSw1ODIuMzEgNDg5LjgsNDkwLjY3IDQ4OS4xNCwzOTkuMDQgQyA0ODguOTQsMzQ3LjI5IDQ4Ny45MywyOTUuNTUgNDg4LjQsMjQzLjgxIEMgNDUwLjM4LDI0NS4zIDQxMi43NywyNTUuODcgMzc5LjUzLDI3NC4zOSBNIDE1NC41OCw3NzMuODggQyAxNDcuMDMsNzc0LjY0IDEzOS40OCw3NzUuOTQgMTMyLjMsNzc4LjQ2IEMgMTIxLjk5LDc4MS45MSAxMTIuNSw3ODguNzEgMTA3LjU2LDc5OC42IEMgOTguNDQsODE2LjIgOTguNjUsODM2LjY0IDk4LjcxLDg1NS45NSBDIDk5LjAxLDg3My42NCA5Ny42Myw4OTEuNTQgMTAxLjEsOTA5LjAxIEMgMTAzLjU4LDkyMi4xIDEwOS40LDkzNS43NSAxMjEuMjYsOTQyLjkgQyAxMzYuOTgsOTUyLjQ2IDE1Ni4wNyw5NTMuNDQgMTczLjk5LDk1My40NiBDIDE5NS4xMSw5NTMuMjUgMjE3LjA2LDk1NS4wNCAyMzcuMTcsOTQ3LjIgQyAyNDcuNDgsOTQzLjUzIDI1Ni4zLDkzNS42MSAyNjAuNSw5MjUuNDQgQyAyNjguNzUsOTA2LjggMjY3Ljc5LDg4NS45NSAyNjcuODUsODY2LjA0IEMgMjY3LjY5LDg0OS4zIDI2OC43MSw4MzIuMzMgMjY1LjA5LDgxNS44NiBDIDI2Mi41Miw4MDMuNTIgMjU2LjczLDc5MC44NCAyNDUuNyw3ODMuOTQgQyAyMzEuNSw3NzUuMTYgMjE0LjM0LDc3My41MiAxOTguMDIsNzczLjE0IEMgMTgzLjU0LDc3My4wOSAxNjkuMDMsNzcyLjY1IDE1NC41OCw3NzMuODggTSAzMTcuMjksNzczLjMyIEMgMzE3LjM5LDgzMi42OSAzMTcuMDgsODkyLjA3IDMxNy40NCw5NTEuNDMgQyAzMzAuMTMsOTUxLjIgMzQyLjgyLDk1MS4zOSAzNTUuNTIsOTUxLjM0IEMgMzU1LjUyLDkyMC41NCAzNTUuNTIsODg5Ljc1IDM1NS41Miw4NTguOTYgQyAzNTUuNjMsODUzLjI2IDM1Ni4yMSw4NDcuNSAzNTcuOTksODQyLjA3IEMgMzYxLjY3LDgzMC4yNSAzNzAuNTksODIwLjI3IDM4MS44LDgxNS4wOCBDIDM5MS41Myw4MTAuNTggNDAyLjYyLDgxMC4yIDQxMy4xLDgxMS40OCBDIDQyNC41LDgxMi44NSA0MzUuNDIsODE5LjkyIDQ0MC4yOSw4MzAuNDggQyA0NDUuMjcsODQwLjU3IDQ0My45Miw4NTIuMDkgNDQzLjg3LDg2Mi45NiBDIDQ0My45LDg5Mi40MSA0NDMuODEsOTIxLjg3IDQ0My44Miw5NTEuMzMgQyA0NTYuNTcsOTUxLjMzIDQ2OS4zMyw5NTEuMzMgNDgyLjA4LDk1MS4zMiBDIDQ4Mi4wOSw5MTguNTQgNDgyLjA4LDg4NS43NSA0ODIuMDksODUyLjk2IEMgNDgyLjA5LDgzOS41OSA0ODIuODIsODI1LjgyIDQ3OC4xNyw4MTMuMDQgQyA0NzIuOTQsNzk3LjUzIDQ2MSw3ODQuMzEgNDQ1Ljg5LDc3Ny45NCBDIDQzNC44Nyw3NzMuNDUgNDIyLjc2LDc3My41OCA0MTEuMDcsNzczLjEzIEMgNDAxLDc3Mi43OSAzOTAuNDMsNzczLjE0IDM4MS4yOCw3NzcuODQgQyAzNzAuMzMsNzgzLjcgMzYwLjkxLDc5Mi4yMSAzNTMuMzEsODAxLjk4IEMgMzUzLjIxLDc5Mi40MSAzNTMuNDEsNzgyLjg0IDM1My4yLDc3My4yOCBDIDM0MS4yMyw3NzMuMzggMzI5LjI2LDc3My4zIDMxNy4yOSw3NzMuMzIgTSA1NTQuMSw3ODAuOTIgQyA1NDMuODUsNzg1LjQ1IDUzNiw3OTQuNjEgNTMyLjM4LDgwNS4xNSBDIDUyNS4xOSw4MjQuMjQgNTI2LjY4LDg0NC45NyA1MjYuNDgsODY0Ljk4IEMgNTI2LjU4LDg4MC40OSA1MjUuODYsODk2LjIyIDUyOS4zOSw5MTEuNDUgQyA1MzIuMDEsOTIzLjc2IDUzNy45Nyw5MzYuMTggNTQ5LjA1LDk0Mi45NiBDIDU2My43Miw5NTEuNjUgNTgxLjI2LDk1My4zNCA1OTcuOTcsOTUzLjQ3IEMgNjExLjMzLDk1My4zNCA2MjQuNzEsOTUzLjgzIDYzOC4wNSw5NTIuOTQgQyA2NTEuMjUsOTUxLjcgNjY1LjAyLDk0OS4xOSA2NzUuOTgsOTQxLjIzIEMgNjg1LjI2LDkzNC40NSA2OTAuMDksOTIzLjM0IDY5Mi42MSw5MTIuNDUgQyA2OTcuMDIsODkyLjYxIDY5NS4yNSw4NzIuMTcgNjk1LjY4LDg1Mi4wMyBDIDY2OS45OSw4NTEuODUgNjQ0LjI5LDg1MiA2MTguNiw4NTEuOTYgQyA2MTguNTksODY0Ljc1IDYxOC42LDg3Ny41NCA2MTguNiw4OTAuMzMgQyA2MzEuMzcsODkwLjM0IDY0NC4xMyw4OTAuMzIgNjU2LjksODkwLjM0IEMgNjU2LjUyLDg5Ni4yIDY1Ni4zMSw5MDIuNjYgNjUyLjQsOTA3LjQzIEMgNjQ3LjksOTEzLjMxIDY0MC4xMiw5MTUuMzggNjMzLjAyLDkxNS4zOSBDIDYxOS4wMSw5MTUuNDEgNjA1LDkxNS4zOSA1OTAuOTksOTE1LjQgQyA1ODUsOTE1LjM4IDU3OC42Niw5MTQuNyA1NzMuNjEsOTExLjIxIEMgNTY4LjI1LDkwNy43MSA1NjUuMzQsOTAxLjI4IDU2NS4xNSw4OTUuMDEgQyA1NjQuNDgsODc4LjAyIDU2NC45Niw4NjEuMDIgNTY0Ljg1LDg0NC4wNCBDIDU2NS40Miw4MzYuMjQgNTY0LjIsODI3LjYxIDU2OC42OSw4MjAuNzMgQyA1NzIuODEsODE0LjMzIDU4MC43NSw4MTEuNzYgNTg4LjA0LDgxMS42OCBDIDYwMS43MSw4MTEuNDkgNjE1LjM5LDgxMS42NyA2MjkuMDYsODExLjYgQyA2MzYuOTgsODExLjM1IDY0NS45OSw4MTIuMTggNjUxLjcsODE4LjM2IEMgNjU2LjYxLDgyMy4zNyA2NTYuODUsODMwLjggNjU3LjA1LDgzNy4zOCBDIDY2OS44OCw4MzcuNDEgNjgyLjcyLDgzNy4zOCA2OTUuNTYsODM3LjQgQyA2OTQuNTYsODIxLjM3IDY5Mi4zNSw4MDQuMTYgNjgxLjg2LDc5MS4yNyBDIDY3NS42MSw3ODMuNjMgNjY2LjE4LDc3OS41MyA2NTYuOSw3NzYuODcgQyA2MzksNzcyLjExIDYyMC4zLDc3My4yNSA2MDEuOTcsNzczLjA4IEMgNTg1Ljc5LDc3My4xOSA1NjkuMDIsNzczLjk5IDU1NC4xLDc4MC45MiBNIDc2NS45NSw3ODIuODIgQyA3NTYuMTksNzg4LjExIDc0OS43NCw3OTcuOTkgNzQ2LjU2LDgwOC40MSBDIDc0MC44NCw4MjYuMzUgNzQxLjkyLDg0NS40MSA3NDEuODEsODYzLjk4IEMgNzQyLDg3Ny4xNiA3NDEuMyw4OTAuNDIgNzQzLjI1LDkwMy41MSBDIDc0NC43Myw5MTMuOTIgNzQ3LjY1LDkyNC40NiA3NTMuNzksOTMzLjE1IEMgNzYwLjUsOTQyLjM4IDc3MS4yNCw5NDcuNjIgNzgyLjEyLDk1MC4xNyBDIDc5Ni40NCw5NTMuODUgODExLjMzLDk1My41MyA4MjYsOTUzLjU0IEMgODM5LjI5LDk1My41IDg1Mi43Myw5NTMuODggODY1Ljg0LDk1MS4zIEMgODc1LjYxLDk0OS40NyA4ODUuNDIsOTQ2LjIgODkzLjE5LDkzOS44IEMgODk5Ljc2LDkzNC4yMSA5MDMuOTEsOTI2LjMxIDkwNi4zNyw5MTguMTUgQyA5MDkuNTQsOTA4LjE2IDkxMC40MSw4OTcuNjUgOTEwLjksODg3LjI0IEMgODk4LjA0LDg4Ny4yNiA4ODUuMTgsODg3LjI0IDg3Mi4zMyw4ODcuMjUgQyA4NzEuODQsODkzLjk3IDg3Mi4zLDkwMS40MiA4NjgsOTA3LjA5IEMgODYzLjUsOTEzLjMzIDg1NS4zOCw5MTUuNDMgODQ4LjA1LDkxNS40NiBDIDgzMy4zOSw5MTUuNDUgODE4Ljc0LDkxNS41IDgwNC4wOCw5MTUuNDMgQyA3OTYuNzMsOTE1LjM1IDc4OC42OSw5MTMuMDEgNzg0LjI3LDkwNi43MyBDIDc4MC40Niw5MDEuNjcgNzgwLjMyLDg5NS4wNCA3ODAuMTksODg4Ljk4IEMgNzgwLjA0LDg3MS45OSA3ODAuMDEsODU1IDc4MC4yNiw4MzguMDEgQyA3ODAuNTksODMyLjAyIDc4MC42LDgyNS40NyA3ODQuMjcsODIwLjM5IEMgNzg4LjQxLDgxNC40IDc5NS45OCw4MTEuODUgODAzLjAxLDgxMS43NyBDIDgxNy4zNCw4MTEuNTYgODMxLjY3LDgxMS43NCA4NDYsODExLjY2IEMgODUzLjUzLDgxMS41MyA4NjIuMDUsODEyLjczIDg2Ny4zMSw4MTguNzEgQyA4NzIuNDgsODI0LjUzIDg3Mi4xNyw4MzIuODEgODcyLjQzLDg0MC4xIEMgODg1LjI2LDg0MC4xIDg5OC4wOSw4NDAuMSA5MTAuOTMsODQwLjEgQyA5MTAuMjksODI0Ljg0IDkwOC41Miw4MDguODkgOTAwLjM0LDc5NS42MiBDIDg5NC4zNyw3ODUuOTIgODgzLjgsNzgwLjA4IDg3My4wNiw3NzcuMTcgQyA4NTQuMTYsNzcxLjk5IDgzNC4zNSw3NzMuMjkgODE0Ljk3LDc3My4xNyBDIDc5OC4zLDc3My4zNCA3ODAuODIsNzc0LjU0IDc2NS45NSw3ODIuODIgeiIKICAgICAgIGlkPSJwYXRoNSIKICAgICAgIHN0eWxlPSJvcGFjaXR5OjE7ZmlsbDojYTQxZDIzIiAvPgogICAgPHBhdGgKICAgICAgIGQ9Ik0gNjY4LjM5LDU0LjUxIEMgNjc0LjM3LDUyLjY0IDY4MS4yLDUzLjI1IDY4Ni41OCw1Ni41NSBDIDY4OS41OSw1OC40MiA2OTIuMiw2MS4zOCA2OTIuNiw2NS4wMiBDIDY5Mi45OCw2OS41NSA2ODkuODIsNzMuNzMgNjg1Ljg5LDc1LjY1IEMgNjc5Ljk1LDc2LjMgNjczLjk1LDc1LjcgNjY3Ljk4LDc2IEMgNjYxLjIzLDc2LjUzIDY1NS45MSw2OC40OSA2NTguNSw2Mi4zOCBDIDY2MC4yOSw1OC4zNSA2NjQuMjYsNTUuNzMgNjY4LjM5LDU0LjUxIHoiCiAgICAgICBpZD0icGF0aDciCiAgICAgICBzdHlsZT0ib3BhY2l0eToxO2ZpbGw6I2E0MWQyMyIgLz4KICAgIDxwYXRoCiAgICAgICBkPSJNIDg3MS40OSw1NC42OSBDIDg3OS41OSw1MS45NiA4OTAuMTEsNTMuNjcgODk1LjA5LDYxLjE4IEMgODk4LjM4LDY2LjM3IDg5NC44Nyw3My4zMyA4ODkuNjgsNzUuNjcgQyA4ODMuODEsNzYuMTggODc3Ljg5LDc1Ljg1IDg3Miw3NS45IEMgODY0LjkyLDc2LjkgODU5LjE3LDY3LjcgODYyLjcxLDYxLjYzIEMgODY0LjUxLDU4LjIxIDg2Ny45LDU1LjkzIDg3MS40OSw1NC42OSB6IgogICAgICAgaWQ9InBhdGg5IgogICAgICAgc3R5bGU9Im9wYWNpdHk6MTtmaWxsOiNhNDFkMjMiIC8+CiAgICA8cGF0aAogICAgICAgZD0iTSA4MjIuMzEsOTguMjEgQyA4MzAuNjgsOTguMjUgODM5LjA3LDk4LjEyIDg0Ny40NSw5OC4yOCBDIDg0Ny4zOCwxMDguMDggODQ3LjQzLDExNy44OSA4NDcuNDIsMTI3LjcgQyA4NDEuNTksMTI3Ljc3IDgzNS43NywxMjcuNjkgODI5Ljk1LDEyNy43NSBDIDgzMS4zMywxMTcuMzYgODI4LjYyLDEwNi41OSA4MjIuMzEsOTguMjEgeiIKICAgICAgIGlkPSJwYXRoMTEiCiAgICAgICBzdHlsZT0ib3BhY2l0eToxO2ZpbGw6I2E0MWQyMyIgLz4KICAgIDxwYXRoCiAgICAgICBkPSJNIDQxNS40LDE0MS41NSBDIDQyMi41NSwxMzkuNDIgNDMwLjQ4LDE0NC4xNCA0MzIuNzUsMTUxLjA5IEMgNDM2LjA4LDE1OS41OSA0MzAuNCwxNzAuNjEgNDIxLjExLDE3MS44MyBDIDQxMi41OCwxNzMuMTMgNDA0LjU3LDE2NS40MSA0MDQuNjcsMTU2Ljk3IEMgNDA0LjQ3LDE1MC4yNyA0MDguNzksMTQzLjQxIDQxNS40LDE0MS41NSB6IgogICAgICAgaWQ9InBhdGgxMyIKICAgICAgIHN0eWxlPSJvcGFjaXR5OjE7ZmlsbDojYTQxZDIzIiAvPgogICAgPHBhdGgKICAgICAgIGQ9Ik0gMzIyLjMyLDM0Mi4yNSBDIDM2Mi4xOCwyOTQuMTEgNDIyLjQsMjYzLjMyIDQ4NC45LDI2MC4xMSBDIDQ2NS43LDM1NS43IDQ0Ni40Niw0NTEuMjcgNDI3LjMzLDU0Ni44NyBDIDQyNi41NSw1NTAuNTMgNDI3LjA4LDU1Ni44NCA0MjEuOTcsNTU3LjI4IEMgMzc0LjM3LDU1Ny40MyAzMjYuNzYsNTU3LjM3IDI3OS4xNiw1NTcuNDYgQyAyNzIuMTQsNTMzLjY4IDI2OC4xLDUwOC44OCAyNjguODgsNDg0LjA0IEMgMjY5Ljg0LDQzMi41MyAyODkuMjIsMzgxLjY4IDMyMi4zMiwzNDIuMjUgeiIKICAgICAgIGlkPSJwYXRoMTUiCiAgICAgICBzdHlsZT0ib3BhY2l0eToxO2ZpbGw6I2E0MWQyMyIgLz4KICAgIDxwYXRoCiAgICAgICBkPSJNIDUwOS44LDI2MC4wNyBDIDU1MS45MywyNjEuODYgNTkzLjQsMjc1LjkyIDYyOC4xMywyOTkuOCBDIDY1Ni44MywzMTkuNDEgNjgwLjk2LDM0NS42MyA2OTguMjMsMzc1Ljc5IEMgNzE5LjM4LDQxMi42NiA3MjkuOTgsNDU1LjUyIDcyOC4zLDQ5OCBDIDcyNy41Niw1MTcuMzEgNzI0LjExLDUzNi40NSA3MTguODcsNTU1LjAzIEMgNjcxLjU3LDU1NS42OCA2MjQuMjcsNTU1LjkgNTc2Ljk4LDU1Ni40NyBDIDU3NC43MSw1NTYuNzggNTcyLjQ2LDU1NS4zNCA1NzEuODgsNTUzLjEyIEMgNTY4LjExLDUzMy4zNCA1NjMuNjEsNTEzLjY3IDU1OS41MSw0OTMuOTQgQyA1NDIuOTUsNDE1Ljk4IDUyNi4zLDMzOC4wNCA1MDkuOCwyNjAuMDcgeiIKICAgICAgIGlkPSJwYXRoMTciCiAgICAgICBzdHlsZT0ib3BhY2l0eToxO2ZpbGw6I2E0MWQyMyIgLz4KICAgIDxwYXRoCiAgICAgICBkPSJNIDE1Mi41LDgxMi43MyBDIDE1NS45MSw4MTEuNzYgMTU5LjQ5LDgxMS44NiAxNjMsODExLjc0IEMgMTc2LjMyLDgxMS41IDE4OS42NCw4MTEuNzYgMjAyLjk2LDgxMS42NyBDIDIwOSw4MTEuNjMgMjE1LjM4LDgxMi4xNyAyMjAuNTgsODE1LjU2IEMgMjI1LjM1LDgxOC42NyAyMjguMzYsODI0LjE3IDIyOC43OCw4MjkuODMgQyAyMjkuNTMsODQwLjUzIDIyOS4zMyw4NTEuMjYgMjI5LjM1LDg2MS45OSBDIDIyOS4zMiw4NzMuNjkgMjI5LjYsODg1LjQxIDIyOC41OCw4OTcuMDggQyAyMjguMDYsOTAyLjcgMjI1LjIzLDkwOC4yNSAyMjAuNDMsOTExLjM5IEMgMjE1LjM0LDkxNC44NCAyMDksOTE1LjQ4IDIwMy4wMSw5MTUuNDcgQyAxODkuMzQsOTE1LjQ0IDE3NS42OCw5MTUuNDkgMTYyLjAyLDkxNS40NCBDIDE1NS4yNSw5MTUuNCAxNDcuOTQsOTEzLjk2IDE0My4wMiw5MDguOTUgQyAxMzkuNCw5MDUuMjggMTM3LjU1LDkwMC4xNCAxMzcuMzQsODk1LjA1IEMgMTM2Ljc3LDg4MS4wMyAxMzcuMTIsODY3IDEzNy4wNCw4NTIuOTggQyAxMzcuMTEsODQ0IDEzNi43LDgzNC45MiAxMzguNDksODI2LjA3IEMgMTQwLjEyLDgxOS40IDE0Ni4wOSw4MTQuNTQgMTUyLjUsODEyLjczIHoiCiAgICAgICBpZD0icGF0aDE5IgogICAgICAgc3R5bGU9Im9wYWNpdHk6MTtmaWxsOiNhNDFkMjMiIC8+CiAgICA8cGF0aAogICAgICAgZD0iTSA2NDguODYsMzUuNzggQyA2NjUuNDQsMjguOTMgNjg0LjcsMjkuMDIgNzAxLjMyLDM1LjY5IEMgNzEwLjY0LDM5LjU3IDcxOS41Niw0Ni4zMyA3MjIuOTQsNTYuMTkgQyA3MjUuMjQsNjIuODIgNzIzLjQzLDcwLjEzIDcxOS45LDc1Ljk3IEMgNzIyLjY5LDc1Ljk2IDcyNS40OCw3NS45NSA3MjguMjgsNzUuOSBDIDcyOC4yNyw4My4zNiA3MjguMzUsOTAuODIgNzI4LjIyLDk4LjI4IEMgNzIzLjI2LDk4LjE5IDcxOC4zLDk4LjE5IDcxMy4zNSw5OC4yMyBDIDcxMy4zNCwxMzIuOTEgNzEzLjM1LDE2Ny41OSA3MTMuMzQsMjAyLjI3IEMgNzAzLjk5LDIwMi4yNyA2OTQuNjQsMjAyLjI2IDY4NS4yOSwyMDIuMjcgQyA2ODUuMiwxNjcuNjIgNjg1LjE1LDEzMi45NyA2ODUuMjgsOTguMzIgQyA2NzkuMDEsOTguMDggNjcyLjczLDk4LjI1IDY2Ni40Niw5OC4yMyBDIDY2Ni40NiwxMzIuOTEgNjY2LjQ3LDE2Ny41OSA2NjYuNDYsMjAyLjI3IEMgNjU3LjA1LDIwMi4yNyA2NDcuNjQsMjAyLjI2IDYzOC4yMywyMDIuMjcgQyA2MzguMiwxODAuNzcgNjM4LjIzLDE1OS4yOCA2MzguMjEsMTM3Ljc4IEMgNjMxLjU4LDEzNy41OSA2MjQuOTUsMTM3LjcgNjE4LjMzLDEzNy42OSBDIDYyMy4xOCwxNDUuODcgNjI1Ljc1LDE1NS41OCA2MjQuNTMsMTY1LjA5IEMgNjIzLjIyLDE3Ny4zNyA2MTYuMTYsMTg4LjggNjA1Ljk5LDE5NS43NSBDIDU5Ni41MSwyMDIuNDIgNTg0LjM1LDIwNC45NCA1NzIuOTUsMjAzLjAzIEMgNTU4LjIsMjAwLjcgNTQ0Ljk5LDE5MC4zMiA1MzkuMzcsMTc2LjQ3IEMgNTM2LjEsMTY4LjgyIDUzNS41MSwxNjAuMjMgNTM2LjkzLDE1Mi4wOSBDIDU0Ni44NCwxNTIuMDYgNTU2Ljc0LDE1Mi4xMyA1NjYuNjUsMTUyLjA1IEMgNTY1LjM3LDE1OS40NyA1NjYuMzksMTY3LjcgNTcxLjI2LDE3My43MSBDIDU3NC40MSwxNzcuNzQgNTgwLjEyLDE4MC4xNCA1ODUuMDcsMTc4LjA4IEMgNTkxLjUyLDE3NS41NyA1OTUuMDEsMTY4LjY1IDU5NS44NywxNjIuMSBDIDU5Ny4wMSwxNTQuMDMgNTk0LjY3LDE0NC43NyA1ODcuNzcsMTM5LjgzIEMgNTgxLjk0LDEzNi4xIDU3NC44LDEzOC4yNiA1NjguMzUsMTM3Ljc1IEMgNTY4LjM2LDEzMC4zMiA1NjguMzUsMTIyLjg5IDU2OC4zNSwxMTUuNDYgQyA1OTEuNjYsMTE1LjQ2IDYxNC45NywxMTUuNDggNjM4LjI4LDExNS40NSBDIDYzOC4yOCwxMDkuNyA2MzguMzIsMTAzLjk1IDYzOC4yNSw5OC4yIEMgNjAzLjA1LDk4LjIxIDU2Ny44Niw5OC4yMSA1MzIuNjYsOTguMjEgQyA1MzIuNjUsOTAuNzkgNTMyLjY1LDgzLjM3IDUzMi42Niw3NS45NiBDIDU2NS4yOSw3NS45NSA1OTcuOTIsNzUuOTQgNjMwLjU1LDc1Ljk2IEMgNjI2LjcyLDY5Ljg0IDYyNS4wNCw2MS45NCA2MjcuODksNTUuMDkgQyA2MzEuNDcsNDUuODQgNjQwLDM5LjU1IDY0OC44NiwzNS43OCBNIDY2OC4zOSw1NC41MSBDIDY2NC4yNiw1NS43MyA2NjAuMjksNTguMzUgNjU4LjUsNjIuMzggQyA2NTUuOTEsNjguNDkgNjYxLjIzLDc2LjUzIDY2Ny45OCw3NiBDIDY3My45NSw3NS43IDY3OS45NSw3Ni4zIDY4NS44OSw3NS42NSBDIDY4OS44Miw3My43MyA2OTIuOTgsNjkuNTUgNjkyLjYsNjUuMDIgQyA2OTIuMiw2MS4zOCA2ODkuNTksNTguNDIgNjg2LjU4LDU2LjU1IEMgNjgxLjIsNTMuMjUgNjc0LjM3LDUyLjY0IDY2OC4zOSw1NC41MSB6IgogICAgICAgaWQ9InBhdGgyMiIKICAgICAgIHN0eWxlPSJvcGFjaXR5OjE7ZmlsbDojZmZmZmZmIiAvPgogICAgPHBhdGgKICAgICAgIGQ9Ik0gODUzLjYzLDM1LjM3IEMgODY5Ljc5LDI5LjA5IDg4OC4zMSwyOS4xIDkwNC40NSwzNS40MSBDIDkxMy42LDM5LjEzIDkyMi40Myw0NS40NSA5MjYuMjMsNTQuODkgQyA5MjkuMTQsNjEuNzggOTI3LjUyLDY5Ljc4IDkyMy42NSw3NS45NiBDIDkyNi42NSw3NS45MyA5MjkuNjUsNzUuOTMgOTMyLjY2LDc2IEMgOTMyLjcsODMuMzEgOTMyLjc4LDkwLjYzIDkzMi42Niw5Ny45NCBDIDkyOC44Niw5OC41MyA5MjQuODYsOTguMDMgOTIxLDk4LjIyIEMgOTIxLDEzMi45IDkyMSwxNjcuNTggOTIxLDIwMi4yNyBDIDkxMS41OCwyMDIuMjcgOTAyLjE4LDIwMi4yNyA4OTIuNzcsMjAyLjI3IEMgODkyLjc1LDE2Ny41OCA4OTIuNzgsMTMyLjkgODkyLjc2LDk4LjIyIEMgODg3LjA0LDk4LjE5IDg4MS4zMiw5OC4yMiA4NzUuNjEsOTguMiBDIDg3NS40OCwxMzIuOTEgODc1LjcyLDE2Ny42MiA4NzUuNDksMjAyLjMyIEMgODY2LjE2LDIwMi4yMyA4NTYuODIsMjAyLjI1IDg0Ny40OSwyMDIuMzEgQyA4NDcuMzIsMTg0Ljg4IDg0Ny40NywxNjcuNDQgODQ3LjQxLDE1MCBDIDgzNy42NSwxNDkuOTggODI3Ljg5LDE1MCA4MTguMTMsMTUwLjA3IEMgODA3LjAxLDE2MS41MSA3ODcuNzksMTY2LjU3IDc3My43MSwxNTcuNjIgQyA3NzMuODMsMTYzLjgzIDc3My4zLDE3MC4xNyA3NzQuNzQsMTc2LjI3IEMgNzc1LjcyLDE3OS44NyA3ODAuMDcsMTgwLjA1IDc4My4xMywxODAuMzEgQyA3OTguMTMsMTgwLjU2IDgxMy4xMywxODAuNTMgODI4LjE0LDE4MC40NyBDIDgyOC4xNiwxODcuOSA4MjguMDcsMTk1LjMzIDgyOC4xOSwyMDIuNzYgQyA4MDkuNDYsMjAyLjkxIDc5MC43MywyMDIuODIgNzcyLDIwMi44MSBDIDc2NS43NCwyMDIuODggNzU5LjI1LDIwMC44MiA3NTQuOTUsMTk2LjA4IEMgNzQ3Ljk3LDE4OC41OCA3NDUuNzYsMTc3Ljg4IDc0NS41OCwxNjcuOTMgQyA3NDUuNDksMTQ5Ljg4IDc0NS41NiwxMzEuODQgNzQ1LjU0LDExMy43OSBDIDc1NC45MywxMTMuNzkgNzY0LjMyLDExMy43OSA3NzMuNzEsMTEzLjc5IEMgNzczLjY3LDEyMC4xMyA3NzMuNzksMTI2LjQ3IDc3My43OSwxMzIuODEgQyA3NzcuNjEsMTM1LjYgNzgyLjEyLDEzOC4zNiA3ODcuMDcsMTM3LjY1IEMgNzkzLjA3LDEzNi45NyA3OTcuNjMsMTMxLjc4IDc5OS4yNCwxMjYuMiBDIDgwMi4wNSwxMTYuMTUgNzk3LjgxLDEwMy45MSA3ODguMjUsOTkuMDcgQyA3ODYuMzQsOTcuODkgNzg0LjA0LDk4LjM0IDc4MS45NCw5OC4yNiBDIDc2OS40NSw5OC4yIDc1Ni45Nyw5OC4yIDc0NC40OSw5OC4yMSBDIDc0NC40Nyw5MC43OSA3NDQuNDcsODMuMzcgNzQ0LjQ5LDc1Ljk1IEMgNzc0LjQzLDc1Ljk0IDgwNC4zNyw3NS44NyA4MzQuMzEsNzUuOSBDIDgzMC40Miw2OS43MyA4MjguODIsNjEuNzMgODMxLjc3LDU0Ljg1IEMgODM1LjU3LDQ1LjM4IDg0NC40NiwzOS4wNyA4NTMuNjMsMzUuMzcgTSA4NzEuNDksNTQuNjkgQyA4NjcuOSw1NS45MyA4NjQuNTEsNTguMjEgODYyLjcxLDYxLjYzIEMgODU5LjE3LDY3LjcgODY0LjkyLDc2LjkgODcyLDc1LjkgQyA4NzcuODksNzUuODUgODgzLjgxLDc2LjE4IDg4OS42OCw3NS42NyBDIDg5NC44Nyw3My4zMyA4OTguMzgsNjYuMzcgODk1LjA5LDYxLjE4IEMgODkwLjExLDUzLjY3IDg3OS41OSw1MS45NiA4NzEuNDksNTQuNjkgTSA4MjIuMzEsOTguMjEgQyA4MjguNjIsMTA2LjU5IDgzMS4zMywxMTcuMzYgODI5Ljk1LDEyNy43NSBDIDgzNS43NywxMjcuNjkgODQxLjU5LDEyNy43NyA4NDcuNDIsMTI3LjcgQyA4NDcuNDMsMTE3Ljg5IDg0Ny4zOCwxMDguMDggODQ3LjQ1LDk4LjI4IEMgODM5LjA3LDk4LjEyIDgzMC42OCw5OC4yNSA4MjIuMzEsOTguMjEgeiIKICAgICAgIGlkPSJwYXRoMjQiCiAgICAgICBzdHlsZT0ib3BhY2l0eToxO2ZpbGw6I2ZmZmZmZiIgLz4KICAgIDxwYXRoCiAgICAgICBkPSJNIDE3My4wOCwzMi45MSBDIDE4Mi4zOCwzMi45MSAxOTEuNjgsMzIuODggMjAwLjk4LDMyLjkxIEMgMjA4LjY0LDMzLjAxIDIxNi43NCwzNS4xNSAyMjIuMjcsNDAuNzUgQyAyMjYuMzIsNDQuNjIgMjI4LjE4LDUwLjA2IDIzMC4wNSw1NS4yIEMgMjMzLDYyLjE0IDIzNi4xMSw2OS4wMSAyMzkuMiw3NS44OSBDIDI0My4yMyw3NS45MSAyNDcuMjUsNzUuOSAyNTEuMjgsNzUuOSBDIDI1MS4yOSw4My4zNCAyNTEuMjksOTAuNzcgMjUxLjI5LDk4LjIxIEMgMjQ3Ljc2LDk4LjIgMjQ0LjIzLDk4LjE5IDI0MC43MSw5OC4yNCBDIDI0MC43MSwxMzIuOTIgMjQwLjcyLDE2Ny42IDI0MC43MSwyMDIuMjcgQyAyMzEuMzIsMjAyLjI3IDIyMS45MywyMDIuMjcgMjEyLjU0LDIwMi4yNyBDIDIxMi41MywxNjcuNTkgMjEyLjU0LDEzMi45MSAyMTIuNTQsOTguMjMgQyAyMDYuODEsOTguMTkgMjAxLjA4LDk4LjIgMTk1LjM2LDk4LjIyIEMgMTk1LjMzLDEzMi45IDE5NS4zNiwxNjcuNTkgMTk1LjM0LDIwMi4yNyBDIDE4NS45NSwyMDIuMjcgMTc2LjU1LDIwMi4yNiAxNjcuMTYsMjAyLjI3IEMgMTY3LjEzLDE5My4zNiAxNjcuMTYsMTg0LjQ1IDE2Ny4xNSwxNzUuNTUgQyAxNjIuNzQsMTc1LjU3IDE1OC4zMiwxNzUuNDMgMTUzLjkyLDE3NS42MyBDIDE1MC4wMywxODYuNyAxNDEuNDksMTk1Ljk4IDEzMC44OCwyMDAuOTYgQyAxMTYuOSwyMDcuNzMgOTkuNTUsMjA2Ljc4IDg2LjMxLDE5OC43IEMgNzIuNTEsMTkwLjYxIDYzLjg4LDE3NC40IDY1LjQ1LDE1OC40IEMgNzUuMDEsMTU4LjM2IDg0LjU2LDE1OC40NyA5NC4xMSwxNTguMzQgQyA5My40OCwxNjEuNTUgOTIuNiwxNjQuODQgOTMuMzMsMTY4LjExIEMgOTQuNzksMTc2LjIzIDEwMi45MSwxODIuNDEgMTExLjEyLDE4MS43OCBDIDExNy44OCwxODEuNDQgMTI0LjE0LDE3Ni42NiAxMjYuMywxNzAuMjUgQyAxMjguNTgsMTYzLjQ2IDEyNi4wOCwxNTQuOTEgMTE5LjYxLDE1MS4zNyBDIDExNC42NSwxNDkuNzYgMTA5LjM0LDE1MC43MSAxMDQuMjIsMTUwLjU1IEMgMTA0LjA2LDE0My4xMiAxMDQuMTksMTM1LjY4IDEwNC4xNSwxMjguMjQgQyAxMDkuNTMsMTI3Ljk0IDExNS45OCwxMjkuNDkgMTIwLjI2LDEyNS4zMyBDIDEyNywxMTkuNDYgMTI2Ljg2LDEwNy43MyAxMTkuNzcsMTAyLjE5IEMgMTEzLjA2LDk2LjI3IDEwMS42OCw5Ny41NiA5Ni42OCwxMDUuMDUgQyA5NC4xOCwxMDguNDUgOTMuNDUsMTEyLjgxIDkzLjg3LDExNi45NSBDIDg0LjksMTE2Ljg4IDc1LjkzLDExNi45NCA2Ni45NiwxMTYuOTEgQyA2Ni4zLDEwNy42OCA2OC44Miw5OC4yMSA3NC40NCw5MC44MSBDIDgyLjIxLDgwLjM0IDk1LjAzLDczLjkyIDEwOC4wMyw3My42OCBDIDEyMS4yMiw3My4xNCAxMzQuNzYsNzguNjMgMTQzLjI5LDg4LjgyIEMgMTQ5LjY1LDk2LjI2IDE1My4wNCwxMDYuMjIgMTUyLjI5LDExNiBDIDE1MS45NiwxMjIuOCAxNDkuMDcsMTI5LjE2IDE0NS41OCwxMzQuODkgQyAxNTEuMjUsMTQxLjM5IDE1NC43OSwxNDkuNTYgMTU1Ljk3LDE1OC4wOCBDIDE1OS42OSwxNTguMDkgMTYzLjQyLDE1OC4wOSAxNjcuMTQsMTU4LjA4IEMgMTY3LjE0LDEzOC4xMiAxNjcuMTgsMTE4LjE2IDE2Ny4xMiw5OC4yMSBDIDE2My43Myw5OC4yMSAxNjAuMzUsOTguMjEgMTU2Ljk3LDk4LjIgQyAxNTYuOTYsOTAuNzkgMTU2Ljk2LDgzLjM3IDE1Ni45Nyw3NS45NiBDIDE3NC4zNCw3NS45MyAxOTEuNzEsNzUuOTggMjA5LjA4LDc1LjkzIEMgMjA2Ljk0LDY5LjQ3IDIwNS4zOSw2MS43NyAxOTkuMDgsNTggQyAxOTEuMjIsNTMuNDUgMTgxLjc3LDU0LjgzIDE3My4wOSw1NC42OSBDIDE3My4wNiw0Ny40MyAxNzMuMDgsNDAuMTcgMTczLjA4LDMyLjkxIHoiCiAgICAgICBpZD0icGF0aDI2IgogICAgICAgc3R5bGU9Im9wYWNpdHk6MTtmaWxsOiNmZmZmZmYiIC8+CiAgICA8cGF0aAogICAgICAgZD0iTSAyNjIuNzIsNzUuOSBDIDM0Ny42Nyw3NS45OSA0MzIuNjIsNzUuOTQgNTE3LjU4LDc1Ljk1IEMgNTE3LjU5LDgzLjM3IDUxNy41OSw5MC43OSA1MTcuNTgsOTguMjEgQyA1MTMuNDgsOTguMjEgNTA5LjM5LDk4LjIgNTA1LjMsOTguMjIgQyA1MDUuMjcsMTMyLjg4IDUwNS4zLDE2Ny41NCA1MDUuMjksMjAyLjIxIEMgNDk1Ljg4LDIwMi4yNCA0ODYuNDgsMjAyLjE1IDQ3Ny4wNywyMDIuMjYgQyA0NzcuMDIsMTgxLjYzIDQ3Ny4xOCwxNjEgNDc2Ljk5LDE0MC4zNyBDIDQ3MC4yMywxNDAuNCA0NjMuNDcsMTQwLjQ1IDQ1Ni43MSwxNDAuMzEgQyA0NTkuNzcsMTQ3Ljk1IDQ2MS4zNCwxNTYuNDUgNDU5LjMsMTY0LjU2IEMgNDU2LjgzLDE3NS41OCA0NDkuMTMsMTg1LjEyIDQzOS4xOCwxOTAuMzUgQyA0MjguNTIsMTk2LjA1IDQxNS40LDE5Ni44NyA0MDQuMSwxOTIuNTggQyAzOTIuMzQsMTg4LjI5IDM4Mi42MiwxNzguMjkgMzc5LjQxLDE2Ni4xIEMgMzc1LjcsMTUyLjEzIDM3OS45MywxMzUuNTkgMzkxLjc0LDEyNi42OCBDIDM5OS42NywxMjAuMzcgNDEwLjAyLDExOC4yNCA0MTkuOTUsMTE4LjE4IEMgNDM4Ljk5LDExNy43OCA0NTguMDMsMTE4LjExIDQ3Ny4wNywxMTggQyA0NzcuMDcsMTExLjQgNDc3LjA4LDEwNC44IDQ3Ny4wNyw5OC4yMSBDIDQzOC44NSw5OC4yMSA0MDAuNjMsOTguMiAzNjIuNDEsOTguMjIgQyAzNjguMzQsMTA2LjU0IDM3Mi42MSwxMTYuNjEgMzcxLjc4LDEyNy4wMSBDIDM3MS4xMiwxMzguMTYgMzY0LjQ2LDE0OC4yNCAzNTUuNjUsMTU0Ljc4IEMgMzQzLjksMTYzLjY0IDMyNy42MywxNjYuMTkgMzEzLjgsMTYxLjEgQyAzMTYuMzEsMTUyLjUgMzE5LjA4LDE0My45NyAzMjEuMjksMTM1LjI5IEMgMzI3LjE5LDE0MC4xNyAzMzYuNzIsMTM4LjA2IDM0MC41LDEzMS42IEMgMzQ1LjE2LDEyMy4zNyAzNDMuNTcsMTEyLjg5IDMzOC44LDEwNS4wOCBDIDMzNi43NSwxMDEuNTkgMzMzLjM1LDk4LjI4IDMyOS4wNSw5OC4yOSBDIDMyMC4wNSw5OC4xMiAzMTEuMDUsOTguMjUgMzAyLjA1LDk4LjIgQyAzMDIuMTQsMTE5LjQ5IDMwMi4wNSwxNDAuNzggMzAyLjEsMTYyLjA3IEMgMzAyLjMyLDE2Ni43OCAzMDIuMTEsMTcyLjAzIDMwNS4wOSwxNzYgQyAzMDguMjUsMTc5LjcgMzEzLjYsMTc5LjY5IDMxOC4wNiwxNzkuODkgQyAzMzUuODgsMTc5LjkyIDM1My43LDE3OS44OSAzNzEuNTEsMTc5LjkgQyAzNzEuNTMsMTg3LjM2IDM3MS41MiwxOTQuODEgMzcxLjUyLDIwMi4yNyBDIDM0OC4zNywyMDIuMjYgMzI1LjIyLDIwMi4yOSAzMDIuMDcsMjAyLjI1IEMgMjk1LjAxLDIwMi4zIDI4Ny42LDIwMC4wOCAyODIuNjksMTk0Ljc5IEMgMjc2LjE0LDE4Ny45NiAyNzMuOCwxNzguMTUgMjczLjgyLDE2OC45MyBDIDI3My44LDE0NS4zNiAyNzMuODMsMTIxLjc5IDI3My44LDk4LjIyIEMgMjcwLjExLDk4LjIgMjY2LjQxLDk4LjIxIDI2Mi43MSw5OC4yMSBDIDI2Mi43MSw5MC43NyAyNjIuNyw4My4zNCAyNjIuNzIsNzUuOSBNIDQxNS40LDE0MS41NSBDIDQwOC43OSwxNDMuNDEgNDA0LjQ3LDE1MC4yNyA0MDQuNjcsMTU2Ljk3IEMgNDA0LjU3LDE2NS40MSA0MTIuNTgsMTczLjEzIDQyMS4xMSwxNzEuODMgQyA0MzAuNCwxNzAuNjEgNDM2LjA4LDE1OS41OSA0MzIuNzUsMTUxLjA5IEMgNDMwLjQ4LDE0NC4xNCA0MjIuNTUsMTM5LjQyIDQxNS40LDE0MS41NSB6IgogICAgICAgaWQ9InBhdGgyOCIKICAgICAgIHN0eWxlPSJvcGFjaXR5OjE7ZmlsbDojZmZmZmZmIiAvPgogICAgPHBhdGgKICAgICAgIGQ9Ik0gMzc5LjUzLDI3NC4zOSBDIDQxMi43NywyNTUuODcgNDUwLjM4LDI0NS4zIDQ4OC40LDI0My44MSBDIDQ4Ny45MywyOTUuNTUgNDg4Ljk0LDM0Ny4yOSA0ODkuMTQsMzk5LjA0IEMgNDg5LjgsNDkwLjY3IDQ5MC41LDU4Mi4zMSA0OTEuMTcsNjczLjk1IEMgNDk2LjgzLDY3My4zMSA1MDIuNTUsNjczLjI0IDUwOC4yMyw2NzMuODcgQyA1MDcuNzQsNTY5LjI0IDUwNy40Myw0NjQuNjEgNTA2LjkxLDM1OS45OSBDIDUwNi42MywzMjEuMjYgNTA3LjExLDI4Mi41MiA1MDUuOTksMjQzLjgxIEMgNTQ5LjMsMjQ1LjAxIDU5Mi4yNSwyNTguMDIgNjI4Ljg4LDI4MS4xNiBDIDY1Ny40NSwyOTkuMDQgNjgyLjIzLDMyMi44OSA3MDEuMzIsMzUwLjY2IEMgNzI0LjgxLDM4NC43MyA3MzkuNSw0MjQuODMgNzQzLjQxLDQ2Ni4wNSBDIDc0Ni45Niw1MDAuNTMgNzQxLjk5LDUzNS40NyA3MzEuNTYsNTY4LjQgQyA3MzAuNDMsNTcxLjQyIDcyOS4yNCw1NzYuMjIgNzI1LjA5LDU3NS44IEMgNjc5LjA2LDU3Ni4wNyA2MzMuMDQsNTc2LjE2IDU4Ny4wMSw1NzYuNDcgQyA1NzYuNzIsNTc2LjcyIDU2Ni40LDU3Ni4xOSA1NTYuMTQsNTc3LjA2IEMgNTU0LjI4LDU3NC43NyA1NTMuMzUsNTcxLjk0IDU1My4xMSw1NjkuMDMgQyA1NDQuMzksNTA5LjI4IDUzNS4xNyw0NDkuNiA1MjYuNSwzODkuODQgTCA1MjUuMjMsMzg2Ljg1IEMgNTI1LjQ0LDQ1Ni4xMiA1MjUuOTIsNTI1LjM5IDUyNi4xNSw1OTQuNjYgQyA1OTAuNTUsNTk0LjIzIDY1NC45NSw1OTQuMDUgNzE5LjM2LDU5My45NiBDIDcxNS42LDU5OS4zOCA3MTEuODYsNjA0LjgxIDcwOC4wNyw2MTAuMjEgQyA2NjYuNyw2MTAuMjIgNjI1LjMzLDYxMC4xNyA1ODMuOTYsNjEwLjI0IEMgNTk2LjcxLDYxOC45NiA2MDguODQsNjI4LjcxIDYxOS4yMyw2NDAuMTkgQyA2MzIuMDQsNjU0LjA5IDY0Mi41Niw2NzAuMDYgNjUwLjMzLDY4Ny4yOCBDIDY0NC42MSw2ODkuNzcgNjM4LjgxLDY5Mi4wOSA2MzMuMDUsNjk0LjQ4IEMgNjE2Ljk0LDY1OC43MiA1ODcuMDIsNjI5LjU5IDU1MS4xMSw2MTMuOTQgQyA1NDMuNTIsNjA5LjUyIDUzNC42LDYxMC43OCA1MjYuMjQsNjEwLjgyIEMgNTI2LjEyLDYxOS4yMiA1MjYuMzcsNjI3LjYzIDUyNi4yNyw2MzYuMDMgQyA1NjMuMyw2NDUuMzIgNTk0LjcxLDY3NC43MSA2MDUuNjMsNzExLjQgQyA1OTkuNjcsNzEzLjA4IDU5My42OSw3MTQuNyA1ODcuNzQsNzE2LjM4IEMgNTc4LjcxLDY4Ny43NSA1NTUuMDcsNjY0LjI1IDUyNi4zNiw2NTUuNDcgQyA1MjYuNDYsNjYzLjczIDUyNi4zMiw2NzIgNTI2LjU4LDY4MC4yNyBDIDU0NC4yNCw2ODkuODggNTU1LjM3LDcwOS45NSA1NTQuNjcsNzMwIEMgNTE4LjI1LDczMC4wMyA0ODEuODMsNzMwLjIzIDQ0NS40MSw3MzAuMjcgQyA0NDQuNjQsNzEwLjQyIDQ1NS40MSw2OTAuMzcgNDcyLjg0LDY4MC42NyBDIDQ3My4wNiw2NzIuNCA0NzIuNzUsNjY0LjEyIDQ3Mi44LDY1NS44NSBDIDQ0NC4wOSw2NjQuNTggNDIwLjg2LDY4OC42OCA0MTIuMTYsNzE3LjI5IEMgNDA2LjE3LDcxNS42MyA0MDAuMTQsNzE0LjE0IDM5NC4xOCw3MTIuNDMgQyA0MDQuNzMsNjc1LjczIDQzNS42Nyw2NDUuODUgNDcyLjYyLDYzNi4zNCBDIDQ3Mi43Miw2MjcuOTMgNDcyLjQ2LDYxOS41MSA0NzIuNTcsNjExLjEgQyA0NjYuMzIsNjExLjMzIDQ1OS44Nyw2MTAuMTkgNDUzLjc5LDYxMS45NyBDIDQxNS4xNCw2MjYuOTcgMzgzLjE4LDY1OC4wMiAzNjYuNTcsNjk1Ljk1IEMgMzYwLjgxLDY5My41OSAzNTUuMDQsNjkxLjI3IDM0OS4yNiw2ODguOTUgQyAzNjEuNzQsNjU5Ljg1IDM4Mi41Miw2MzQuNSA0MDguMDksNjE1Ljg5IEwgNDA4LjQsNjE2LjczIEwgNDA4LjM0LDYxNS44IEMgNDEwLjQxLDYxNC4wMyA0MTIuNzgsNjEyLjY1IDQxNC45OSw2MTEuMDYgQyAzNzMuNDMsNjExIDMzMS44Nyw2MTEuMTUgMjkwLjMyLDYxMC45MSBDIDI4Ni43NCw2MDUuNDYgMjgyLjg3LDYwMC4yMiAyNzkuMTgsNTk0Ljg0IEMgMzQzLjU3LDU5NC44NSA0MDcuOTUsNTk0Ljg1IDQ3Mi4zNCw1OTQuODUgQyA0NzEuODQsNTI1LjE1IDQ3MS41LDQ1NS40NSA0NzAuNjYsMzg1Ljc2IEMgNDY0LjQ1LDQyNi43MyA0NTkuMTEsNDY3Ljg1IDQ1My4zNSw1MDguODkgQyA0NTAuNTEsNTI5Ljg2IDQ0Ny40OCw1NTAuOCA0NDQuNzcsNTcxLjc5IEMgNDQ0LjI4LDU3My44NyA0NDMuNTcsNTc2LjI5IDQ0MS42OSw1NzcuNTIgQyA0MTUuMTQsNTc3LjA0IDM4OC41OCw1NzcuNzEgMzYyLjAyLDU3Ny42NyBDIDMzNC4zMyw1NzcuOTEgMzA2LjYzLDU3Ny45OSAyNzguOTMsNTc4LjIgQyAyNzUuMTYsNTc4LjE2IDI2OS43Myw1NzkuNTkgMjY4LjI0LDU3NC44NyBDIDI2Mi45NSw1NjEuMzkgMjU5LjYzLDU0Ny4xNiAyNTYuODMsNTMyLjk2IEMgMjQ3LjgyLDQ4NS45MyAyNTMuODYsNDM2LjQzIDI3Mi43LDM5Mi41IEMgMjk0LjExLDM0Mi44NyAzMzIuMjYsMzAwLjYzIDM3OS41MywyNzQuMzkgTSAzMjIuMzIsMzQyLjI1IEMgMjg5LjIyLDM4MS42OCAyNjkuODQsNDMyLjUzIDI2OC44OCw0ODQuMDQgQyAyNjguMSw1MDguODggMjcyLjE0LDUzMy42OCAyNzkuMTYsNTU3LjQ2IEMgMzI2Ljc2LDU1Ny4zNyAzNzQuMzcsNTU3LjQzIDQyMS45Nyw1NTcuMjggQyA0MjcuMDgsNTU2Ljg0IDQyNi41NSw1NTAuNTMgNDI3LjMzLDU0Ni44NyBDIDQ0Ni40Niw0NTEuMjcgNDY1LjcsMzU1LjcgNDg0LjksMjYwLjExIEMgNDIyLjQsMjYzLjMyIDM2Mi4xOCwyOTQuMTEgMzIyLjMyLDM0Mi4yNSBNIDUwOS44LDI2MC4wNyBDIDUyNi4zLDMzOC4wNCA1NDIuOTUsNDE1Ljk4IDU1OS41MSw0OTMuOTQgQyA1NjMuNjEsNTEzLjY3IDU2OC4xMSw1MzMuMzQgNTcxLjg4LDU1My4xMiBDIDU3Mi40Niw1NTUuMzQgNTc0LjcxLDU1Ni43OCA1NzYuOTgsNTU2LjQ3IEMgNjI0LjI3LDU1NS45IDY3MS41Nyw1NTUuNjggNzE4Ljg3LDU1NS4wMyBDIDcyNC4xMSw1MzYuNDUgNzI3LjU2LDUxNy4zMSA3MjguMyw0OTggQyA3MjkuOTgsNDU1LjUyIDcxOS4zOCw0MTIuNjYgNjk4LjIzLDM3NS43OSBDIDY4MC45NiwzNDUuNjMgNjU2LjgzLDMxOS40MSA2MjguMTMsMjk5LjggQyA1OTMuNCwyNzUuOTIgNTUxLjkzLDI2MS44NiA1MDkuOCwyNjAuMDcgeiIKICAgICAgIGlkPSJwYXRoMzAiCiAgICAgICBzdHlsZT0ib3BhY2l0eToxO2ZpbGw6I2ZmZmZmZiIgLz4KICAgIDxwYXRoCiAgICAgICBkPSJNIDE1NC41OCw3NzMuODggQyAxNjkuMDMsNzcyLjY1IDE4My41NCw3NzMuMDkgMTk4LjAyLDc3My4xNCBDIDIxNC4zNCw3NzMuNTIgMjMxLjUsNzc1LjE2IDI0NS43LDc4My45NCBDIDI1Ni43Myw3OTAuODQgMjYyLjUyLDgwMy41MiAyNjUuMDksODE1Ljg2IEMgMjY4LjcxLDgzMi4zMyAyNjcuNjksODQ5LjMgMjY3Ljg1LDg2Ni4wNCBDIDI2Ny43OSw4ODUuOTUgMjY4Ljc1LDkwNi44IDI2MC41LDkyNS40NCBDIDI1Ni4zLDkzNS42MSAyNDcuNDgsOTQzLjUzIDIzNy4xNyw5NDcuMiBDIDIxNy4wNiw5NTUuMDQgMTk1LjExLDk1My4yNSAxNzMuOTksOTUzLjQ2IEMgMTU2LjA3LDk1My40NCAxMzYuOTgsOTUyLjQ2IDEyMS4yNiw5NDIuOSBDIDEwOS40LDkzNS43NSAxMDMuNTgsOTIyLjEgMTAxLjEsOTA5LjAxIEMgOTcuNjMsODkxLjU0IDk5LjAxLDg3My42NCA5OC43MSw4NTUuOTUgQyA5OC42NSw4MzYuNjQgOTguNDQsODE2LjIgMTA3LjU2LDc5OC42IEMgMTEyLjUsNzg4LjcxIDEyMS45OSw3ODEuOTEgMTMyLjMsNzc4LjQ2IEMgMTM5LjQ4LDc3NS45NCAxNDcuMDMsNzc0LjY0IDE1NC41OCw3NzMuODggTSAxNTIuNSw4MTIuNzMgQyAxNDYuMDksODE0LjU0IDE0MC4xMiw4MTkuNCAxMzguNDksODI2LjA3IEMgMTM2LjcsODM0LjkyIDEzNy4xMSw4NDQgMTM3LjA0LDg1Mi45OCBDIDEzNy4xMiw4NjcgMTM2Ljc3LDg4MS4wMyAxMzcuMzQsODk1LjA1IEMgMTM3LjU1LDkwMC4xNCAxMzkuNCw5MDUuMjggMTQzLjAyLDkwOC45NSBDIDE0Ny45NCw5MTMuOTYgMTU1LjI1LDkxNS40IDE2Mi4wMiw5MTUuNDQgQyAxNzUuNjgsOTE1LjQ5IDE4OS4zNCw5MTUuNDQgMjAzLjAxLDkxNS40NyBDIDIwOSw5MTUuNDggMjE1LjM0LDkxNC44NCAyMjAuNDMsOTExLjM5IEMgMjI1LjIzLDkwOC4yNSAyMjguMDYsOTAyLjcgMjI4LjU4LDg5Ny4wOCBDIDIyOS42LDg4NS40MSAyMjkuMzIsODczLjY5IDIyOS4zNSw4NjEuOTkgQyAyMjkuMzMsODUxLjI2IDIyOS41Myw4NDAuNTMgMjI4Ljc4LDgyOS44MyBDIDIyOC4zNiw4MjQuMTcgMjI1LjM1LDgxOC42NyAyMjAuNTgsODE1LjU2IEMgMjE1LjM4LDgxMi4xNyAyMDksODExLjYzIDIwMi45Niw4MTEuNjcgQyAxODkuNjQsODExLjc2IDE3Ni4zMiw4MTEuNSAxNjMsODExLjc0IEMgMTU5LjQ5LDgxMS44NiAxNTUuOTEsODExLjc2IDE1Mi41LDgxMi43MyB6IgogICAgICAgaWQ9InBhdGgzMiIKICAgICAgIHN0eWxlPSJvcGFjaXR5OjE7ZmlsbDojZmZmZmZmIiAvPgogICAgPHBhdGgKICAgICAgIGQ9Ik0gMzE3LjI5LDc3My4zMiBDIDMyOS4yNiw3NzMuMyAzNDEuMjMsNzczLjM4IDM1My4yLDc3My4yOCBDIDM1My40MSw3ODIuODQgMzUzLjIxLDc5Mi40MSAzNTMuMzEsODAxLjk4IEMgMzYwLjkxLDc5Mi4yMSAzNzAuMzMsNzgzLjcgMzgxLjI4LDc3Ny44NCBDIDM5MC40Myw3NzMuMTQgNDAxLDc3Mi43OSA0MTEuMDcsNzczLjEzIEMgNDIyLjc2LDc3My41OCA0MzQuODcsNzczLjQ1IDQ0NS44OSw3NzcuOTQgQyA0NjEsNzg0LjMxIDQ3Mi45NCw3OTcuNTMgNDc4LjE3LDgxMy4wNCBDIDQ4Mi44Miw4MjUuODIgNDgyLjA5LDgzOS41OSA0ODIuMDksODUyLjk2IEMgNDgyLjA4LDg4NS43NSA0ODIuMDksOTE4LjU0IDQ4Mi4wOCw5NTEuMzIgQyA0NjkuMzMsOTUxLjMzIDQ1Ni41Nyw5NTEuMzMgNDQzLjgyLDk1MS4zMyBDIDQ0My44MSw5MjEuODcgNDQzLjksODkyLjQxIDQ0My44Nyw4NjIuOTYgQyA0NDMuOTIsODUyLjA5IDQ0NS4yNyw4NDAuNTcgNDQwLjI5LDgzMC40OCBDIDQzNS40Miw4MTkuOTIgNDI0LjUsODEyLjg1IDQxMy4xLDgxMS40OCBDIDQwMi42Miw4MTAuMiAzOTEuNTMsODEwLjU4IDM4MS44LDgxNS4wOCBDIDM3MC41OSw4MjAuMjcgMzYxLjY3LDgzMC4yNSAzNTcuOTksODQyLjA3IEMgMzU2LjIxLDg0Ny41IDM1NS42Myw4NTMuMjYgMzU1LjUyLDg1OC45NiBDIDM1NS41Miw4ODkuNzUgMzU1LjUyLDkyMC41NCAzNTUuNTIsOTUxLjM0IEMgMzQyLjgyLDk1MS4zOSAzMzAuMTMsOTUxLjIgMzE3LjQ0LDk1MS40MyBDIDMxNy4wOCw4OTIuMDcgMzE3LjM5LDgzMi42OSAzMTcuMjksNzczLjMyIHoiCiAgICAgICBpZD0icGF0aDM0IgogICAgICAgc3R5bGU9Im9wYWNpdHk6MTtmaWxsOiNmZmZmZmYiIC8+CiAgICA8cGF0aAogICAgICAgZD0iTSA1NTQuMSw3ODAuOTIgQyA1NjkuMDIsNzczLjk5IDU4NS43OSw3NzMuMTkgNjAxLjk3LDc3My4wOCBDIDYyMC4zLDc3My4yNSA2MzksNzcyLjExIDY1Ni45LDc3Ni44NyBDIDY2Ni4xOCw3NzkuNTMgNjc1LjYxLDc4My42MyA2ODEuODYsNzkxLjI3IEMgNjkyLjM1LDgwNC4xNiA2OTQuNTYsODIxLjM3IDY5NS41Niw4MzcuNCBDIDY4Mi43Miw4MzcuMzggNjY5Ljg4LDgzNy40MSA2NTcuMDUsODM3LjM4IEMgNjU2Ljg1LDgzMC44IDY1Ni42MSw4MjMuMzcgNjUxLjcsODE4LjM2IEMgNjQ1Ljk5LDgxMi4xOCA2MzYuOTgsODExLjM1IDYyOS4wNiw4MTEuNiBDIDYxNS4zOSw4MTEuNjcgNjAxLjcxLDgxMS40OSA1ODguMDQsODExLjY4IEMgNTgwLjc1LDgxMS43NiA1NzIuODEsODE0LjMzIDU2OC42OSw4MjAuNzMgQyA1NjQuMiw4MjcuNjEgNTY1LjQyLDgzNi4yNCA1NjQuODUsODQ0LjA0IEMgNTY0Ljk2LDg2MS4wMiA1NjQuNDgsODc4LjAyIDU2NS4xNSw4OTUuMDEgQyA1NjUuMzQsOTAxLjI4IDU2OC4yNSw5MDcuNzEgNTczLjYxLDkxMS4yMSBDIDU3OC42Niw5MTQuNyA1ODUsOTE1LjM4IDU5MC45OSw5MTUuNCBDIDYwNSw5MTUuMzkgNjE5LjAxLDkxNS40MSA2MzMuMDIsOTE1LjM5IEMgNjQwLjEyLDkxNS4zOCA2NDcuOSw5MTMuMzEgNjUyLjQsOTA3LjQzIEMgNjU2LjMxLDkwMi42NiA2NTYuNTIsODk2LjIgNjU2LjksODkwLjM0IEMgNjQ0LjEzLDg5MC4zMiA2MzEuMzcsODkwLjM0IDYxOC42LDg5MC4zMyBDIDYxOC42LDg3Ny41NCA2MTguNTksODY0Ljc1IDYxOC42LDg1MS45NiBDIDY0NC4yOSw4NTIgNjY5Ljk5LDg1MS44NSA2OTUuNjgsODUyLjAzIEMgNjk1LjI1LDg3Mi4xNyA2OTcuMDIsODkyLjYxIDY5Mi42MSw5MTIuNDUgQyA2OTAuMDksOTIzLjM0IDY4NS4yNiw5MzQuNDUgNjc1Ljk4LDk0MS4yMyBDIDY2NS4wMiw5NDkuMTkgNjUxLjI1LDk1MS43IDYzOC4wNSw5NTIuOTQgQyA2MjQuNzEsOTUzLjgzIDYxMS4zMyw5NTMuMzQgNTk3Ljk3LDk1My40NyBDIDU4MS4yNiw5NTMuMzQgNTYzLjcyLDk1MS42NSA1NDkuMDUsOTQyLjk2IEMgNTM3Ljk3LDkzNi4xOCA1MzIuMDEsOTIzLjc2IDUyOS4zOSw5MTEuNDUgQyA1MjUuODYsODk2LjIyIDUyNi41OCw4ODAuNDkgNTI2LjQ4LDg2NC45OCBDIDUyNi42OCw4NDQuOTcgNTI1LjE5LDgyNC4yNCA1MzIuMzgsODA1LjE1IEMgNTM2LDc5NC42MSA1NDMuODUsNzg1LjQ1IDU1NC4xLDc4MC45MiB6IgogICAgICAgaWQ9InBhdGgzNiIKICAgICAgIHN0eWxlPSJvcGFjaXR5OjE7ZmlsbDojZmZmZmZmIiAvPgogICAgPHBhdGgKICAgICAgIGQ9Ik0gNzY1Ljk1LDc4Mi44MiBDIDc4MC44Miw3NzQuNTQgNzk4LjMsNzczLjM0IDgxNC45Nyw3NzMuMTcgQyA4MzQuMzUsNzczLjI5IDg1NC4xNiw3NzEuOTkgODczLjA2LDc3Ny4xNyBDIDg4My44LDc4MC4wOCA4OTQuMzcsNzg1LjkyIDkwMC4zNCw3OTUuNjIgQyA5MDguNTIsODA4Ljg5IDkxMC4yOSw4MjQuODQgOTEwLjkzLDg0MC4xIEMgODk4LjA5LDg0MC4xIDg4NS4yNiw4NDAuMSA4NzIuNDMsODQwLjEgQyA4NzIuMTcsODMyLjgxIDg3Mi40OCw4MjQuNTMgODY3LjMxLDgxOC43MSBDIDg2Mi4wNSw4MTIuNzMgODUzLjUzLDgxMS41MyA4NDYsODExLjY2IEMgODMxLjY3LDgxMS43NCA4MTcuMzQsODExLjU2IDgwMy4wMSw4MTEuNzcgQyA3OTUuOTgsODExLjg1IDc4OC40MSw4MTQuNCA3ODQuMjcsODIwLjM5IEMgNzgwLjYsODI1LjQ3IDc4MC41OSw4MzIuMDIgNzgwLjI2LDgzOC4wMSBDIDc4MC4wMSw4NTUgNzgwLjA0LDg3MS45OSA3ODAuMTksODg4Ljk4IEMgNzgwLjMyLDg5NS4wNCA3ODAuNDYsOTAxLjY3IDc4NC4yNyw5MDYuNzMgQyA3ODguNjksOTEzLjAxIDc5Ni43Myw5MTUuMzUgODA0LjA4LDkxNS40MyBDIDgxOC43NCw5MTUuNSA4MzMuMzksOTE1LjQ1IDg0OC4wNSw5MTUuNDYgQyA4NTUuMzgsOTE1LjQzIDg2My41LDkxMy4zMyA4NjgsOTA3LjA5IEMgODcyLjMsOTAxLjQyIDg3MS44NCw4OTMuOTcgODcyLjMzLDg4Ny4yNSBDIDg4NS4xOCw4ODcuMjQgODk4LjA0LDg4Ny4yNiA5MTAuOSw4ODcuMjQgQyA5MTAuNDEsODk3LjY1IDkwOS41NCw5MDguMTYgOTA2LjM3LDkxOC4xNSBDIDkwMy45MSw5MjYuMzEgODk5Ljc2LDkzNC4yMSA4OTMuMTksOTM5LjggQyA4ODUuNDIsOTQ2LjIgODc1LjYxLDk0OS40NyA4NjUuODQsOTUxLjMgQyA4NTIuNzMsOTUzLjg4IDgzOS4yOSw5NTMuNSA4MjYsOTUzLjU0IEMgODExLjMzLDk1My41MyA3OTYuNDQsOTUzLjg1IDc4Mi4xMiw5NTAuMTcgQyA3NzEuMjQsOTQ3LjYyIDc2MC41LDk0Mi4zOCA3NTMuNzksOTMzLjE1IEMgNzQ3LjY1LDkyNC40NiA3NDQuNzMsOTEzLjkyIDc0My4yNSw5MDMuNTEgQyA3NDEuMyw4OTAuNDIgNzQyLDg3Ny4xNiA3NDEuODEsODYzLjk4IEMgNzQxLjkyLDg0NS40MSA3NDAuODQsODI2LjM1IDc0Ni41Niw4MDguNDEgQyA3NDkuNzQsNzk3Ljk5IDc1Ni4xOSw3ODguMTEgNzY1Ljk1LDc4Mi44MiB6IgogICAgICAgaWQ9InBhdGgzOCIKICAgICAgIHN0eWxlPSJvcGFjaXR5OjE7ZmlsbDojZmZmZmZmIiAvPgo8L3N2Zz4=" alt="ONGC Crest" />
+        </div>
+        
+        <h2 class="company-name-heading">Oil and Natural Gas Corporation Limited</h2>
+        <div class="operating-asset-line">Exploration &amp; Production Division &bull; Eastern Offshore Asset</div>
+        <div class="cover-divider"></div>
+
+        <h1 class="wcr-big-title">WELL COMPLETION REPORT</h1>
+        <div class="wcr-well-title">WELL: MN-SM-DW-01</div>
+        <div class="wcr-subtitle">Ultra-Deepwater Exploration Wildcat &bull; Block MN-DW-2026/01 &bull; Mahanadi Offshore Basin</div>
+
+        <div class="cover-meta-footer">
+          <div>Publication Reference: ONGC/EOA/E&amp;P/WCR/2026/MN-SM-DW-01 &bull; Release Date: 26 September 2026</div>
+          <div>Eastern Offshore Asset &bull; Kakinada Operations Base &bull; Andhra Pradesh, India</div>
+          <div>Statutory Exploration Dossier &bull; Directorate General of Hydrocarbons (DGH) Submission</div>
+        </div>
+      </section>
+
+      <!-- ========================================================
+           PAGE 2: DEDICATED 1-PAGE EXECUTIVE SUMMARY (100% PARAGRAPHS)
+           ======================================================== -->
+      <section class="executive-summary-page">
+        <div class="exec-summary-header">
+          <h1 class="exec-summary-title">Executive Summary</h1>
+          <div class="exec-summary-sub">Operational Performance Synthesis, Predictive Geopressure Control &amp; Commercial Discovery Appraisal</div>
+        </div>
+
+        <p class="exec-p no-indent">Exploration wildcat well MN-SM-DW-01 was drilled by Oil and Natural Gas Corporation Limited in deepwater concession Block MN-DW-2026/01 from the dynamically positioned Class-3 drillship <em>DS-1</em> in a water depth of 1,620.0 meters within the Mahanadi Offshore Basin. The primary exploration mandate was to assess the structural and stratigraphic entrapment potential of deepwater turbidite channel fairways within the Upper Miocene depositional fairway. The critical 12-1/4 inch hole section penetrated from the 13-3/8 inch intermediate casing shoe at 3,850.0 meters measured depth to a certified section Total Depth of 4,450.0 meters measured depth (4,448.2 meters true vertical depth), successfully fulfilling all subsurface evaluation objectives while maintaining a near-vertical trajectory with maximum inclination restricted to 1.40 degrees.</p>
+
+        <p class="exec-p">Flawless operational execution and zero non-productive time were achieved across eight continuous 12-hour shifts between 20 September 2026 and 24 September 2026. Total drilling time on bottom amounted to 48.0 rotating hours without a single equipment breakdown, borehole kick, or lost circulation incident, delivering the section 4.5 days ahead of statutory authorization for expenditure projections. Operational safety integrity was highlighted by zero Lost Time Incidents, zero environmental spills, and strict preservation of primary hydrostatic containment throughout the 600.0-meter open-hole trajectory.</p>
+
+        <p class="exec-p">The definitive technical milestone of the campaign occurred at 4,172.0 meters measured depth within the Unit U2 transition shale. High-frequency downhole telemetry and the Sagar Drishti agentic intelligence system provided pre-emptive detection of severe compaction disequilibrium, marked by compressional acoustic slowness surging to 101.0 microseconds per foot, corrected d-exponent inverting from 1.50 to 1.18, and connection gas spiking to 1.1%. Following formal Management of Change protocol MEMO-SM-2026-09, drilling supervisors executed an operational pause, conducted a 15-minute negative flow check, and sequentially weighted the synthetic oil-based mud system with 39.8 metric tonnes of barite from 11.20 to 11.65 pounds per gallon. This pre-emptive intervention established a 120 pounds per square inch overbalance before penetrating the reservoir at 4,195.0 meters. Upon encountering an instantaneous drilling break to 34 meters per hour at 4,205.0 meters, driller controls immediately capped penetration at 12 meters per hour, restricting dynamic equivalent circulating density to 11.86 pounds per gallon and safeguarding the 12.10 pounds per gallon shoe integrity margin.</p>
+
+        <p class="exec-p">Formation evaluation confirmed an exceptional commercial dry natural gas discovery within the Unit U3 turbidite channel complex between 4,195.0 and 4,242.0 meters measured depth. Petrophysical analyses establish 41.2 meters of net gas pay possessing an average effective porosity of 24.8%, water saturation of 26.5%, and permeability of 285 millidarcies, establishing an outstanding net-to-gross ratio of 0.88. Wireline modular formation dynamics testing verified a continuous gas fluid gradient of 0.088 pounds per square inch per foot and identified a definitive gas-water contact at 4,236.2 meters measured depth. Mud gas chromatography confirmed a dry hydrocarbon signature dominated by 88.4% methane. The Directorate recommends immediate mobilization and cementing of the 9-5/8 inch production casing string to Total Depth, followed by cased-hole drillstem flow testing to establish field commerciality for statutory filing with the Directorate General of Hydrocarbons.</p>
+      </section>
+
+      <!-- ========================================================
+           CHAPTER 1: GENERAL WELL INFORMATION & LOCATION REGISTER
+           ======================================================== -->
+      <h1 class="exec-chapter">Chapter 1 &mdash; General Well Information &amp; Location Register</h1>
+
+      <p class="exec-p no-indent">Exploration well MN-SM-DW-01 was planned and drilled under the sovereign exploration policy framework administered by the Ministry of Petroleum and Natural Gas and the Directorate General of Hydrocarbons. The operational objective was to evaluate the hydrocarbon potential of undrilled Upper Miocene slope-channel turbidites identified on regional 3D broadband seismic data across Block MN-DW-2026/01 in the Mahanadi Offshore Basin. The well constitutes a vital frontier wildcat aimed at establishing commercial natural gas production in India's eastern deepwater fairway.</p>
+
+      <p class="exec-p">The surface location was established by differential satellite positioning at geodetic coordinates 19° 27' 00.0" North latitude and 87° 21' 00.0" East longitude, corresponding to Universal Transverse Mercator Zone 45 North coordinates of 2,150,940.0 meters Northing and 536,812.0 meters Easting. The wellsite is located approximately 110 kilometers southeast of Paradip Port and 180 kilometers northeast of the Kakinada Operational Base. Marine operations were executed in an average water depth of 1,620.0 meters below mean sea level, referencing a rotary kelly bushing air gap elevation of 25.0 meters above sea surface.</p>
+
+      <div class="table-box">
+        <div class="table-caption">Table 1.1: Principal Well Metadata, Location Parameters &amp; Operational Register</div>
+        <table class="exec-table">
+          <tbody>
+            <tr>
+              <th style="width: 22%;">Operating Concession</th>
+              <td style="width: 28%; font-family: 'JetBrains Mono', monospace;">Block MN-DW-2026/01 (Mahanadi Deepwater Fairway)</td>
+              <th style="width: 22%;">Designated Rig</th>
+              <td style="width: 28%; font-family: 'JetBrains Mono', monospace;">Drillship <em>DS-1</em> (DP Class-3)</td>
+            </tr>
+            <tr>
+              <th>Geographic Location</th>
+              <td style="font-family: 'JetBrains Mono', monospace;">19&deg; 27' 00.0&quot; N, 87&deg; 21' 00.0&quot; E (UTM 45N)</td>
+              <th>Water Depth / Air Gap</th>
+              <td style="font-family: 'JetBrains Mono', monospace;">1,620.0 m MSL / 25.0 m RKB Datum</td>
+            </tr>
+            <tr>
+              <th>Spud Date &amp; Time</th>
+              <td style="font-family: 'JetBrains Mono', monospace;">12 August 2026 (06:00 hrs IST)</td>
+              <th>Section TD Date</th>
+              <td style="font-family: 'JetBrains Mono', monospace;">24 September 2026 (04:30 hrs IST)</td>
+            </tr>
+            <tr>
+              <th>Total Depth (TD)</th>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,450.0 m MD / 4,448.2 m TVD (Near-Vertical)</td>
+              <th>Section Evaluated</th>
+              <td style="font-family: 'JetBrains Mono', monospace;">12-1/4 in Hole (3,850.0 m to 4,450.0 m MD)</td>
+            </tr>
+            <tr>
+              <th>Primary Target</th>
+              <td style="font-family: 'JetBrains Mono', monospace;">Miocene Turbidite Channel Sand (Unit U3)</td>
+              <th>Final Well Status</th>
+              <td style="font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--ongc-red);">Suspended Commercial Gas Discovery (9-5/8&quot; Liner Planned)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="exec-p">Marine drilling operations were conducted by the dynamically positioned Class-3 drillship <em>DS-1</em>, equipped with six variable-pitch azimuth thrusters rated at 5,000 horsepower each, providing station-keeping watch circles under 1.0% of water depth during 35-knot wind and 3.5-meter significant wave height conditions. Rig technical specifications include a dual-derrick hoisting system with a static hook load capacity of 2,000,000 pounds, four triplex mud pumps rated at 7,500 psi operating pressure, an active surface fluid capacity of 6,200 barrels, and an 18-3/4 inch 15,000 psi subsea blowout preventer stack equipped with acoustic backup and deadman auto-shear safety interlocks.</p>
+
+      <div class="table-box">
+        <div class="table-caption">Table 1.2: Statutory Document Control &amp; Operational Distribution Register</div>
+        <table class="exec-table">
+          <thead>
+            <tr>
+              <th>Copy No.</th>
+              <th>Designated Functional Authority</th>
+              <th>Directorate / Operating Unit</th>
+              <th>Statutory Mandate</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-family: 'JetBrains Mono', monospace;">01</td>
+              <td><strong>Executive Director (Basin Manager)</strong></td>
+              <td>Eastern Offshore Asset Secretariat</td>
+              <td>Asset Custody &amp; Statutory DGH Submission</td>
+            </tr>
+            <tr>
+              <td style="font-family: 'JetBrains Mono', monospace;">02</td>
+              <td><strong>Chief General Manager (Head Drilling Services)</strong></td>
+              <td>Deepwater Drilling Directorate</td>
+              <td>Operational Governance &amp; Well Construction Audit</td>
+            </tr>
+            <tr>
+              <td style="font-family: 'JetBrains Mono', monospace;">03</td>
+              <td><strong>Deepwater Drilling Superintendent</strong></td>
+              <td>Offshore Operations Directorate</td>
+              <td>Field Execution &amp; MOC Verification</td>
+            </tr>
+            <tr>
+              <td style="font-family: 'JetBrains Mono', monospace;">04</td>
+              <td><strong>Offshore Installation Manager (OIM)</strong></td>
+              <td>Drillship <em>DS-1</em> Rig Management</td>
+              <td>Rig Floor Marine &amp; Well Control Safety</td>
+            </tr>
+            <tr>
+              <td style="font-family: 'JetBrains Mono', monospace;">05</td>
+              <td><strong>Lead Operations Geologist</strong></td>
+              <td>Geology &amp; Geophysics Directorate</td>
+              <td>Subsurface Correlation &amp; Lithological Register</td>
+            </tr>
+            <tr>
+              <td style="font-family: 'JetBrains Mono', monospace;">06</td>
+              <td><strong>Lead Petrophysicist</strong></td>
+              <td>Formation Evaluation Directorate</td>
+              <td>Wireline Evaluation &amp; Volumetric Reserve Filing</td>
+            </tr>
+            <tr>
+              <td style="font-family: 'JetBrains Mono', monospace;">07</td>
+              <td><strong>Real-Time Operations Centre (RTOC) Lead</strong></td>
+              <td>Digital Oilfield &amp; Automation Centre</td>
+              <td>High-Frequency Telemetry &amp; AI Audit Archiving</td>
+            </tr>
+            <tr>
+              <td style="font-family: 'JetBrains Mono', monospace;">08</td>
+              <td><strong>DGH Regulatory Representative</strong></td>
+              <td>Directorate General of Hydrocarbons</td>
+              <td>Sovereign Petroleum Data Repository (SPDR) Archive</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ========================================================
+           CHAPTER 2: GEOLOGICAL PROGNOSIS & BASIN GEOMECHANICS
+           ======================================================== -->
+      <h1 class="exec-chapter">Chapter 2 &mdash; Regional Geological Prognosis &amp; Stratigraphic Succession</h1>
+
+      <p class="exec-p no-indent">The Mahanadi Offshore Basin represents a high-potential polycyclic rift-to-drift passive continental margin basin along the east coast of India. Tectonostratigraphic evolution commenced during Early Cretaceous Gondwanaland rifting between India and Antarctica, establishing northeast-southwest trending basement grabens and horst blocks. Subsequent thermal subsidence during Late Cretaceous and Tertiary epochs led to widespread marine transgression, accompanied by catastrophic sediment influx from the proto-Mahanadi and Brahmani drainage networks that deposited extensive progradational clastic wedges across the continental slope.</p>
+
+      <p class="exec-p">The target stratigraphic section evaluated in the 12-1/4 inch hole consists of a complete Late Miocene to Early Pliocene bathyal marine succession. Depositional facies are characterized by deepwater hemipelagic claystones interspersed with sinuous channel-levee turbidite complexes and frontal splay sand sheets. Regional seismic mapping identified four principal lithostratigraphic intervals across the 12-1/4 inch borehole:</p>
+
+      <p class="exec-p"><strong>Unit U1 (3,850.0 m to 4,120.0 m MD):</strong> Late Miocene distal hemipelagic claystones and dark greenish-gray marine shales. The formation exhibits uniform lithological properties, high clay content (smectite-illite mixed layers), and steady normal acoustic compaction trends with compressional slowness ranging between 78 and 82 microseconds per foot.</p>
+
+      <p class="exec-p"><strong>Unit U2 (4,120.0 m to 4,195.0 m MD):</strong> Transgressive regional marine mudstones acting as the primary top and lateral capillary seal for the underlying reservoir sand. Undercompaction disequilibrium occurs prominently below 4,150.0 meters, creating a severe overpressure transition zone where pore pressure ramps rapidly from 10.95 to 11.48 pounds per gallon equivalent.</p>
+
+      <p class="exec-p"><strong>Unit U3 (4,195.0 m to 4,242.0 m MD):</strong> The primary exploration target, consisting of an Upper Miocene deepwater turbidite channel-levee sandstone complex. The reservoir exhibits excellent sorting, sub-angular to sub-rounded fine to medium quartz grains, exceptionally high net-to-gross ratio (0.88), and outstanding reservoir storage and flow capacity.</p>
+
+      <p class="exec-p"><strong>Unit U4 (4,242.0 m to 4,450.0 m MD TD):</strong> Underlying Middle to Late Miocene basal bathyal claystones, dark gray silty shales, and thin calcareous siltstone stringers, exhibiting normal hydrostatic compaction trends below the gas reservoir.</p>
+
+      <div class="table-box">
+        <div class="table-caption">Table 2.1: Stratigraphic Tops Prognosis vs Drilled Depth Verification</div>
+        <table class="exec-table">
+          <thead>
+            <tr>
+              <th>Stratigraphic Unit</th>
+              <th>Prognosed Depth (m MD)</th>
+              <th>Actual Drilled Depth (m MD)</th>
+              <th>Variance (m)</th>
+              <th>Subsea TVD (m)</th>
+              <th>Predominant Lithology</th>
+              <th>Hydrocarbon Indications</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>13-3/8" Casing Shoe</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;">3,850.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">3,850.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">0.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">3,848.4</td>
+              <td>Marine Claystone (Unit U1)</td>
+              <td>None (Baseline Background Gas 0.2%)</td>
+            </tr>
+            <tr>
+              <td><strong>Unit U1 (Hemipelagic Shale)</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;">3,850.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">3,850.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">0.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">3,848.4</td>
+              <td>Dark Greenish-Gray Claystone</td>
+              <td>0.2% to 0.4% Background Gas</td>
+            </tr>
+            <tr>
+              <td><strong>Unit U2 (Seal Mudstone)</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,130.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,120.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">-10.0 (High)</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,118.3</td>
+              <td>Undercompacted Marine Shale</td>
+              <td>Connection Gas Peaks to 1.1%</td>
+            </tr>
+            <tr>
+              <td><strong>Unit U3 Top (Main Pay Sand)</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,205.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,195.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">-10.0 (High)</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,193.3</td>
+              <td>Turbidite Channel Quartz Sand</td>
+              <td><strong>Major Gas Discovery (16.2% Peak Gas)</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Gas-Water Contact (GWC)</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,240.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,236.2</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">-3.8 (High)</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,234.4</td>
+              <td>Sandstone (Water Leg Transition)</td>
+              <td>Definitive Wireline MDT Gradient Break</td>
+            </tr>
+            <tr>
+              <td><strong>Unit U3 Base</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,250.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,242.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">-8.0 (High)</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,240.2</td>
+              <td>Basal Sand / Siltstone Interbeds</td>
+              <td>Residual Gas (0.6% Total Gas)</td>
+            </tr>
+            <tr>
+              <td><strong>Unit U4 (Bathyal Shale)</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,250.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,242.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">-8.0 (High)</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,240.2</td>
+              <td>Silty Claystone &amp; Calcareous Silt</td>
+              <td>Normal Baseline Gas (0.3% C1)</td>
+            </tr>
+            <tr>
+              <td><strong>Section Total Depth (TD)</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,450.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,450.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">0.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,448.2</td>
+              <td>Dense Bathyal Marine Mudstone</td>
+              <td>Target Fully Penetrated &amp; Logged</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ========================================================
+           CHAPTER 3: WELL ARCHITECTURE & SUBSEA HISTORY
+           ======================================================== -->
+      <h1 class="exec-chapter">Chapter 3 &mdash; Well Architecture, Subsea Casing History &amp; Wellbore Schematic</h1>
+
+      <p class="exec-p no-indent">The well construction architecture of MN-SM-DW-01 was engineered to isolate deepwater shallow hazards, withstand acute metocean loading in 1,620.0 meters of water, and provide absolute burst and collapse containment across geopressured formations. Prior hole sections successfully established structural stability and isolated shallow flow regimes before the commencement of the critical 12-1/4 inch intermediate section.</p>
+
+      <p class="exec-p">The structural foundation comprised a 36-inch casing string jetted with seawater and high-viscosity pre-hydrated bentonite sweeps to 1,705.0 meters measured depth (60.0 meters seabed penetration). The 20-inch 133 lb/ft X-56 surface casing was landed and cemented at 2,650.0 meters measured depth inside a 26-inch hole to isolate shallow biogenic gas sands, achieving an initial formation integrity test of 11.20 pounds per gallon equivalent. The intermediate 13-3/8 inch 72 lb/ft Q-125 casing string was landed at 3,850.0 meters measured depth in a 17-1/2 inch borehole and cemented with an engineered low-density lead and high-strength tail slurry, achieving a certified formation integrity test of 12.10 pounds per gallon equivalent (1.45 SG).</p>
+
+      <div class="diagram-container">
+        <div class="diagram-header">
+          <span>Figure 3.1: As-Built Subsea Wellbore Schematic &amp; Casing Programme</span>
+          <span>RKB Datum: +25.0 m MSL</span>
+        </div>
+        <pre class="ascii-tech">
++==================================================================================================+
+| DEPTH (m MD)     SUBSEA CASING ARCHITECTURE               HOLE SIZE   MUD DENSITY    FIT LIMIT   |
++==================================================================================================+
+| RKB (0.0 m)      o---[ Rig Floor & Rotary Kelly Bushing ]---o                                    |
+|                  |   Air Gap: 25.0 m                                                             |
+| MSL (+25.0 m)    ~ ~ ~ ~ ~ Mean Sea Level ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~  |
+|                  |   Deepwater Marine Riser (21 in OD)                                           |
+| 1,645.0 m        |===| Seabed / Wellhead Housing (18-3/4 in 15k) |===|                           |
+| 1,705.0 m        | | | 36 in Structural Conductor (Jetted)       | | |                           |
+|                  | | |                                           | | |                           |
+| 2,650.0 m        | | | 20 in Surface Casing                      | | | 26 in Hole    9.20 ppg    |
+|                  | | | (Shoe FIT: 11.20 ppg)                     | | |                           |
+|                  | | |                                           | | |                           |
+| 3,850.0 m        | | | 13-3/8 in Intermediate Casing Shoe        | | | 17-1/2 in     10.50 ppg   |
+|                  | | | (Shoe FIT: 12.10 ppg certified)           | | |                           |
+|                  |===|===========================================|===|                           |
+| 3,850-4,450 m    |   | 12-1/4 in Open Hole Intermediate Section  |   | 12-1/4 in     11.20-11.65 |
+|                  |   |                                           |   |                           |
+| 4,195-4,242 m    |   |   *** UNIT U3 MAIN GAS RESERVOIR ***      |   | Pay Sand      11.48 ppg PP|
+|                  |   |   (41.2 m Net Gas Pay, Sw=26.5%, Phie=24.8%)|   | (Overbalance: +120 psi)   |
+|                  |   |                                           |   |                           |
+| 4,450.0 m        |===| Section Total Depth (TD)                  |===| Section TD    11.65 ppg MW|
+|                  |   | [Planned 9-5/8 in Production Liner]       |   |                           |
++==================================================================================================+
+        </pre>
+      </div>
+
+      <div class="table-box">
+        <div class="table-caption">Table 3.1: Subsea Casing Programme &amp; Cementing Technical Summary</div>
+        <table class="exec-table">
+          <thead>
+            <tr>
+              <th>Casing Description</th>
+              <th>Hole Size (in)</th>
+              <th>Casing OD (in)</th>
+              <th>Weight &amp; Grade</th>
+              <th>Shoe Depth MD / TVD (m)</th>
+              <th>Cement Slurry Density</th>
+              <th>Shoe FIT / LOT (ppg)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Structural Conductor</strong></td>
+              <td>Jetting</td>
+              <td>36</td>
+              <td>1.5 in Wall B-Grade</td>
+              <td>1,705.0 / 1,705.0</td>
+              <td>15.80 ppg Neat Class-G</td>
+              <td>Seabed Foundation</td>
+            </tr>
+            <tr>
+              <td><strong>Surface Casing</strong></td>
+              <td>26</td>
+              <td>20</td>
+              <td>133.0 lb/ft X-56 BTC</td>
+              <td>2,650.0 / 2,649.1</td>
+              <td>12.80 Lead / 15.80 Tail</td>
+              <td>11.20 ppg EMW (Certified)</td>
+            </tr>
+            <tr>
+              <td><strong>Intermediate Casing</strong></td>
+              <td>17-1/2</td>
+              <td>13-3/8</td>
+              <td>72.0 lb/ft Q-125 VAM</td>
+              <td>3,850.0 / 3,848.4</td>
+              <td>13.50 Lead / 16.00 Tail</td>
+              <td><strong>12.10 ppg EMW (Certified)</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Reservoir Section</strong></td>
+              <td>12-1/4</td>
+              <td>Open Hole</td>
+              <td>To be Cased (9-5/8" Liner)</td>
+              <td>4,450.0 / 4,448.2</td>
+              <td>SOBM System (11.65 ppg)</td>
+              <td>ECD Capped at 11.86 ppg</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ========================================================
+           CHAPTER 4: 12-1/4 IN DRILLING OPERATIONS CHRONOLOGY
+           ======================================================== -->
+      <h1 class="exec-chapter">Chapter 4 &mdash; 12-1/4 in Hole Section Operations &amp; Shift Chronology</h1>
+
+      <p class="exec-p no-indent">The 12-1/4 inch intermediate-to-reservoir borehole section represents the primary technical phase of well MN-SM-DW-01, spanning 600.0 meters of open-hole trajectory from the 13-3/8 inch casing shoe at 3,850.0 meters to section Total Depth at 4,450.0 meters measured depth. Drilling operations were conducted continuously across eight 12-hour shifts from 20 September 2026 (06:00 hrs IST) to 24 September 2026 (04:30 hrs IST). Flawless execution was achieved with zero non-productive time, zero equipment breakdown, and zero well control kicks.</p>
+
+      <div class="table-box">
+        <div class="table-caption">Table 4.1: Comprehensive Shift-by-Shift Operational Log (Shifts 01 to 08)</div>
+        <table class="exec-table">
+          <thead>
+            <tr>
+              <th>Shift / Date</th>
+              <th>Interval Drilled (m MD)</th>
+              <th>Rotating Hours</th>
+              <th>Avg ROP (m/hr)</th>
+              <th>Active MW (ppg)</th>
+              <th>ECD (ppg)</th>
+              <th>Key Operational Milestones &amp; Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Shift 01</strong><br>20 Sep (D)</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">3,850 &rarr; 3,925</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">6.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">12.5</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.20</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.45</td>
+              <td>Drill cement, float collar &amp; shoe track. Drill 5 m new formation to 3,855 m. Perform certified FIT to 12.10 ppg EMW. Drill Unit U1 shale to 3,925 m.</td>
+            </tr>
+            <tr>
+              <td><strong>Shift 02</strong><br>20 Sep (N)</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">3,925 &rarr; 4,010</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">8.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">10.6</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.20</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.46</td>
+              <td>Drill hemipelagic marine shales. Directional inclination held at 0.8&deg;. Total background gas steady at 0.3%. High-viscosity sweeps circulated clean.</td>
+            </tr>
+            <tr>
+              <td><strong>Shift 03</strong><br>21 Sep (D)</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,010 &rarr; 4,095</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">8.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">10.6</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.20</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.48</td>
+              <td>Steady rotary steerable drilling in lower Unit U1. Acoustic slowness baseline confirmed at 78 &mu;s/ft. Corrected d-exponent stable at 1.50.</td>
+            </tr>
+            <tr>
+              <td><strong>Shift 04</strong><br>21 Sep (N)</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,095 &rarr; 4,172</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">7.5</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">10.3</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.20</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.50</td>
+              <td>Enter Unit U2 transition shale at 4,120 m. Real-time LWD detects compaction disequilibrium: DT surges to 101 &mu;s/ft, connection gas rises to 1.1%.</td>
+            </tr>
+            <tr>
+              <td><strong>Shift 05</strong><br>22 Sep (D)</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,172 &rarr; 4,172</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">0.0 (Hold)</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">0.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.20 &rarr; 11.65</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.50</td>
+              <td><strong>4,172 m Decision Gate:</strong> Pause drilling. 15-min flow check static. Issue MOC MEMO-SM-2026-09. Weight up mud with 39.8 MT barite to 11.65 ppg (+120 psi overbalance).</td>
+            </tr>
+            <tr>
+              <td><strong>Shift 06</strong><br>22 Sep (N)</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,172 &rarr; 4,215</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">5.5</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">7.8 (avg)</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.65</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.86</td>
+              <td>Penetrate Unit U3 top at 4,195 m. Drilling break at 4,205 m (34 m/hr). Driller caps ROP at 12 m/hr. ECD held to 11.86 ppg (shoe margin preserved).</td>
+            </tr>
+            <tr>
+              <td><strong>Shift 07</strong><br>23 Sep (D)</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,215 &rarr; 4,320</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">7.5</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">14.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.65</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.88</td>
+              <td>Drill main channel sand &amp; water leg. Total gas peaks at 16.2% (C1 88.4%). Exit sand at 4,242 m into Unit U4 bathyal claystones. Background gas subsides to 0.4%.</td>
+            </tr>
+            <tr>
+              <td><strong>Shift 08</strong><br>23-24 Sep</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,320 &rarr; 4,450</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">8.5</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">15.3</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.65</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.88</td>
+              <td>Reach Section Total Depth (4,450 m MD) at 04:30 hrs IST. Circulate 2x bottoms up clean. Wiper trip to 13-3/8" shoe with zero tight hole. Pull out of hole for wireline.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-box">
+        <div class="table-caption">Table 4.2: 12-1/4 in Hole Section Bottom Hole Assembly (BHA) &amp; Drill Bit Specifications</div>
+        <table class="exec-table">
+          <thead>
+            <tr>
+              <th>BHA Component</th>
+              <th>Outer Diameter (in)</th>
+              <th>Inner Diameter (in)</th>
+              <th>Length (m)</th>
+              <th>Component Function &amp; Telemetry Specification</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>PDC Drill Bit</strong></td>
+              <td>12.250</td>
+              <td>2.250</td>
+              <td>0.38</td>
+              <td>Smith / Schlumberger 6-blade 16 mm premium cutters, 6x 16/32" nozzles, TFA 1.18 in&sup2;</td>
+            </tr>
+            <tr>
+              <td><strong>Rotary Steerable System (RSS)</strong></td>
+              <td>8.250</td>
+              <td>2.812</td>
+              <td>4.12</td>
+              <td>Schlumberger PowerDrive Xceed (point-the-bit) continuous inclination/azimuth governance</td>
+            </tr>
+            <tr>
+              <td><strong>LWD Acoustic Sonic Collar</strong></td>
+              <td>8.250</td>
+              <td>2.750</td>
+              <td>8.45</td>
+              <td>SonicScope multi-pole compressional acoustic slowness (DT) for geopressure prediction</td>
+            </tr>
+            <tr>
+              <td><strong>LWD Density-Neutron Collar</strong></td>
+              <td>8.250</td>
+              <td>2.750</td>
+              <td>9.20</td>
+              <td>EcoScope azimuthally focused bulk density (RHOB), thermal neutron porosity (NPHI), PEF</td>
+            </tr>
+            <tr>
+              <td><strong>MWD Pulse Telemetry &amp; Gamma</strong></td>
+              <td>8.250</td>
+              <td>2.750</td>
+              <td>10.15</td>
+              <td>TeleScope high-data-rate mud-pulse telemetry &amp; dual scintillation spectral gamma ray</td>
+            </tr>
+            <tr>
+              <td><strong>Non-Magnetic Drill Collars (NMDC)</strong></td>
+              <td>8.000</td>
+              <td>2.812</td>
+              <td>18.50</td>
+              <td>Non-magnetic drill collar isolation for magnetic survey tool sensor protection</td>
+            </tr>
+            <tr>
+              <td><strong>Hydraulic Drilling Jar &amp; Accelerator</strong></td>
+              <td>8.000</td>
+              <td>2.812</td>
+              <td>14.80</td>
+              <td>Double-acting hydraulic drilling jar set for 180,000 lb up-trip impact threshold</td>
+            </tr>
+            <tr>
+              <td><strong>Heavyweight Drill Pipe (HWDP)</strong></td>
+              <td>5.500</td>
+              <td>3.250</td>
+              <td>142.50</td>
+              <td>Spiral-groove 5-1/2" HWDP transition string providing weight-on-bit stiffness</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ========================================================
+           CHAPTER 5: FORMATION EVALUATION & WIRELINE LOGS
+           ======================================================== -->
+      <h1 class="exec-chapter">Chapter 5 &mdash; Formation Evaluation, Petrophysics &amp; Discovery Appraisal</h1>
+
+      <p class="exec-p no-indent">Formation evaluation across the 12-1/4 inch section confirmed an exceptional commercial natural gas discovery within the Upper Miocene Unit U3 turbidite channel complex between 4,195.0 and 4,242.0 meters measured depth. Subsurface evaluation utilized a multi-barrier acquisition methodology combining high-resolution Logging While Drilling sensors, mud logging gas chromatography, and wireline modular formation dynamics testing.</p>
+
+      <p class="exec-p">The reservoir sand interval exhibits a gross thickness of 47.0 meters with 41.2 meters of net hydrocarbon gas pay, establishing an outstanding net-to-gross ratio of 0.88. Petrophysical deterministic multi-mineral interpretation indicates average effective porosity of 24.8%, average water saturation of 26.5% (gas saturation 73.5%), and matrix permeability of 285 millidarcies. The sand is remarkably clean, showing API gamma ray responses between 28 and 42 API units and high true formation resistivity peaking at 142.0 ohm-meters.</p>
+
+      <div class="diagram-container">
+        <div class="diagram-header">
+          <span>Figure 5.1: High-Resolution Multi-Track Composite Wireline &amp; LWD Petrophysical Log</span>
+          <span>Well: MN-SM-DW-01 &bull; 4,150 m to 4,260 m MD</span>
+        </div>
+        
+    <svg class="composite-log-svg" viewBox="0 0 1000 680" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- Sand Stipple Pattern -->
+        <pattern id="sandPatternColoured" width="12" height="12" patternUnits="userSpaceOnUse">
+          <circle cx="3" cy="3" r="1" fill="#713f12" opacity="0.6"/>
+          <circle cx="9" cy="9" r="1" fill="#713f12" opacity="0.6"/>
+          <circle cx="3" cy="9" r="0.8" fill="#713f12" opacity="0.4"/>
+          <circle cx="9" cy="3" r="0.8" fill="#713f12" opacity="0.4"/>
+        </pattern>
+        <!-- Shale Dash Pattern -->
+        <pattern id="shalePatternColoured" width="16" height="8" patternUnits="userSpaceOnUse">
+          <line x1="2" y1="4" x2="10" y2="4" stroke="#475569" stroke-width="0.8" opacity="0.6"/>
+        </pattern>
+        <!-- Carbonate Brick Pattern -->
+        <pattern id="carbPatternColoured" width="16" height="10" patternUnits="userSpaceOnUse">
+          <line x1="0" y1="5" x2="16" y2="5" stroke="#334155" stroke-width="0.7"/>
+          <line x1="8" y1="0" x2="8" y2="5" stroke="#334155" stroke-width="0.7"/>
+          <line x1="0" y1="5" x2="0" y2="10" stroke="#334155" stroke-width="0.7"/>
+          <line x1="16" y1="5" x2="16" y2="10" stroke="#334155" stroke-width="0.7"/>
+        </pattern>
+      </defs>
+
+      <!-- Track Header Background -->
+      <rect x="0" y="0" width="1000" height="70" fill="#f8fafc" stroke="#0f172a" stroke-width="1.2" />
+
+      <!-- Vertical Track Dividers -->
+      <line x1="75" y1="0" x2="75" y2="670" stroke="#0f172a" stroke-width="1.2" />
+      <line x1="215" y1="0" x2="215" y2="670" stroke="#0f172a" stroke-width="1.2" />
+      <line x1="265" y1="0" x2="265" y2="670" stroke="#0f172a" stroke-width="1.2" />
+      <line x1="435" y1="0" x2="435" y2="670" stroke="#0f172a" stroke-width="1.2" />
+      <line x1="615" y1="0" x2="615" y2="670" stroke="#0f172a" stroke-width="1.2" />
+      <line x1="765" y1="0" x2="765" y2="670" stroke="#0f172a" stroke-width="1.2" />
+      <line x1="920" y1="0" x2="920" y2="670" stroke="#0f172a" stroke-width="1.2" />
+
+      <!-- Header Labels -->
+      <text x="37" y="30" text-anchor="middle" font-family="'Arial', 'Helvetica Neue', sans-serif" font-size="11" font-weight="700" fill="#0f172a">DEPTH</text>
+      <text x="37" y="52" text-anchor="middle" font-family="'Arial', 'Helvetica Neue', sans-serif" font-size="10" font-weight="600" fill="#64748b">m MD</text>
+
+      <text x="145" y="24" text-anchor="middle" font-family="'Arial', 'Helvetica Neue', sans-serif" font-size="11" font-weight="700" fill="#0f172a">TRACK 1: GR &amp; CAL</text>
+      <text x="85" y="52" text-anchor="start" font-family="'Arial', 'Helvetica Neue', sans-serif" font-size="10" font-weight="700" fill="#16a34a">GR (0-150 API)</text>
+      <text x="205" y="52" text-anchor="end" font-family="'Arial', 'Helvetica Neue', sans-serif" font-size="10" font-weight="700" fill="#1d4ed8">CAL (8-18 in)</text>
+
+      <text x="240" y="38" text-anchor="middle" font-family="'Arial', 'Helvetica Neue', sans-serif" font-size="11" font-weight="700" fill="#0f172a">LITH</text>
+
+      <text x="350" y="24" text-anchor="middle" font-family="'Arial', 'Helvetica Neue', sans-serif" font-size="11" font-weight="700" fill="#0f172a">TRACK 2: RESISTIVITY</text>
+      <text x="275" y="52" text-anchor="start" font-family="'Arial', 'Helvetica Neue', sans-serif" font-size="9.5" font-weight="700" fill="#dc2626">RDEP (0.2-2000)</text>
+      <text x="350" y="52" text-anchor="middle" font-family="'Arial', 'Helvetica Neue', sans-serif" font-size="9.5" fill="#475569">&Omega;&middot;m (Log)</text>
+      <text x="425" y="52" text-anchor="end" font-family="'Arial', 'Helvetica Neue', sans-serif" font-size="9.5" font-weight="700" fill="#2563eb">RSHAL</text>
+
+      <text x="525" y="24" text-anchor="middle" font-family="'Arial', 'Helvetica Neue', sans-serif" font-size="11" font-weight="700" fill="#0f172a">TRACK 3: NPHI / RHOB</text>
+      <text x="445" y="52" text-anchor="start" font-family="'Arial', 'Helvetica Neue', sans-serif" font-size="9.5" font-weight="700" fill="#dc2626">RHOB (1.95-2.95)</text>
+      <text x="605" y="52" text-anchor="end" font-family="'Arial', 'Helvetica Neue', sans-serif" font-size="9.5" font-weight="700" fill="#2563eb">NPHI (0.45--0.15)</text>
+
+      <text x="690" y="24" text-anchor="middle" font-family="'Arial', 'Helvetica Neue', sans-serif" font-size="11" font-weight="700" fill="#0f172a">TRACK 4: MUD GAS</text>
+      <text x="625" y="52" text-anchor="start" font-family="'Arial', 'Helvetica Neue', sans-serif" font-size="9.5" font-weight="700" fill="#ea580c">Total Gas %</text>
+      <text x="755" y="52" text-anchor="end" font-family="'Arial', 'Helvetica Neue', sans-serif" font-size="9.5" font-weight="700" fill="#0891b2">C1-C5 (0-20%)</text>
+
+      <text x="842" y="24" text-anchor="middle" font-family="'Arial', 'Helvetica Neue', sans-serif" font-size="11" font-weight="700" fill="#0f172a">TRACK 5: HYDRAULIC WINDOW</text>
+      <text x="775" y="52" text-anchor="start" font-family="'Arial', 'Helvetica Neue', sans-serif" font-size="9.5" font-weight="700" fill="#9333ea">PP</text>
+      <text x="815" y="52" text-anchor="middle" font-family="'Arial', 'Helvetica Neue', sans-serif" font-size="9.5" font-weight="700" fill="#2563eb">MW</text>
+      <text x="860" y="52" text-anchor="middle" font-family="'Arial', 'Helvetica Neue', sans-serif" font-size="9.5" font-weight="700" fill="#dc2626">ECD</text>
+      <text x="910" y="52" text-anchor="end" font-family="'Arial', 'Helvetica Neue', sans-serif" font-size="9.5" font-weight="700" fill="#000000">FIT</text>
+
+      <text x="960" y="30" text-anchor="middle" font-family="'Arial', 'Helvetica Neue', sans-serif" font-size="11" font-weight="700" fill="#0f172a">PAY</text>
+      <text x="960" y="52" text-anchor="middle" font-family="'Arial', 'Helvetica Neue', sans-serif" font-size="10" font-weight="700" fill="#16a34a">FLAG</text>
+
+      <!-- Depth Grid Lines -->
+      <line x1="0" y1="120" x2="1000" y2="120" stroke="#e2e8f0" stroke-width="1" />
+      <text x="37" y="124" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="600" fill="#475569">4,150</text>
+
+      <line x1="0" y1="170" x2="1000" y2="170" stroke="#f1f5f9" stroke-width="1" />
+      <text x="37" y="174" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#64748b">4,160</text>
+
+      <rect x="0" y="222" width="1000" height="16" fill="rgba(245, 158, 11, 0.08)" />
+      <line x1="0" y1="230" x2="1000" y2="230" stroke="#b45309" stroke-dasharray="4,3" stroke-width="1.5" />
+      <text x="37" y="234" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#b45309">4,172</text>
+      <text x="82" y="226" fill="#b45309" font-family="'Arial', sans-serif" font-size="9" font-weight="700">4,172m EARLY WARNING HORIZON (Barite Weight-Up: 11.20 &rarr; 11.65 ppg)</text>
+
+      <line x1="0" y1="270" x2="1000" y2="270" stroke="#f1f5f9" stroke-width="1" />
+      <text x="37" y="274" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#64748b">4,180</text>
+
+      <line x1="0" y1="320" x2="1000" y2="320" stroke="#f1f5f9" stroke-width="1" />
+      <text x="37" y="324" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#64748b">4,190</text>
+
+      <line x1="0" y1="345" x2="1000" y2="345" stroke="#16a34a" stroke-width="2" />
+      <text x="37" y="349" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#16a34a">4,195</text>
+      <text x="82" y="341" fill="#15803d" font-family="'Arial', sans-serif" font-size="9.5" font-weight="700">TOP UNIT U3 TURBIDITE GAS SAND (Overbalance: +120 psi)</text>
+
+      <line x1="0" y1="395" x2="1000" y2="395" stroke="#dc2626" stroke-dasharray="3,2" stroke-width="1.5" />
+      <text x="37" y="399" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#dc2626">4,205</text>
+      <text x="82" y="391" fill="#b91c1c" font-family="'Arial', sans-serif" font-size="9" font-weight="700">DRILLING BREAK (34 m/hr &rarr; ROP Capped at 12 m/hr; ECD Held to 11.86 ppg)</text>
+
+      <line x1="0" y1="470" x2="1000" y2="470" stroke="#f1f5f9" stroke-width="1" />
+      <text x="37" y="474" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#64748b">4,220</text>
+
+      <line x1="0" y1="551" x2="1000" y2="551" stroke="#dc2626" stroke-dasharray="5,3" stroke-width="2" />
+      <text x="37" y="555" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#dc2626">4,236</text>
+      <text x="82" y="547" fill="#dc2626" font-family="'Arial', sans-serif" font-size="9.5" font-weight="700">GAS-WATER CONTACT (GWC: 4,236.2 m MD / 4,234.4 m TVD)</text>
+
+      <line x1="0" y1="580" x2="1000" y2="580" stroke="#0f172a" stroke-width="1.8" />
+      <text x="37" y="584" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#0f172a">4,242</text>
+      <text x="82" y="576" fill="#334155" font-family="'Arial', sans-serif" font-size="8.5" font-weight="700">BASE OF UNIT U3 SAND (Gross Sand Interval: 47.0 m)</text>
+
+      <line x1="0" y1="670" x2="1000" y2="670" stroke="#0f172a" stroke-width="1.2" />
+      <text x="37" y="666" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9.5" fill="#64748b">4,260</text>
+
+      <!-- LITHOLOGY COLUMN (Track 2: 215-265) -->
+      <rect x="215" y="70" width="50" height="160" fill="#94a3b8" />
+      <rect x="215" y="70" width="50" height="160" fill="url(#shalePatternColoured)" />
+      <rect x="215" y="230" width="50" height="115" fill="#64748b" />
+      <rect x="215" y="230" width="50" height="115" fill="url(#shalePatternColoured)" />
+      <rect x="215" y="345" width="50" height="206" fill="#facc15" />
+      <rect x="215" y="345" width="50" height="206" fill="url(#sandPatternColoured)" />
+      <rect x="215" y="551" width="50" height="29" fill="#93c5fd" />
+      <rect x="215" y="551" width="50" height="29" fill="url(#sandPatternColoured)" />
+      <rect x="215" y="580" width="50" height="90" fill="#cbd5e1" />
+      <rect x="215" y="580" width="50" height="90" fill="url(#carbPatternColoured)" />
+
+      <!-- TRACK 1: GAMMA RAY & CALIPER (75 to 215) -->
+      <path d="M 85,345 L 105,350 Q 98,380 102,410 T 96,440 T 100,470 T 98,510 T 102,551 L 115,570 L 125,580 L 85,580 Z" fill="rgba(254, 240, 138, 0.5)" />
+      <path d="M 175,70 Q 180,95 172,120 T 178,170 T 182,230 T 176,280 T 170,335 L 105,345 Q 98,380 102,410 T 96,440 T 100,470 T 98,510 T 102,551 L 115,570 L 168,580 Q 174,620 170,670" 
+            fill="none" stroke="#16a34a" stroke-width="2.2" stroke-linejoin="round" />
+      <path d="M 136,70 Q 138,120 135,170 T 136,230 T 135,320 T 137,395 T 135,470 T 136,551 T 135,670" 
+            fill="none" stroke="#1d4ed8" stroke-dasharray="4,3" stroke-width="1.6" />
+
+      <!-- TRACK 2: RESISTIVITY LOG (265 to 435) -->
+      <path d="M 290,70 Q 288,105 292,120 T 290,190 T 295,230 T 300,335 L 410,345 Q 415,370 408,400 T 414,440 T 406,480 T 412,520 L 335,551 L 305,580 Q 295,625 292,670" 
+            fill="none" stroke="#dc2626" stroke-width="2.4" stroke-linejoin="round" />
+      <path d="M 285,70 Q 284,105 287,120 T 285,190 T 288,230 T 292,335 L 382,345 Q 386,370 380,400 T 384,440 T 378,480 T 382,520 L 320,551 L 295,580 Q 288,625 286,670" 
+            fill="none" stroke="#2563eb" stroke-dasharray="4,2" stroke-width="1.8" />
+      <text x="410" y="375" font-family="'Arial', sans-serif" font-size="9" font-weight="700" fill="#dc2626">Rt: 142 &Omega;&middot;m</text>
+      <text x="382" y="420" font-family="'Arial', sans-serif" font-size="8.5" font-weight="600" fill="#2563eb">Rxo: 48 &Omega;&middot;m</text>
+
+      <!-- TRACK 3: DENSITY-NEUTRON GAS CROSSOVER (435 to 615) -->
+      <polygon points="465,345 460,390 458,440 462,490 465,551 550,551 556,490 552,440 558,390 560,345" 
+               fill="rgba(250, 204, 21, 0.45)" stroke="none" />
+      <path d="M 552,70 Q 548,105 550,120 T 546,230 T 542,335 L 465,345 Q 460,390 458,440 T 462,490 T 465,551 L 515,580 Q 550,625 554,670" 
+            fill="none" stroke="#dc2626" stroke-width="2.2" stroke-linejoin="round" />
+      <path d="M 475,70 Q 480,105 478,120 T 482,230 T 490,335 L 560,345 Q 558,390 552,440 T 556,490 T 550,551 L 505,580 Q 480,625 476,670" 
+            fill="none" stroke="#2563eb" stroke-dasharray="4,2.5" stroke-width="2.2" stroke-linejoin="round" />
+      <text x="510" y="435" text-anchor="middle" font-family="'Arial', sans-serif" font-size="9.5" font-weight="700" fill="#854d0e">GAS CROSSOVER</text>
+      <text x="510" y="450" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="700" fill="#854d0e">&Phi;e = 24.8%</text>
+
+      <!-- TRACK 4: MUD LOGGING GAS CHROMATOGRAPHY (615 to 765) -->
+      <path d="M 625,70 Q 627,105 625,120 T 628,190 L 648,230 Q 652,280 658,335 L 748,345 Q 755,380 750,420 T 756,460 T 740,510 L 710,551 L 638,580 Q 628,625 625,670" 
+            fill="none" stroke="#ea580c" stroke-width="2.4" stroke-linejoin="round" />
+      <path d="M 623,70 Q 625,105 623,120 T 625,190 L 642,230 Q 646,280 650,335 L 735,345 Q 740,380 736,420 T 742,460 T 728,510 L 700,551 L 634,580 Q 626,625 623,670" 
+            fill="none" stroke="#0891b2" stroke-width="1.6" />
+      <text x="748" y="375" text-anchor="end" font-family="'Arial', sans-serif" font-size="8.5" font-weight="700" fill="#ea580c">Peak Gas: 16.2%</text>
+      <text x="748" y="390" text-anchor="end" font-family="'Arial', sans-serif" font-size="8.5" font-weight="700" fill="#0891b2">C1: 88.4% (Dry Gas)</text>
+      <text x="748" y="403" text-anchor="end" font-family="'Arial', sans-serif" font-size="8" fill="#475569">C2: 6.8% | C3: 3.1%</text>
+
+      <!-- TRACK 5: HYDRAULIC & PRESSURE WINDOW (765 to 920) -->
+      <line x1="895" y1="70" x2="895" y2="670" stroke="#000000" stroke-dasharray="5,4" stroke-width="2" />
+      <text x="895" y="86" text-anchor="end" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="700" fill="#000000">FIT: 12.10 ppg</text>
+
+      <path d="M 790,70 L 790,120 Q 795,170 810,230 L 835,345 L 835,551 L 820,580 L 805,670" 
+            fill="none" stroke="#9333ea" stroke-width="2.2" stroke-linejoin="round" />
+      <text x="785" y="105" text-anchor="end" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="700" fill="#9333ea">PP: 10.95</text>
+      <text x="830" y="310" text-anchor="end" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="700" fill="#9333ea">PP: 11.48</text>
+
+      <path d="M 810,70 L 810,230 L 850,230 L 850,670" 
+            fill="none" stroke="#2563eb" stroke-width="2.8" stroke-linejoin="round" />
+      <text x="805" y="175" text-anchor="end" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="700" fill="#2563eb">MW: 11.20</text>
+      <text x="855" y="255" text-anchor="start" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="700" fill="#2563eb">MW: 11.65 ppg</text>
+
+      <path d="M 828,70 L 828,230 L 868,230 L 872,395 L 870,551 L 868,670" 
+            fill="none" stroke="#dc2626" stroke-width="2" stroke-linejoin="round" />
+      <text x="876" y="415" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="700" fill="#dc2626">ECD: 11.86</text>
+      <text x="898" y="445" font-family="'Arial', sans-serif" font-size="7.5" font-weight="700" fill="#15803d">+0.22 ppg Margin</text>
+
+      <!-- TRACK 6: NET PAY & FLUID INTERPRETATION FLAG (920 to 1000) -->
+      <rect x="930" y="345" width="55" height="206" fill="#16a34a" rx="3" />
+      <text x="957" y="450" fill="#ffffff" font-family="'Arial', sans-serif" font-size="10" font-weight="700" text-anchor="middle" transform="rotate(-90 957 450)">NET GAS PAY: 41.2 m</text>
+      
+      <rect x="930" y="551" width="55" height="29" fill="#60a5fa" rx="2" />
+      <text x="957" y="568" fill="#ffffff" font-family="'Arial', sans-serif" font-size="8" font-weight="700" text-anchor="middle">WATER</text>
+    </svg>
+    
+      </div>
+
+      <div class="table-box">
+        <div class="table-caption">Table 5.1: Reservoir Zonal Petrophysical Parameters &amp; Fluid Contacts</div>
+        <table class="exec-table">
+          <thead>
+            <tr>
+              <th>Reservoir Zone</th>
+              <th>Top MD (m)</th>
+              <th>Base MD (m)</th>
+              <th>Gross Sand (m)</th>
+              <th>Net Pay (m)</th>
+              <th>N/G Ratio</th>
+              <th>Avg Porosity (&Phi;e)</th>
+              <th>Avg Saturation (Sw)</th>
+              <th>Fluid Classification</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Upper Channel Sand (U3-A)</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,195.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,218.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">23.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">22.4</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">0.97</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">25.6%</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">24.2%</td>
+              <td>Dry Natural Gas (C1 = 89.2%)</td>
+            </tr>
+            <tr>
+              <td><strong>Middle Channel Sand (U3-B)</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,218.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,236.2</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">18.2</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">18.8</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">0.92</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">24.1%</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">28.6%</td>
+              <td>Dry Natural Gas (C1 = 87.5%)</td>
+            </tr>
+            <tr>
+              <td><strong>Basal Aquifer Leg (U3-C)</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,236.2</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,242.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">5.8</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">0.0</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">0.00</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">22.8%</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">100.0%</td>
+              <td>Formation Water (Rw = 0.048 &Omega;&middot;m)</td>
+            </tr>
+            <tr>
+              <td><strong>Cumulative Unit U3 Reservoir</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;"><strong>4,195.0</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;"><strong>4,242.0</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;"><strong>47.0</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;"><strong>41.2</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;"><strong>0.88</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;"><strong>24.8%</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;"><strong>26.5%</strong></td>
+              <td><strong>Commercial Gas Discovery</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="exec-p">Wireline Modular Formation Dynamics Testing (MDT) acquired eight high-precision quartz gauge pressure points across the reservoir. Pre-test measurements established a linear gas hydrostatic pressure gradient of 0.088 pounds per square inch per foot (0.203 bar/m) between 4,196.0 m and 4,234.0 m MD. A sharp gradient inflection occurs at 4,236.2 meters measured depth (4,234.4 meters true vertical depth), transitioning to a formation water gradient of 0.442 psi/ft (1.02 bar/m) and conclusively establishing the field Gas-Water Contact.</p>
+
+      <p class="exec-p">Mud logging gas chromatography confirmed a dry natural gas signature dominated by 88.4% methane (C1), 6.8% ethane (C2), 3.1% propane (C3), 1.2% total butanes (iC4 and nC4), and 0.5% pentanes. Total gas peaked at 16.2% against a baseline background of 0.4%. The gas wetness ratio (Wh) was calculated at 0.88, indicating sweet, highly deliverable methane gas with zero hydrogen sulfide (0 ppm) and minimal carbon dioxide (0.42 mol%).</p>
+
+      <!-- ========================================================
+           CHAPTER 6: GEOMECHANICS & EATON PORE PRESSURE INVERSION
+           ======================================================== -->
+      <h1 class="exec-chapter">Chapter 6 &mdash; Geomechanics, Eaton Pore Pressure Inversion &amp; 4,172 m Decision Gate</h1>
+
+      <p class="exec-p no-indent">The Mahanadi Deepwater continental slope exhibits complex geomechanical stress distributions governed by high sedimentation rates and low-permeability transgressive mudstone seals. In normal compaction regimes, pore fluids expel freely, maintaining hydrostatic pore pressure gradients of 8.60 pounds per gallon equivalent (0.447 psi/ft). However, rapid sedimentation of Miocene clays generated severe compaction disequilibrium within Unit U2, trapping pore fluid and supporting a substantial portion of the overburden lithostatic load.</p>
+
+      <p class="exec-p">Real-time geomechanical pore pressure prediction was performed using Eaton's sonic slowness methodology, referenced against an empirically calibrated Normal Compaction Trend (NCT) derived from regional offset wells:</p>
+
+      <div class="exec-data-card">
+        <div class="exec-data-card-title">Eaton Sonic Slowness Pore Pressure Formulation</div>
+        <p style="font-family: 'JetBrains Mono', monospace; font-size: 13.5px; font-weight: 700; color: var(--text-black);">
+          PP = &sigma;<sub>v</sub> - (&sigma;<sub>v</sub> - P<sub>hyd</sub>) &times; (DT<sub>nct</sub> / DT<sub>obs</sub>)<sup>3.0</sup>
+        </p>
+        <p>Where &sigma;<sub>v</sub> is the total vertical overburden stress (calculated at 16.52 ppg equivalent based on sea water and formation bulk density integration), P<sub>hyd</sub> is normal hydrostatic pore pressure (8.60 ppg equivalent), DT<sub>nct</sub> is normal compaction slowness (78.0 &mu;s/ft at 4,172 m), and DT<sub>obs</sub> is observed compressional acoustic slowness (101.0 &mu;s/ft at 4,172 m).</p>
+      </div>
+
+      <p class="exec-p">At 4,172.0 meters measured depth, real-time telemetry detected an acute divergence in acoustic slowness, surging from 78.0 to 101.0 &mu;s/ft within a 12-meter interval. Concurrently, the corrected d-exponent inverted from 1.50 to 1.18, and connection gas spiked to 1.1%. Inverting Eaton's equation yielded an escalating pore pressure of 11.48 pounds per gallon equivalent at the prognosed reservoir top. Because the active mud weight was 11.20 ppg, continuing to drill would have resulted in an underbalanced condition (-0.28 ppg / -155 psi) and an immediate deepwater well control kick upon penetrating the sand.</p>
+
+      <div class="table-box">
+        <div class="table-caption">Table 6.1: Comprehensive Geomechanical Pore Pressure Profile &amp; Fracture Margins</div>
+        <table class="exec-table">
+          <thead>
+            <tr>
+              <th>Depth (m MD)</th>
+              <th>Lithostratigraphy</th>
+              <th>Pore Pressure (ppg)</th>
+              <th>Mud Weight (ppg)</th>
+              <th>ECD (ppg)</th>
+              <th>Shoe FIT Limit (ppg)</th>
+              <th>Hydraulic Safety Margin</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-family: 'JetBrains Mono', monospace;">3,850.0</td>
+              <td>13-3/8" Casing Shoe</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">10.95</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.20</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.45</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">12.10 (Certified)</td>
+              <td>+0.65 ppg (Safe Drilling Margin)</td>
+            </tr>
+            <tr>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,000.0</td>
+              <td>Unit U1 Normal Shale</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">10.95</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.20</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.46</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">12.10</td>
+              <td>+0.64 ppg (Stable Baseline)</td>
+            </tr>
+            <tr>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,120.0</td>
+              <td>Unit U2 Transition Top</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.05</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.20</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.48</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">12.10</td>
+              <td>+0.62 ppg (Early Ramp Onset)</td>
+            </tr>
+            <tr>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,172.0</td>
+              <td><strong>Early Warning Gate</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.28 &rarr; 11.48</td>
+              <td style="font-family: 'JetBrains Mono', monospace;"><strong>11.20 &rarr; 11.65</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.50</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">12.10</td>
+              <td><strong>Mud Weighted Up (+120 psi Overbalance)</strong></td>
+            </tr>
+            <tr>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,195.0</td>
+              <td>Unit U3 Reservoir Top</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.48</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.65</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.86</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">12.10</td>
+              <td>+0.24 ppg Margin Below Shoe FIT</td>
+            </tr>
+            <tr>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,205.0</td>
+              <td>Drilling Break Zone</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.48</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.65</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.86 (Capped)</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">12.10</td>
+              <td><strong>ROP Governed to 12 m/hr</strong></td>
+            </tr>
+            <tr>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,320.0</td>
+              <td>Unit U4 Marine Mudstone</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.42</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.65</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.88</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">12.10</td>
+              <td>+0.22 ppg Margin Preserved</td>
+            </tr>
+            <tr>
+              <td style="font-family: 'JetBrains Mono', monospace;">4,450.0</td>
+              <td>Section Total Depth (TD)</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.40</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.65</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.88</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">12.10</td>
+              <td>Borehole Mechanically Stable</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ========================================================
+           CHAPTER 7: DRILLING FLUIDS & BARITE HYDRAULICS
+           ======================================================== -->
+      <h1 class="exec-chapter">Chapter 7 &mdash; Synthetic Oil-Based Drilling Fluids &amp; Barite Hydraulics</h1>
+
+      <p class="exec-p no-indent">A low-toxicity synthetic paraffin-based invert emulsion drilling fluid system (SOBM) was utilized to drill the 12-1/4 inch hole section. The synthetic continuous phase was engineered to eliminate shale hydration and swelling in water-sensitive smectite-illite clays, deliver superior borehole lubricity, and provide strict filtration control across high-permeability reservoir sands under deepwater hydrostatic pressures.</p>
+
+      <p class="exec-p">The active surface and wellbore fluid volume totaled 1,450 barrels. Following detection of the geopressure ramp at 4,172.0 meters, drilling operations executed a controlled barite weight-up to raise mud density from 11.20 to 11.65 pounds per gallon. Rig chemical engineers executed the stoichiometric mass-balance calculation:</p>
+
+      <div class="exec-data-card">
+        <div class="exec-data-card-title">Barite Mass-Balance Weight-Up Equation</div>
+        <p style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: var(--text-black);">
+          W<sub>barite</sub> = [V<sub>1</sub> &times; 350 &times; (&rho;<sub>2</sub> - &rho;<sub>1</sub>)] / (35 - &rho;<sub>2</sub>)
+        </p>
+        <p style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-body);">
+          W<sub>barite</sub> = [1,450 &times; 350 &times; (11.65 - 11.20)] / (35 - 11.65) = 9,780 sacks &approx; 39.8 Metric Tonnes
+        </p>
+        <p>Where V<sub>1</sub> is initial active mud volume (1,450 bbl), &rho;<sub>1</sub> is starting mud density (11.20 ppg), &rho;<sub>2</sub> is target mud density (11.65 ppg), and 35.0 ppg is the practical specific density constant of API drilling-grade barium sulfate (barite, BaSO<sub>4</sub>).</p>
+      </div>
+
+      <div class="table-box">
+        <div class="table-caption">Table 7.1: Drilling Fluids Rheology &amp; Physical Properties Log (Per Shift)</div>
+        <table class="exec-table">
+          <thead>
+            <tr>
+              <th>Shift / Stage</th>
+              <th>Mud Weight (ppg)</th>
+              <th>PV (cP)</th>
+              <th>YP (lb/100ft&sup2;)</th>
+              <th>10s / 10m Gel</th>
+              <th>Oil/Water Ratio</th>
+              <th>Electrical Stability (V)</th>
+              <th>HTHP Filtrate (mL/30min)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Shift 01 (Shoe Drillout)</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.20</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">22</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">16</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">7 / 14</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">80 / 20</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">780</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">2.8</td>
+            </tr>
+            <tr>
+              <td><strong>Shift 02 (Unit U1 Normal)</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.20</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">23</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">17</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">8 / 15</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">81 / 19</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">810</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">2.6</td>
+            </tr>
+            <tr>
+              <td><strong>Shift 03 (Steady Drilling)</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.20</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">24</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">17</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">8 / 16</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">80 / 20</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">825</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">2.8</td>
+            </tr>
+            <tr>
+              <td><strong>Shift 04 (Seal Transition)</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.20</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">25</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">18</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">9 / 18</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">79 / 21</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">795</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">3.0</td>
+            </tr>
+            <tr>
+              <td><strong>Shift 05 (Barite Weight-Up)</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;"><strong>11.65</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;">28</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">20</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">10 / 20</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">82 / 18</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">890</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">2.4</td>
+            </tr>
+            <tr>
+              <td><strong>Shift 06 (Reservoir Entry)</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.65</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">27</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">19</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">9 / 19</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">82 / 18</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">875</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">2.2</td>
+            </tr>
+            <tr>
+              <td><strong>Shift 07 (Main Pay Drilling)</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.65</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">28</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">20</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">10 / 21</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">81 / 19</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">860</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">2.4</td>
+            </tr>
+            <tr>
+              <td><strong>Shift 08 (Section TD)</strong></td>
+              <td style="font-family: 'JetBrains Mono', monospace;">11.65</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">27</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">19</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">9 / 19</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">82 / 18</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">885</td>
+              <td style="font-family: 'JetBrains Mono', monospace;">2.3</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ========================================================
+           CHAPTER 8: QHSE & OPERATIONAL RISK MANAGEMENT
+           ======================================================== -->
+      <h1 class="exec-chapter">Chapter 8 &mdash; Operational Safety, Well Control Integrity &amp; Risk Governance</h1>
+
+      <p class="exec-p no-indent">Quality, Health, Safety, and Environment (QHSE) protocols during the 12-1/4 inch drilling campaign were executed in strict conformance with ONGC corporate safety policies, Directorate General of Hydrocarbons guidelines, and international offshore drilling standards. Flawless safety performance was demonstrated by zero Lost Time Incidents (LTI), zero recordable medical treatments, zero environmental hydrocarbon discharges, and 100% adherence to subsea well control safety barriers.</p>
+
+      <p class="exec-p">The primary well control barrier throughout the section comprised the engineered hydrostatic column of synthetic oil-based mud. Secondary barrier integrity was guaranteed by the subsea 18-3/4 inch 15,000 psi Cameron blowout preventer stack landed on the wellhead housing at 1,645.0 meters measured depth. Complete functional and pressure testing of all ram configurations (blind shear rams, casing shear rams, pipe rams, and dual annular preventers) was conducted prior to spudding the 12-1/4 inch hole, validating low-pressure containment at 250 psi and high-pressure integrity at 10,000 psi.</p>
+
+      <div class="table-box">
+        <div class="table-caption">Table 8.1: Operational Risk Matrix, Verification Gates &amp; Contingency Protocols</div>
+        <table class="exec-table">
+          <thead>
+            <tr>
+              <th>Identified Risk Event</th>
+              <th>Pre-Drill Likelihood / Severity</th>
+              <th>Engineering Control Barrier</th>
+              <th>Real-Time Telemetry Gate</th>
+              <th>Operational Outcome</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Gas Influx (Borehole Kick)</strong></td>
+              <td>High / Critical</td>
+              <td>Hydrostatic SOBM overbalance (+120 psi) &amp; subsea BOP stack</td>
+              <td>Continuous acoustic DT surveillance &amp; mud gas chromatography</td>
+              <td><strong>Zero Kick (Influx avoided by early weight-up)</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Formation Breakdown / Losses</strong></td>
+              <td>High / Critical</td>
+              <td>Restricting dynamic ECD to 11.86 ppg (below 12.10 ppg shoe FIT)</td>
+              <td>Continuous annular PWD pressure-while-drilling sensors</td>
+              <td><strong>Zero Fluid Losses (Whole mud loss: 0.0 bbl)</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Annular Cuttings Packing</strong></td>
+              <td>Medium / Major</td>
+              <td>Restricting penetration rate to 12 m/hr &amp; 920 gpm flow rate</td>
+              <td>Torque and drag modeling, standpipe pressure monitoring</td>
+              <td><strong>Zero Tight Hole / Pack-off incidents</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Shallow Water Flow / Riser Margin</strong></td>
+              <td>Low / Moderate</td>
+              <td>Subsea riser boost pump &amp; weighted mud displacement</td>
+              <td>ROV subsea wellhead visual surveillance</td>
+              <td><strong>100% Structural &amp; Riser Stability</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ========================================================
+           CHAPTER 9: TIME VS DEPTH & OFFSET BENCHMARK ANALYTICS
+           ======================================================== -->
+      <h1 class="exec-chapter">Chapter 9 &mdash; Time vs Depth Performance, AFE Cost Analytics &amp; Offset Benchmarks</h1>
+
+      <p class="exec-p no-indent">Operational time-versus-depth metrics illustrate extraordinary drilling efficiency across the 12-1/4 inch hole section. The original statutory Authorization for Expenditure (AFE) established a baseline operational schedule of 9.5 days (228 hours) to execute shoe drillout, geopressure evaluation, section drilling, wiper trips, and logging preparation. Through predictive geopressure surveillance, optimized rotary steerable assemblies, and zero equipment breakdowns, the section was delivered in exactly 5.0 days (120 hours), achieving a 4.5-day schedule acceleration (47.4% reduction in operating days).</p>
+
+      <div class="exec-data-card">
+        <div class="exec-data-card-title">AFE Cost Optimization &amp; Direct Savings Calculation</div>
+        <p>Operating a dynamically positioned Class-3 deepwater drillship entails an all-inclusive spread rate of $420,000 USD per operating day (including vessel charter, anchor handling vessels, fuel, helicopter logistics, directional drilling services, and onshore support base infrastructure). Delivering the 12-1/4 inch section 4.5 days ahead of statutory AFE projections yielded direct cash expenditure savings of:</p>
+        <p style="font-family: 'JetBrains Mono', monospace; font-size: 13.5px; font-weight: 700; color: #15803d;">
+          Net Direct Operational Savings = 4.5 days &times; $420,000 /day = $1,890,000 USD (&approx; &#8377;15.8 Crore INR)
+        </p>
+      </div>
+
+      <p class="exec-p">The performance of well MN-SM-DW-01 stands in stark contrast to historical offset exploration wells drilled in the deepwater Mahanadi Basin, which suffered extensive non-productive time due to unpredicted geopressure escalations and narrow drilling margins:</p>
+
+      <div class="table-box">
+        <div class="table-caption">Table 9.1: Regional Offset Well Comparative Engineering Matrix</div>
+        <table class="exec-table">
+          <thead>
+            <tr>
+              <th>Performance Parameter</th>
+              <th>Offset Well MN-DW-A1 (2022)</th>
+              <th>Offset Well MN-DW-B2 (2024)</th>
+              <th>Exploration Wildcat MN-SM-DW-01 (2026)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Water Depth / Rig Type</strong></td>
+              <td>1,480 m / DP-2 Drillship</td>
+              <td>1,590 m / Semi-Submersible</td>
+              <td><strong>1,620 m / DP-3 Drillship <em>DS-1</em></strong></td>
+            </tr>
+            <tr>
+              <td><strong>Geopressure Detection Method</strong></td>
+              <td>Surface mud logging only</td>
+              <td>Conventional LWD without AI</td>
+              <td><strong>Sagar Drishti Agentic Multi-Sensor AI</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Reservoir Top Penetration Event</strong></td>
+              <td>Gas kick at sand top (underbalanced -0.3 ppg)</td>
+              <td>Severe fluid losses at shoe (ECD spiked to 12.30 ppg)</td>
+              <td><strong>Zero Influx / Zero Losses (+120 psi Overbalance)</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Non-Productive Time (NPT)</strong></td>
+              <td>72.0 hours (Well control circulation &amp; kill)</td>
+              <td>48.5 hours (LCM pill curing &amp; squeeze)</td>
+              <td><strong>0.0 hours (Flawless Execution)</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Section Operating Duration</strong></td>
+              <td>12.5 days (3.0 days behind AFE)</td>
+              <td>11.0 days (1.5 days behind AFE)</td>
+              <td><strong>5.0 days (4.5 days ahead of AFE)</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Net Cost Variance to AFE</strong></td>
+              <td>+$1,260,000 USD (Overrun)</td>
+              <td>+$630,000 USD (Overrun)</td>
+              <td><strong>-$1,890,000 USD (Direct Cost Savings)</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ========================================================
+           CHAPTER 10: AI TELEMETRY, DIRECTIVES & RECOMMENDATIONS
+           ======================================================== -->
+      <h1 class="exec-chapter">Chapter 10 &mdash; Autonomous AI Telemetry, Engineering Directives &amp; Field Recommendations</h1>
+
+      <p class="exec-p no-indent">Autonomous geopressure surveillance during the 12-1/4 inch section was facilitated by the Sagar Drishti agentic telemetry system, linking rig sensor data directly to the onshore Real-Time Operations Centre in Kakinada. The distributed agent network ingested 1-Hz surface drilling parameters, 5-second LWD mud-pulse telemetry, and 10-second mud gas chromatography streams, continuously comparing real-time trends against regional offset geomechanical models.</p>
+
+      <p class="exec-p">Operating under strict Human-in-the-Loop governance, the AI system functioned exclusively in an advisory capacity. At 4,172.0 meters, when Bayesian Monte Carlo simulation recommended mud weight distributions of P10 equal to 11.58 pounds per gallon, P50 equal to 11.65 pounds per gallon, and P90 equal to 11.76 pounds per gallon, the advisory was transmitted as an operational recommendation. The licensed Deepwater Drilling Superintendent retained sole executive authority, formally validating downhole indicators and issuing Management of Change order MEMO-SM-2026-09 before any physical mud adjustments commenced.</p>
+
+      <p class="exec-p">Based on the validated operational success of well MN-SM-DW-01, the following five engineering directives are formally mandated for all subsequent exploration and development drilling in the Mahanadi Deepwater Asset:</p>
+
+      <p class="exec-p"><strong>1. Mandatory Pre-emptive Mud Weight Escalation Above Geopressured Sands:</strong> Future well programs must mandate that full mud weight escalation be completed at least 20 meters prior to penetrating seismic or prognosed reservoir sand boundaries whenever entering undercompacted seal shales (formalized under Standard Operating Procedure ONGC-SM-SOP-04).</p>
+
+      <p class="exec-p"><strong>2. Automated Rate of Penetration Governance in Miocene Sands:</strong> Driller control consoles must be programmed to automatically restrict instantaneous penetration to 12.0 meters per hour whenever instantaneous penetration exceeds 25.0 meters per hour in channel sand facies, eliminating annular cuttings loading and protecting casing shoe integrity.</p>
+
+      <p class="exec-p"><strong>3. Dual-Indicator Geomechanical Pore Pressure Verification:</strong> Pore pressure escalation must be confirmed by simultaneous divergence in both compressional acoustic slowness (DT excursion greater than or equal to 8.0 microseconds per foot) and corrected d-exponent inversion, preventing unverified operational hold orders based on single-sensor telemetry.</p>
+
+      <p class="exec-p"><strong>4. Hydraulic Bottoms-Up Lag Compensation for Mud Logging:</strong> Chromatographic gas readings must be continuously corrected for annular bottoms-up circulation lag (measured at 45 minutes on drillship <em>DS-1</em>) to ensure accurate spatial correlation of connection gas anomalies with physical lithological boundaries.</p>
+
+      <p class="exec-p"><strong>5. Institutionalization of AI Telemetry Surveillance Under Human Governance:</strong> High-frequency autonomous multi-agent surveillance systems should be permanently integrated into the onshore Real-Time Operations Centre to monitor multi-sensor trends while retaining licensed offshore superintendents as the sole executing authorities for all management-of-change orders.</p>
+
+      <p class="exec-p">In conclusion, the Directorate recommends immediate mobilization and cementing of the 9-5/8 inch 53.5 lb/ft Q-125 production liner from 3,750 meters to Total Depth at 4,450 meters. Following casing tieback, a cased-hole drillstem flow test (DST) should be conducted across the 4,195.0 to 4,236.2 meter net gas pay interval to establish absolute open flow potential (AOFP), reservoir drive mechanisms, and field commerciality for statutory filing with the Directorate General of Hydrocarbons.</p>
+
+      <!-- Formal Statutory Endorsement & Document Sign-Off Section -->
+      <div class="statutory-signoff-section" style="margin-top: 56px; padding-top: 28px; border-top: 2px solid var(--line-dark);">
+        <div class="exec-section" style="margin: 0 0 12px 0; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--text-black);">
+          Statutory Document Endorsement &amp; Asset Authorization
+        </div>
+        <p class="exec-p no-indent" style="font-size: 13px; color: var(--text-muted); margin-bottom: 28px;">
+          This Well Completion Report constitutes the official subsurface evaluation and operational completion record for well MN-SM-DW-01, compiled pursuant to Directorate General of Hydrocarbons (DGH) statutory exploration reporting standards. The undersigned authorities certify the factual integrity of all geological descriptions, drilling dynamics, geopressure calculations, and reservoir evaluation parameters documented herein.
+        </p>
+
+        <div class="signature-grid" style="margin-top: 20px; padding-top: 0; border-top: none;">
+          <div class="sig-box">
+            <div class="sig-line"></div>
+            <div style="font-size: 10.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px;">Prepared By (Lead Geologist)</div>
+            <div class="name">R. Sharma / Lead Operations Geologist</div>
+            <div class="role">Geology &amp; Geophysics Directorate</div>
+            <div style="font-size: 10.5px; color: #15803d; font-weight: 600; margin-top: 4px;">Initial Technical Compilation Verified</div>
+          </div>
+          <div class="sig-box">
+            <div class="sig-line"></div>
+            <div style="font-size: 10.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px;">Verified By (Operations Superintendent)</div>
+            <div class="name">K. Das / Deepwater Drilling Superintendent</div>
+            <div class="role">Deepwater Drilling Directorate</div>
+            <div style="font-size: 10.5px; color: #15803d; font-weight: 600; margin-top: 4px;">Operational Rig Sequence Certified</div>
+          </div>
+          <div class="sig-box">
+            <div class="sig-line"></div>
+            <div style="font-size: 10.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px;">Approved By (Asset Authority)</div>
+            <div class="name">A. K. Sengupta / Executive Director</div>
+            <div class="role">Executive Director (Basin Manager)</div>
+            <div style="font-size: 10.5px; color: #15803d; font-weight: 600; margin-top: 4px;">Submitted for Statutory Review</div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Floating Minimal Actions -->
+  <div class="floating-actions">
+    <button id="editBtn" class="action-btn" onclick="toggleEdit()">
+      <span>✎</span> <span id="editText">Edit Mode</span>
+    </button>
+    <button class="action-btn" onclick="downloadCleanHtml()">
+      <span>💾</span> <span>Save HTML</span>
+    </button>
+    <button class="action-btn" onclick="window.print()">
+      <span>🖶</span> <span>Print / PDF</span>
+    </button>
+  </div>
+
+  <script>
+    let isEditing = false;
+    const canvas = document.getElementById('reportCanvas');
+    const editBtn = document.getElementById('editBtn');
+    const editText = document.getElementById('editText');
+
+    function toggleEdit() {
+      isEditing = !isEditing;
+      canvas.contentEditable = isEditing ? "true" : "false";
+      if (isEditing) {
+        canvas.parentElement.classList.add('is-editing');
+        editBtn.classList.add('active');
+        editText.innerText = "Done Editing";
+      } else {
+        canvas.parentElement.classList.remove('is-editing');
+        editBtn.classList.remove('active');
+        editText.innerText = "Edit Mode";
+        localStorage.setItem('ongc_wcr_comprehensive_html', canvas.innerHTML);
+      }
+    }
+
+    function downloadCleanHtml() {
+      const docClone = document.documentElement.cloneNode(true);
+      const rep = docClone.querySelector('#reportCanvas');
+      if (rep) {
+        rep.contentEditable = "false";
+        rep.parentElement.classList.remove('is-editing');
+      }
+      const floating = docClone.querySelector('.floating-actions');
+      if (floating) floating.remove();
+
+      const blob = new Blob([docClone.outerHTML], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'WCR-MN-SM-DW-01_v1_Comprehensive_ONGC.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>

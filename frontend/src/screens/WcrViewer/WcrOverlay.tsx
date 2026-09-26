@@ -58,9 +58,15 @@ export default function WcrOverlay() {
               </div>
 
               <div className="flex items-center gap-2">
-                <button disabled title="Google Docs export — build.md Phase 5" className="btn py-1 text-xs opacity-60">
-                  Open in Google Docs
-                </button>
+                <a
+                  href="/reports/WCR-MN-SM-DW-01.html"
+                  target="_blank"
+                  rel="noopener"
+                  title="Full Well Completion Report (dummy report for a demo)"
+                  className="btn py-1 text-xs"
+                >
+                  Open full report ↗
+                </a>
                 <button onClick={() => close('wcr')} className="btn py-1 px-3 text-xs">
                   Esc
                 </button>

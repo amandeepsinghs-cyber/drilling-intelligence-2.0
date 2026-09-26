@@ -1,0 +1,46 @@
+# DI_ENV=cloudrun  — demo-day Cloud Run container (single service, us-central1)
+# Why a separate file: settings.gcp.yaml describes the full target architecture (BigQuery / RAG Engine /
+# Firestore adapters, asia-south1). For the Board demo we bake data into the image and keep the local
+# adapters so nothing on stage depends on unbuilt cloud services. Only Gemini calls leave the container.
+# Region = us-central1 because gemini-3.8-live is served only there (backend/scratch/region_latency.py).
+# The GCS data lake (gs://sagar-drishti-data) + BigQuery (drilling_intel, asia-south1) stay the system of
+# record for the story; they are not on the demo request path.
+env: cloudrun
+project_id: drilling-intelligence-2-509714
+region: us-central1
+offline: false
+paths:
+  data: data
+  scenario: data/scenario
+  processed: data/processed
+  knowledge: data/knowledge
+  state_db: /tmp/di2.sqlite            # Cloud Run filesystem is read-only except /tmp
+adapters:
+  storage: local.storage_fs
+  tabular: local.tabular_duckdb
+  vector: local.vector_json
+  state: local.state_sqlite
+  messaging: local.messaging_local
+models:
+  live: "gemini-3.8-live"
+  live_thinking: "gemini-3.8-live-extended-thinking"
+  pro: "gemini-3-pro"
+  flash: "gemini-3-flash"
+  embedding: "gemini-embedding-001"
+  embedding_dim: 768
+rag:
+  top_k_dense: 20
+  top_k_final: 5
+  md_window_m: 50
+  chunk_tokens: [600, 800]
+  chunk_overlap: 100
+voice:
+  input_sample_rate: 16000
+  output_sample_rate: 24000
+  push_to_talk: true
+  fallback_tts: "chirp3-hd hi-IN"
+actions:
+  email: outbox_eml
+  rtoc: in_app
+  push: console
+  sms_dlt: disabled

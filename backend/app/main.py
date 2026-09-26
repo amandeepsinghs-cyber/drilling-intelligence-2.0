@@ -60,5 +60,20 @@ if not STATIC_DIR.exists():
     STATIC_DIR = Path("/app/frontend/dist")
 
 if STATIC_DIR.exists():
-    app.mount("/", StaticFiles(directory=str(STATIC_DIR), html=True), name="frontend")
+    from fastapi.responses import FileResponse
+
+    _INDEX = STATIC_DIR / "index.html"
+
+    class _SPAStaticFiles(StaticFiles):
+        """Serve built assets; unknown non-API paths (React routes like /well/..., /presenter) -> index.html."""
+
+        async def get_response(self, path: str, scope):  # type: ignore[override]
+            try:
+                return await super().get_response(path, scope)
+            except Exception:
+                if path.startswith(("api/", "ws/")) or not _INDEX.exists():
+                    raise
+                return FileResponse(_INDEX)
+
+    app.mount("/", _SPAStaticFiles(directory=str(STATIC_DIR), html=True), name="frontend")
 
