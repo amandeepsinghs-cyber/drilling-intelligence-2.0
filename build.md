@@ -1,295 +1,230 @@
-# Drilling Intelligence 2.0 — Build Guide (`build.md`, living document)
+# Drilling Intelligence 2.0 — Build Guide (`build.md` v0.6)
 
-> **How to use:** execute phases in order. Each step has a **Done when** line. Tick progress in [`checklist.md`](checklist.md). Design authority is [`docs/SDD.md`](docs/SDD.md), and the numbers come from [`data/scenario/mn_sm_dw_01.yaml`](data/scenario/mn_sm_dw_01.yaml).
-> **This file will change.** Record edits in §12 (Change Log).
-
----
-
-## 0. Prerequisites
-
-| Tool | Version | Check |
-| :--- | :--- | :--- |
-| Python | 3.12+ | `python3 --version` |
-| uv (Python env / deps) | latest | `uv --version` |
-| Node.js | 20 LTS+ | `node -v` |
-| npm | 10+ | `npm -v` (pnpm not required) |
-| gcloud CLI | latest | `gcloud --version` |
-| Terraform | 1.7+ | `terraform -version` (Phase 7) |
-| Docker | 24+ | `docker -v` (optional locally) |
-
-**GCP (Phase 4+):** project `drilling-intelligence-2-509714`, region `asia-south1`.
-
-```bash
-gcloud auth login && gcloud auth application-default login
-gcloud config set project drilling-intelligence-2-509714
-gcloud services enable aiplatform.googleapis.com run.googleapis.com bigquery.googleapis.com \
-  storage.googleapis.com firestore.googleapis.com secretmanager.googleapis.com \
-  artifactregistry.googleapis.com cloudbuild.googleapis.com docs.googleapis.com \
-  gmail.googleapis.com chat.googleapis.com maps-backend.googleapis.com
-```
-
-**Environment:** `cp .env.example .env`, then fill in the keys. Never commit `.env`.
+> **What this is.** The single plan for finishing the demo. It is organised as **work packages (WP-xx)**. Each WP stands alone: any model (Opus or Gemini Flash) can pick it up without reading earlier chats.
+> **Progress lives in** [`ACTIVE_DEBUGGING_AND_EXECUTION.md`](ACTIVE_DEBUGGING_AND_EXECUTION.md) (what is in flight) and [`checklist.md`](checklist.md) (long-term ticks).
+> **Copy-paste prompts for Flash:** [`docs/FLASH_PLAYBOOK.md`](docs/FLASH_PLAYBOOK.md). **API shapes:** [`docs/API_CONTRACT.md`](docs/API_CONTRACT.md). **Requirements:** [`verbatim.md`](verbatim.md). **Old v0.5 guide (phases 0–8):** [`docs/archive/build_v0.5.md`](docs/archive/build_v0.5.md).
 
 ---
 
-## Phase 0 — Docs & Scaffold ✅ (this commit)
-1. `brief.md` v2.1, `docs/SDD.md`, `build.md`, `checklist.md`.
-2. Full repo tree (see `README.md`), contracts in `data/contracts/`, and canonical facts in `data/scenario/`.
+## 0. Rules that apply to every WP
 
-**Done when:** the tree exists, the scenario YAML matches brief §3C, and the SDD is approved.
+1. **Numbers come only from `data/scenario/*.yaml`.** Never type a depth, pressure, mud weight, volume or time into code or text. The fact gate must stay at **0 errors / 0 warnings**.
+2. **No money anywhere.** No ₹, no "crore", no savings figures.
+3. **Touch only the files your WP lists.** If you need another file, stop and ask.
+4. **Never `git commit` or `git push`.** The owner commits.
+5. **Every curve stops at the bit.** Nothing is drawn below the current bit depth, except the "if unchanged" forecast in the pressure track, which is dashed and labelled.
+6. **All data is SYNTHETIC** (see [`docs/data/column_contract.md`](docs/data/column_contract.md)). The provenance footer must stay visible.
+7. **Finish = run the WP's Verify line and paste the output.** A WP is not done until its Verify passes.
+
+**Standard verify commands** (run from the repo root, `cloud_run_apps/Drilling-Intelligence-2.0`):
+```bash
+# Fact gate (must print 0 errors / 0 warnings)
+~/.local/bin/uv run --no-project --python 3.12 --with pyyaml python pipelines/synth/fact_gate.py
+# Backend tests
+~/.local/bin/uv run --no-project --python 3.12 --with pytest,fastapi,httpx,pyyaml,numpy,pandas,pyarrow,pydantic,google-genai,websockets pytest backend/tests -q
+# Frontend: types + unit tests + build
+cd frontend && npx tsc --noEmit -p . && npm test && npm run build
+# Act walk-through (Playwright)
+cd frontend && node scratch/verify_acts.mjs
+# Screenshot of one act (N = 1..4) — use Playwright; headless chrome --screenshot mis-measures the layout
+cd frontend && node scratch/probe_cockpit.mjs N out.png [comma-separated keys, e.g. v,n]
+# (legacy) google-chrome --headless=new --no-sandbox --hide-scrollbars --window-size=1920,1080 --virtual-time-budget=15000 --screenshot=out.png "http://localhost:5173/well/MN-SM-DW-01?act=N"
+# Rebuild offline mocks after any backend/YAML change
+~/.local/bin/uv run --no-project --python 3.12 --with pyyaml,numpy,pandas,pyarrow,pydantic python pipelines/synth/generate_stub_frames.py
+```
+Dev servers: FastAPI `:8765` (auto-reloads on save under `backend/`), Vite `:5173`.
 
 ---
 
-## Phase 1 — Front-End Shell on Stub Data ✅ (code complete 2026-09-25; 36/36 backend tests, tsc + vite build green)
+## 1. What we are building (the target)
 
-### 1.1 Backend skeleton + stub frames
-```bash
-cd backend
-# Option A (project env)
-uv sync --extra dev && uv run python ../pipelines/synth/generate_stub_frames.py
-uv run uvicorn app.main:app --reload --port 8765
-# Option B (no project env; used on Cloudtop)
-~/.local/bin/uv run --no-project --python 3.12 --with pyyaml,numpy,pandas,pyarrow,pydantic \
-  python ../pipelines/synth/generate_stub_frames.py
-~/.local/bin/uv run --no-project --python 3.12 --with fastapi,uvicorn,pyyaml,numpy,pandas,pyarrow,pydantic \
-  uvicorn app.main:app --port 8765
-# Tests
-~/.local/bin/uv run --no-project --python 3.12 --with pytest,httpx,fastapi,pyyaml,numpy,pandas,pyarrow,pydantic \
-  python -m pytest -q tests
+**Chosen design: mock-up #4, "engineer-view cockpit"**, with #5 as its Act 3 variant. Images: `docs/design/mockups/4_engineer_view_cockpit.jpg`, `5_engineer_view_act3.jpg` (also at `http://localhost:5173/mockups/`).
+**Rejected: mock-ups #1–3** (cinematic 3D stage). Do not build 3D heroes.
+
+### 1.1 Screen layout (1920 × 1080, no scrolling, no empty areas)
+
 ```
-> [!NOTE]
-> On Cloudtop, ports 8080 and 8090 are often taken (for example by Jetski). The default is **8765**, and the Vite proxy reads `DI2_API_PORT`.
-
-The stub generator writes `data/processed/{lwd,mudlog,mud_chemistry,depth_frames}/` and `frontend/public/mocks/{frames,scenario,wells}.json`. The UI falls back to these mocks when the API is down.
-
-**Endpoints:** `GET /api/health`, `/api/wells`, `/api/scenario`, `/api/scenario/{id}/frames?from&to&step` (columnar), `/api/scenario/{id}/frame?md=`, `/api/scenario/{id}/meta`, `POST /api/scenario/reload`, `POST /api/physics/whatif`.
-
-**Done when:** the frames reproduce every checkpoint (ECD 11.42 / 11.84 / 12.02, +122 psi, p_kick 0.71 @ 4172 m). ✅
-
-### 1.2 Frontend bootstrap
-```bash
-cd frontend && npm install
-cp .env.example .env.local     # VITE_GOOGLE_MAPS_API_KEY, VITE_GOOGLE_MAPS_MAP_ID (VITE_API_BASE empty in dev)
-DI2_API_PORT=8765 npm run dev  # http://localhost:5173  (presenter: /presenter)
-npm run typecheck && npm run build
+┌─ Top bar: brand · well MN-SM-DW-01 · Act stepper 1▸2▸3▸4 · LIVE/SCRIPTED · clock ────────────────┐
+├──────────┬───────────────────────────────────────────┬──────────────┬────────────────────────────┤
+│ Wellbore │  Multi-log (SAFIR style)                   │ Pressure     │ Agent stage                │
+│ schematic│  INPUT: GR/CALI │ depth+tops │ RHOB/NPHI/   │ PP·FG·FIT·   │ Hindi caption (large)      │
+│ casing,  │  PEF │ RSHAL/RMED/RDEP (log)               │ MW·ECD·ML-MW │ English line               │
+│ shoe,    │  OUTPUT: SW/SXO │ PHIE fills │ litho 0-100% │ kick side red│ reasoning steps            │
+│ units,   │  LAG: cuttings column, ends LAG m above bit │ loss side amb│ citation card              │
+│ bit      │                                            │              │ next action                │
+│          │ ═══════════ one shared depth axis, one bit line across all four columns ═══════════ │
+├──────────┴───────────────────────────────────────────┴──────────────┴────────────────────────────┤
+│ 6 KPI tiles (change per act) · depth scrubber                                   provenance footer │
+└───────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
-With no Maps key, `BasinMap` falls back to a deck.gl-only basemap.
+- **Act 1 (logs/evidence):** default layout.
+- **Act 2 (window closes):** same layout; pressure track gets wider and "if unchanged" appears.
+- **Act 3 (decision):** multi-log + pressure are replaced by memo → APPROVED stamp → 4 fan-out lanes (mud chemist, email, base/RTOC, phone) → phone mirror → decision ledger. Wellbore and agent stay.
+- **Act 4 (loss side + report):** starts at the U3 top depth (YAML `stratigraphy.U3.top_m`). It shows the loss side, then Shift notes ⇄ WCR side by side.
 
-### 1.3 Build order (UI)
-1. Design tokens and themes (`src/design/`): dark/light, board/engineer.
-2. `BasinMap`: Google Maps dark vector (Map ID with cloud styling) + deck.gl layers (wells, incidents, U1445 pin) + fly-in camera.
-3. `CommandCenter` layout grid: Well Pulse, log area, agent panel, timeline.
-4. `LogTracks` with Plotly `scattergl`: GR, Resistivity (log), **PressureWindow** (PP / FG / FIT / MW / ECD / ghost band), LithoColumn.
-5. `DistanceToHazard`, `GhostCurve`, `ProvenanceChip`, `ProvenanceFooter`.
-6. `WellboreSchematic2D` (SVG) and `Well3DView` (R3F, toggle).
-7. `Timeline` with event markers, plus `WhatIfDrawer` (calls `/api/physics/whatif`, stubbed first).
-8. `AgentPanel` with **mock** captions, tool chips and citations driven by `turns.yaml`.
-9. Overlays: `MemoOverlay`, `WcrViewer`, `AuditDrawer`.
-10. `PresenterConsole` (`/presenter`), with hotkeys synced over `/ws/events`.
+### 1.2 What makes it look premium
+No wasted space. Custom, crisp curves (Canvas, not Plotly). Fonts: Inter for text, JetBrains Mono with tabular numbers for values, Noto Sans Devanagari for Hindi. Nothing smaller than 14 px on the main screen. Smooth 180 ms transitions. Act changes are clean slides, not page reloads.
 
-**Done when:** you can click through all 11 turns with mock agent content at 60 fps, and board/engineer and dark/light both work.
-**Status:** every item 1–10 is built. Hotkeys: `Space` play/pause, `0–9` and `-` for turns, `M` memo, `W` WCR, `A` audit, `D` what-if, `B` board/engineer, `T` theme, `L` language, `Shift+R` reset, `?` help. **Still open:** a 60 fps check on the stage laptop, and code-splitting Plotly (main chunk ≈ 5.9 MB, 1.8 MB gzip).
+### 1.3 Mistakes in the mock-up images (do not copy)
+Curves drawn below the bit. The label "4,225" (YAML says 4,222). The schematic not drawn to depth scale.
 
 ---
 
-## Phase 2 — Scenario & Physics Engine
-1. Implement `backend/app/physics/*` (formulas in SDD §7). Unit tests must hit the acceptance values.
-2. Implement `scenario/engine.py`, `triggers.py` and `turns.py`, reading from YAML.
-3. Generate turn snapshots: `uv run python -m app.scenario.turns --build-snapshots`.
-4. Wire the what-if slider to the real ECD model.
+## 2. Shared front-end contracts (built in WP-02; every track uses them)
 
-**Done when:** `pytest backend/tests/physics` is green, triggers fire at 4,172 / 4,195 / 4,205 m, and the what-if ECD crosses FIT at the expected ROP.
+**Depth scale** — `frontend/src/components/cockpit/depth.tsx`
+```ts
+export interface DepthScale {
+  topMd: number; baseMd: number;   // visible window (m MD)
+  bitMd: number;                   // current bit depth (from scenarioStore)
+  heightPx: number;                // body height in px (same for every track)
+  y(md: number): number;           // md → px inside the body
+  md(y: number): number;           // px → md
+}
+export function useDepth(): DepthScale;           // React context, provided by <CockpitGrid>
+export const TRACK_HEADER_PX = 72;                // every track header has this height
+```
+**Track component contract** — `frontend/src/components/cockpit/Track.tsx`
+```tsx
+<Track title="GR · CALI" scales={[{label:'GR', min:0, max:150, unit:'API', color}]} width={140}>
+  {/* body: a <CanvasLayer draw={(ctx, scale) => ...}/> or SVG sized scale.heightPx */}
+</Track>
+```
+- The header shows the curve names, units and min–max scale bars, like a paper log.
+- `CanvasLayer` handles devicePixelRatio (DPR), resize, and redraw when the depth scale or frame changes.
+- Frames data comes from `useScenario()` (`frontend/src/state/scenarioStore.ts`). Column names are in [`docs/data/column_contract.md`](docs/data/column_contract.md).
+- **Bit line:** `<BitLine/>` is drawn once by the grid across all columns, not by each track.
+
+**Show state** (built in WP-05): the server is the one source of truth for act, turn, bit depth, memo status and ledger. It is broadcast on `/ws/events`. The frontend store mirrors it. Scripted mode drives the same state through the same backend calls.
 
 ---
 
-## Phase 3 — Knowledge Base (RAG): Synthetic Corpus → Embeddings
+## 3. Work packages
 
-> [!IMPORTANT]
-> **Every SOP, WCR, DDR, incident report, mud program and lesson-learned document is SYNTHETIC** (a user requirement). Each file carries `provenance: SYNTHETIC` front-matter, and the UI shows a SYNTHETIC chip on every citation. Only public reference text (IODP Proceedings, §6.1 #8) may be added as PUBLIC.
+Legend: **Owner** O = Opus, F = Flash (Opus reviews). **Status** in the tracking file.
 
-### 3.1 Generate the synthetic corpus (from scenario facts)
-```bash
-uv run python pipelines/synth/generate_knowledge_corpus.py \
-  --facts data/scenario/ --templates config/prompts/synthetic/ \
-  --out data/knowledge/source/ --model gemini-3-pro   # model ID per settings.yaml
-```
-
-| Doc type | Output folder | Target count |
-| :--- | :--- | :--- |
-| SOPs | `data/knowledge/source/sops/` | 6 |
-| Offset WCRs | `data/knowledge/source/wcr/` | 4 |
-| Incident reports | `data/knowledge/source/incidents/` | 6 |
-| Daily Drilling Reports | `data/knowledge/source/ddr/` | ~60 |
-| Mud programs | `data/knowledge/source/mud_programs/` | 3 |
-| Lessons learned | `data/knowledge/source/lessons_learned/` | 5 |
-| Legacy scan (image) | `data/knowledge/source/legacy_scans/` | 1–3 |
-
-### 3.2 Validate facts (hard gate)
-```bash
-uv run python pipelines/synth/validate_facts.py --corpus data/knowledge/source/ --facts data/scenario/
-```
-**Done when:** 0 unknown numbers and 0 depth / unit mismatches.
-
-### 3.3 Optional: render PDFs for realism
-```bash
-uv run python pipelines/synth/render_pdfs.py --in data/knowledge/source/ --out data/knowledge/rendered/
-```
-
-### 3.4 Chunk & embed (local)
-```bash
-uv run python pipelines/embeddings/chunk_corpus.py  --in data/knowledge/source/ --out data/knowledge/chunks/
-uv run python pipelines/embeddings/build_embeddings.py --chunks data/knowledge/chunks/ \
-  --out data/knowledge/embeddings/chunks_with_embeddings.json --model gemini-embedding-001 --dim 768
-```
-
-### 3.5 Evaluate
-```bash
-uv run python pipelines/embeddings/eval_rag.py --qa data/knowledge/eval/qa_pairs.yaml
-```
-**Done when:** recall@5 ≥ 0.95 and citation accuracy ≥ 95% (SDD SC-5).
-
-### 3.6 Push to Vertex AI RAG Engine (Phase 7, or earlier if online)
-```bash
-uv run python pipelines/embeddings/push_to_rag_engine.py --corpus di2-knowledge --region asia-south1
-```
+| WP | Title | Owner | Depends on |
+|---|---|---|---|
+| WP-01 | Docs: build.md v0.6, Flash playbook, API contract, tracking | O | — |
+| WP-02 | Design system + cockpit grid + shared depth axis + top bar + KPI strip | O | — |
+| WP-03 | Wellbore schematic column (casing to scale) | O | WP-02 |
+| WP-04 | Agent stage panel | O | WP-02 |
+| WP-05 | Backend real-time API + show state + honest channel status | O | — |
+| WP-06 | Multi-log renderer (SAFIR tracks on Canvas) — **built by Opus with WP-02**; Flash: polish only | O ✅ | WP-02 |
+| WP-07 | Pressure track on the shared depth axis — **built by Opus with WP-02**; Flash: polish only | O ✅ | WP-02 |
+| WP-08 | Act 3 action panel (#5) | F | WP-02, WP-05 |
+| WP-09 | Act 4 + Shift notes ⇄ WCR | F | WP-02, WP-05 |
+| WP-10 | Basin map: offline basemap + label collision | F | — |
+| WP-11 | Presenter console on show state | F | WP-05 |
+| WP-12 | ML lithology fix + real trained models (RF lithology, kick/MW) | F → O review | — |
+| WP-13 | Dense embeddings for Hinglish retrieval | O | WP-05 |
+| WP-14 | Verification harness (Playwright per act, API contract tests, 15-turn Live smoke, 5 adversarial prompts, 30-min soak, offline run) | O + F | all |
+| WP-15 | **Last:** LAS calibration, DT Option A, final narrative | O | owner's LAS files |
 
 ---
 
-## Phase 4 — Voice Agent (Gemini 3.8 Live via ADK)
-1. Pin the model IDs in `config/settings.local.yaml → models` (verify on Vertex: `Gemini 3.8 Live`, `3.8 Live Extended Thinking`, Gemini 3.x Pro/Flash, embedding).
-2. Implement `agent/live_session.py` (ADK bidi proxy), `tools.py` (SDD §10.3), `watchdog.py`, `captions.py` and `guardrails.py`.
-3. Frontend: `live/micCapture.ts` (push-to-talk), `liveClient.ts`, `audioPlayer.ts` (barge-in).
-4. Record the **offline cache** per turn: `uv run python -m app.agent.record_offline_cache`.
+### WP-02 · Design system + cockpit grid (Opus)
+**Goal.** The #4 frame: top bar, 4 columns on one depth axis, KPI strip, scrubber, footer, and act switching.
+**Files.** New: `frontend/src/components/cockpit/{depth.tsx,Track.tsx,CanvasLayer.tsx,BitLine.tsx,CockpitGrid.tsx,TopBar.tsx,KpiStrip.tsx,DepthScrubber.tsx}`, `frontend/src/screens/CommandCenter/Cockpit.tsx`. Edit: `design/tokens.ts`, `design/theme.css`, `screens/CommandCenter/{index.tsx,acts.tsx}`, `index.html` (fonts).
+**Spec.**
+- CSS grid: `wellbore 180px | multi-log 1fr | pressure 300px (Act 2: 420px) | agent 440px`; rows `56px | 1fr | 112px | 28px`.
+- Depth window: default 4,000–4,460 m (YAML `profiles.grid`), and follows the bit in Act 2.
+- KPIs per act come from a config object whose values are read from the frame/YAML.
+- Act 4 starts at `stratigraphy.U3.top_m`.
+- Dark theme is the default; light theme is optional.
+**Acceptance.** At 1920×1080, no area over 5 % is empty. All columns share the same `y(md)` (checked by a unit test). The act stepper switches with the existing hotkeys.
+**Verify.** Frontend build + `verify_acts.mjs` + 4 screenshots.
 
-**Done when:** turns 0–10 run by voice, proactive alerts fire, captions show hi + en, and latency is ≤ 1.5 s p90 locally.
+### WP-03 · Wellbore schematic column (Opus)
+**Files.** `components/wellbore/WellboreSchematic2D.tsx` (rewrite) → used by `Cockpit.tsx`.
+**Spec.**
+- Two zones:
+  - a compressed inset (sea → seabed → 36″ → 20″ → 13⅜″ shoe with FIT from `casing.last_shoe`);
+  - to-scale open hole on the shared depth axis.
+- In the to-scale zone, draw the 12¼″ hole, U1–U4 colour bands, the offset kick and loss depth markers (from `offsets.yaml`), and the bit at `bitMd`.
+- Casing depths come from `casing.program` only.
+**Acceptance.** The bit on the schematic is on the same pixel row as the bit line in the logs.
 
----
+### WP-04 · Agent stage panel (Opus)
+**Files.** `components/agent/{AgentPanel.tsx,Captions.tsx,CitationCard.tsx,ToolChips.tsx}`.
+**Spec.**
+- Idle state is never empty: it shows the well status summary and "Ask me" example chips (Hindi + English).
+- During a turn it shows:
+  - the Hindi caption at 26 px or larger, with the English line below;
+  - reasoning steps (the tool calls, in plain words) with ticks;
+  - a citation card (doc id, page, snippet);
+  - a "Next action" button.
+- The connection state is a small pill, not a blocking "CONNECTING…".
 
-## Phase 5 — Actions & Decision Ledger
-1. `actions/memo.py` (Gemini Pro structured → template), `approval.py` (voice / phone / UI), `ledger.py`.
-2. Channels:
-   - `chat_google.py` (webhook URL in `.env`).
-   - `email_gmail.py` (OAuth or service account; local `.eml` fallback).
-   - `push_telegram.py` (`TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`).
-   - `sms_dlt.py` (disabled by default).
-3. `docs_wcr.py`: Google Docs API, from the template ID `GOOGLE_DOCS_WCR_TEMPLATE_ID`.
-4. `rag/writeback.py`: lesson doc → validate → chunk → embed → upsert.
+### WP-05 · Backend real-time API (Opus)
+**Files.**
+- `backend/app/api/{routes_actions.py,routes_rag.py,ws_events.py,schemas.py}`, `backend/app/main.py`.
+- `backend/app/actions/{memo.py,approval.py,ledger.py,dispatch.py}`, `backend/app/scenario/engine.py`.
+- Tests under `backend/tests/api/`.
+- `docs/API_CONTRACT.md`.
+**Spec.** Endpoints are listed in [`docs/API_CONTRACT.md`](docs/API_CONTRACT.md).
+- Tool endpoints reuse the exact functions used by the Live tools.
+- Channel status is `DELIVERED | SIMULATED | FAILED`, never a fake DELIVERED.
+- Add GZip.
+- `/frame?md_m=`.
+- `/ws/events` broadcasts show state.
+**Acceptance.** Every endpoint has a contract test. Scripted mode in the UI calls these endpoints.
 
-**Done when:** the phone buzzes, the email lands, the Chat post appears, the WCR opens as a Google Doc, and the ledger shows a frozen basis.
+### WP-06 · Multi-log renderer (Flash) — prompt in playbook §P-06
+Canvas tracks per §2. Board subset in Act 1 = GR · depth/tops · RHOB-NPHI · RDEP · litho · cuttings. Engineer subset (toggle `E`) = all tracks listed in §1.1. Replaces `CompositeLog.tsx` in the cockpit. The old file stays until WP-14 passes.
 
----
+### WP-07 · Pressure track (Flash) — playbook §P-07
+One track on the shared axis. It shows:
+- PP, FG, FIT and MW, with ECD and the ML-recommended MW with its P10–P90 band;
+- the kick side filled red where MW < PP, and the loss side filled amber where ECD > FG;
+- an "if unchanged" dashed forecast below the bit, in Act 2 only.
 
-## Phase 6 — Real Data Download & Drop-In
+### WP-08 · Act 3 action panel (Flash) — playbook §P-08
+### WP-09 · Act 4 + Shift notes ⇄ WCR (Flash) — playbook §P-09
+### WP-10 · Basin map (Flash) — playbook §P-10
+### WP-11 · Presenter console (Flash) — playbook §P-11
+### WP-12 · ML lithology + trained models (Flash) — playbook §P-12
+### WP-13 · Dense embeddings (Opus)
+Embed `corpus_chunks.json` with a multilingual model. Use hybrid retrieval (BM25 + dense). "paas wale rig" must retrieve the offset-well documents. Eval set: 20 Hinglish queries, recall@3 ≥ 0.9.
+### WP-14 · Verification harness
+See the checklist section "V" and the playbook §P-14.
+### WP-15 · Parked until the end
+LAS-based calibration of curve shapes, DT Option A (porosity drives density and sonic together), and the final narrative wording.
 
-### 6.1 Sources to try (in priority order)
+## 3.1 Front-end fine-tuning backlog (FT-xx) — small, self-contained items
 
-| # | Dataset | Why | Size | Licence | How |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| 1 | **IODP 348 C0002N** logging data | Tiny; validate the loader first | ~4 MB | CC0 | Script (Zenodo) |
-| 2 | **IODP 348 C0002P** logging data | **Primary live-well analog**: deepwater riser well (Chikyu), LWD, Mio-Pliocene turbidites | ~979 MB | CC0 | Script (Zenodo) |
-| 3 | **IODP 353 U1445A** logging data | **Real Mahanadi Basin** hole: map opener, top-hole | ~1.03 GB | CC0 | Script (Zenodo) |
-| 4 | **IODP 354 U1450B / U1453A** logging data | **Bengal Fan** (Bay of Bengal) turbidites: East-Coast depositional analog | ~8 MB / ~361 MB | Check record | Script (Zenodo) |
-| 5 | **IODP 358 C0024** LWD data | Extra deepwater LWD (Nankai) | ~127 MB | Check record | Script (Zenodo) |
-| 6 | **FORCE 2020 lithology** | Train and validate the lithology classifier | ~0.5–1 GB | NOLD 2.0 | `git clone` |
-| 7 | **Equinor Volve** | Real DDRs / well reports (RAG enrichment), WITSML | 5 TB total (pick subsets) | Equinor Open Data Licence | Manual: equinor.com → Volve data sharing |
-| 8 | **IODP Proceedings 348 / 353 / 354** (PDF chapters: Methods, Operations, Site reports) | Public-reference RAG text | small | IODP open | Manual: publications.iodp.org |
-| 9 | **Sodir FactPages** (e.g., deepwater Norwegian Sea wells such as Aasta Hansteen 6707/10-1) | Completion reports / logs as PDFs (deepwater gas turbidites) | small | NLOD | Manual (blocked from Cloudtop) |
-| 10 | **Geoscience Australia NOPIMS** (e.g., Scarborough-1 deepwater fan) | WCRs + LAS | varies | Open (release rules changed 28 Nov 2025) | Manual portal |
-| 11 | **GEBCO** bathymetry subset (Bay of Bengal) + **Natural Earth** coastlines | Offline map fallback | ~50 MB | Public domain | Manual (download.gebco.net) |
-| 12 | **DGH National Data Repository (NGHP-02 LWD)** | Real Indian deepwater LWD. **Pilot hook** | n/a | Restricted | Through ONGC / DGH in the pilot |
+Owner **F** = safe for Flash (prompt: playbook §P-FT). Owner **O** = Opus (touches live agent, backend or shared contracts).
 
-### 6.2 Download script (Zenodo, scriptable from Cloudtop)
-```bash
-bash pipelines/download/download_public_data.sh            # all Zenodo sets
-bash pipelines/download/download_public_data.sh c0002n     # single set
-```
-The script writes to `data/raw/logs/<dataset>/`, verifies size, unzips, and appends to `data/raw/DOWNLOAD_LOG.md`. Direct URLs:
-```
-https://zenodo.org/api/records/3942006/files/348-C0002N_logging_data.zip/content
-https://zenodo.org/api/records/3942008/files/348-C0002P_logging_data.zip/content
-https://zenodo.org/api/records/5668873/files/353-U1445A_logging_data.zip/content
-https://zenodo.org/api/records/5668822  (U1450B — list files via API)
-https://zenodo.org/api/records/5668808  (U1453A — list files via API)
-https://zenodo.org/api/records/6909792  (C0024 LWD — list files via API)
-```
-FORCE 2020:
-```bash
-git clone --depth 1 https://github.com/bolgebrygg/Force-2020-Machine-Learning-competition data/raw/logs/force_2020
-```
+| ID | Item | Owner | Files | Done when |
+|---|---|---|---|---|
+| FT-1 | Wellbore: offset-event label (KICK/LOSS) overlaps the unit id (U3) label | F | `cockpit/wellbore/WellboreColumn.tsx` | No overlap at bit 4,160 / 4,195 / 4,222 (screenshots) |
+| FT-2 | Console 404 (favicon) | F | `frontend/index.html`, `frontend/public/favicon.svg` | No console errors on load |
+| FT-3 | Memo "Evidence" is empty — pass the offset/SOP citations found by `search_knowledge` / `lookup_offset_events` into the memo | O | `backend/app/agent/tools.py`, `components/actions/MemoOverlay.tsx` | Memo lists ≥ 2 doc ids |
+| FT-4 | Act 3 new action panel | F (after WP-05) | see WP-08 | WP-08 acceptance |
+| FT-5 | Act 4: make the loss event visible — window reaches 4,222, ECD rise after the drilling break, amber fill; WCR side-by-side | F (after WP-05) | see WP-09 | WP-09 acceptance |
+| FT-6 | Pressure track: "KICK SIDE" label crosses the PP line; ML MW / P10–P90 labels low contrast | F | `cockpit/pressure/PressureTrack.tsx` | Labels readable, not over curves |
+| FT-7 | GR shading looks stripy — colour by a smoothed GR (e.g. 1 m running mean) | F | `cockpit/logs/MultiLog.tsx › GrTrack` | Smooth colour ramp |
+| FT-8 | Light theme pass on the cockpit (canvas colours come from `cockpit/palette.ts`) | F | `cockpit/palette.ts`, `design/theme.css` | `T` toggles; everything readable |
+| FT-9 | Takeaway card on the new layout + "4 layers of AI" closing card (data · physics · ML · agent) | F | `common/TakeawayCard.tsx`, new `common/ClosingCard.tsx` | `Enter` shows card; closing card after WCR |
+| FT-10 | Scrubber: add turn markers + act boundaries; make it 48 px tall | F | `timeline/Timeline.tsx` | Visual check |
+| FT-11 | Remove unmounted old components after WP-14 passes (`logs/CompositeLog.tsx`, `logs/LogTracks.tsx`, `pressure/PressureWindow.tsx`, `CommandCenter/acts.tsx`, `common/ActNavBar.tsx`, `well3d/*`) | O (ask owner first) | those files | Build green, no imports left |
+| FT-12 | SCRIPTED mode: example chips / typed questions should map to the matching scripted turn instead of a warning toast | O | `live/liveClient.ts`, `state/turnMachine.ts` | Chip works with backend down |
+| FT-13 | Presenter view (`/presenter`) shows the new act names and next-turn text | F (after WP-05) | see WP-11 | WP-11 acceptance |
+| FT-14 | Basin map polish | F | see WP-10 | WP-10 acceptance |
+| FT-16 | What-if (`W`) and audit (`A`) drawers open correctly over the cockpit | F | `whatif/WhatIfDrawer.tsx`, `audit/AuditDrawer.tsx` | Screenshots with each open |
+| FT-17 | Play-button flicker | O | `cockpit/CanvasLayer.tsx` | ✅ fixed 2026-09-26 — `node scratch/flicker_probe.mjs` → 0 blank frames |
 
-### 6.3 Ingest: real LWD drop-in (the path for your downloaded files)
-
-The design (SDD §5.5): **only `curves.*` are replaced.**
-- Drilling, mudlog, mud and pressure stay scenario-driven, so every checkpoint and turn still holds.
-- Real curves are labelled **PUBLIC**.
-- Any curve the real log lacks stays **SYNTHETIC**.
-- Scenario signatures the real log does not show (e.g., the DT excursion, the resistivity drop) are drawn as separate `overlays.*` traces labelled **SIMULATED**. Public values are never edited.
-
-```bash
-cd backend
-UVX="$HOME/.local/bin/uv run --no-project --python 3.12 --with pyyaml,numpy,pandas,pyarrow,pydantic,lasio,dlisio"
-
-# 1) Put the files in data/raw/logs/<dataset>/ (LAS, DLIS or ASCII; zips extracted)
-# 2) Inventory the curves, mnemonics, units and depth ranges → data/interim/curve_inventory/
-$UVX python ../pipelines/ingest/inspect_logs.py ../data/raw/logs/iodp_348_c0002p/
-# 3) Fill the manifest: files, depth_mnemonic, curve map (GR/RDEP/RMED/RHOB/NPHI/DT/PEF/CALI),
-#    units, source_top_m / source_base_m (the window to use), max_gap_m
-$EDITOR ../data/contracts/manifests/iodp_348_c0002p.yaml
-# 4) Register onto the scenario depth grid → data/processed/lwd/mn_sm_dw_01.parquet (+ .meta.json, PUBLIC)
-$UVX python ../pipelines/ingest/las_to_depth_frames.py ../data/contracts/manifests/iodp_348_c0002p.yaml
-# 5) Rebuild frames + UI mocks (PUBLIC takes precedence over SYNTHETIC), or hot-reload a running API
-$UVX python ../pipelines/synth/generate_stub_frames.py
-curl -X POST localhost:8765/api/scenario/reload        # or: make reload
-# 6) Re-run the tests: the checkpoints must still pass
-```
-For a different dataset, copy the manifest to `data/contracts/manifests/<dataset>.yaml` and pass that path to steps 3–4.
-
-Then update `data/DATA_PROVENANCE.md` with the source, hole, original depths, shift / stretch, curves and licence.
-
-### 6.4 ML training
-```bash
-uv run python pipelines/ml/train_lithology.py   --data data/raw/logs/force_2020 --out data/models/lithology/
-uv run python pipelines/ml/train_kick_risk.py   --events data/scenario/offsets.yaml --out data/models/kick_risk/
-```
-**Done when:** the UI shows PUBLIC provenance on the real curves, the lithology F1 is reported, and every screen is unchanged.
-
----
-
-## Phase 7 — Promote to GCP
-```bash
-cd infra/terraform && terraform init && terraform apply -var project_id=drilling-intelligence-2-509714 -var region=asia-south1
-uv run python pipelines/gcp/sync_gcs.py        # data/raw → gs://di2-raw-*
-uv run python pipelines/gcp/load_bigquery.py   # processed Parquet → BigQuery drilling_intel.*
-uv run python pipelines/embeddings/push_to_rag_engine.py
-gcloud builds submit --config infra/cloudbuild.yaml
-```
-Set `DI_ENV=gcp`.
-**Done when:** the Cloud Run URLs serve the full demo, and adapters read from BigQuery / RAG Engine / Firestore.
+## 3.2 How to open the app
+- Viewing: `http://amandeepsinghs.c.googlers.com:5173/well/MN-SM-DW-01` (`?act=1..4` jumps to an act). `vite.config.ts` has `allowedHosts: true`.
+- Microphone (hold-to-talk) needs `localhost` or https: from the laptop run `ssh -L 5173:localhost:5173 amandeepsinghs.c.googlers.com`, then open `http://localhost:5173/well/MN-SM-DW-01`.
+- Dev servers on the Cloudtop: FastAPI `:8765`, Vite `:5173`. Restart commands: see `ACTIVE_DEBUGGING_AND_EXECUTION.md` §5.
+- Hotkeys: `N` next turn · `Shift+1..4` act · `Space` play · `B` board/engineer tracks · `V` LIVE/SCRIPTED · `-` WCR · `?` help.
 
 ---
 
-## Phase 8 — Stage Hardening
-1. Offline mode verification (`DI_OFFLINE=1`, Wi-Fi off).
-2. Record the fallback video (`docs/stage/fallback_run.mp4`).
-3. Projector test (dark and light), lapel mic + clicker, and a 5G hotspot.
-4. Red-team rehearsal with a drilling engineer. Walk through `docs/qa_crib.md`.
-5. Five consecutive clean runs (SDD SC-4).
+## 4. Already done (collapsed)
+Phases 0–4 core, the Live agent with tools and resilience, the 15-turn crescendo, the fact gate (0/0), the BM25 retriever, the F1 corpus from YAML, the O6 hi-res synthetic well (3,681 samples, 0.125 m), no-money cleanup, and A-1…A-13. Details: [`docs/archive/build_v0.5.md`](docs/archive/build_v0.5.md) and the Done log in the tracking file.
 
----
-
-## 11. Commands Cheat-Sheet
-```bash
-make dev          # backend + frontend
-make stub         # regenerate stub frames
-make corpus       # synth corpus + validate
-make embed        # chunk + embed + eval
-make test         # unit + contract tests
-make download     # Zenodo public data
-make deploy       # Cloud Build → Cloud Run
-```
-
-## 12. Change Log
-| Date | Change |
-| :--- | :--- |
-| 2026-09-25 | v0.1: initial build guide (Phases 0–8), data source list, Zenodo URLs verified reachable from Cloudtop |
-| 2026-09-25 | v0.2: Phase 1 done (npm, uv --no-project commands, API port 8765); synthetic-corpus mandate in Phase 3; exact real-LWD drop-in steps in §6.3; Makefile `reload` target |
+## 5. Change log
+- **v0.6 (2026-09-26):** rewritten as work packages around the #4 cockpit; cinematic direction rejected; data refinement parked until last.
+- v0.5: see archive.

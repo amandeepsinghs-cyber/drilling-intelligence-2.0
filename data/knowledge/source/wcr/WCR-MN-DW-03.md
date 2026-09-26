@@ -23,7 +23,7 @@ Drilled 2.4 km south-southeast of MN-SM-DW-01. At depth 4,222 m MD, well experie
 
 ## 2. Sequence of Events
 - Mud weight was elevated to 11.70 ppg to protect against sand overpressure.
-- At 4,220 m MD, the bit entered a highly porous sand streak; ROP doubled from 13 m/hr to 26 m/hr without driller intervention.
+- At 4,222 m MD, the bit entered a highly porous sand streak; ROP doubled from 13 m/hr to 26 m/hr without driller intervention.
 - Cuttings loading in the 12-1/4 in annulus caused downhole ECD to spike to 12.18 ppg.
 - The 13-3/8 in casing shoe at 3,860 m broke down, sustaining 28 bbl/hr continuous loss.
 - Total mud lost to formation: 310 bbl before LCM pill (calcium carbonate blend 40 ppb) restored partial integrity.

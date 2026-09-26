@@ -74,18 +74,19 @@ function tracks(engineer: boolean, hasOverlayDT: boolean, ghostOn: boolean): Tra
     ],
   };
 
-  // Track 4: SPWLA Geopressure & Mud Weight Window (User requested: MW, FG, PP)
+  // Track 4: SPWLA Geopressure & Mud Weight Window (User requested: MW, FG, PP, FIT)
   const pressWindow: TrackDef = {
-    title: 'MW · PP · FG · ppg',
+    title: 'MW · PP · FG · FIT · ppg',
     prov: 'derived.PP',
     axes: [{ range: [10.2, 13.0] }],
     curves: [
       { col: 'derived.PP', color: C.pp, ax: 0, dash: 'dash', width: 2, name: 'Pore Pressure (PP)' },
       { col: 'derived.FIT', color: C.fit, ax: 0, dash: 'dot', width: 1.5, name: 'Shoe FIT (12.10)' },
-      { col: 'mud.MW_IN_PPG', color: C.mw, ax: 0, width: 2.2, name: 'Active MW' },
+      { col: 'mud.MW_IN_PPG', color: C.mw, ax: 0, width: 2.2, name: 'Active MW (11.20)' },
       { col: 'derived.ECD', color: C.ecd, ax: 0, width: 1.8, name: 'Annular ECD' },
     ],
   };
+
 
   // Track 5: Drilling Dynamics (ROP & DXC)
   const ropDxc: TrackDef = {
@@ -155,36 +156,54 @@ export default function LogTracks() {
   if (!fig) return null;
 
   return (
-    <div className="absolute inset-0">
-      <Plot
-        data={fig.traces as never}
-        layout={fig.layout as never}
-        config={plotConfig}
-        useResizeHandler
-        style={{ width: '100%', height: '100%' }}
-      />
-      <div className="pointer-events-none absolute left-0 right-0 top-1 flex" style={{ paddingLeft: 52 }}>
-        {fig.headers.map((h) => (
+    <div className="absolute inset-0 overflow-x-auto overflow-y-hidden">
+      <div className="relative h-full" style={{ minWidth: engineer ? 1280 : 980 }}>
+        {/* Input vs Output Grouped Headers inspired by SAFIR-03 */}
+        <div
+          className="pointer-events-none absolute left-0 right-0 top-0 z-10 flex border-b border-line bg-app/80 backdrop-blur-xs text-[9px] uppercase font-bold tracking-wider"
+          style={{ paddingLeft: 52 }}
+        >
           <div
-            key={h.title}
-            className="flex items-center justify-center gap-1"
-            style={{ width: `${h.w * 100}%`, marginLeft: `${h.gap * 100}%` }}
+            className="flex items-center justify-center py-0.5 border-r border-line text-sky-400"
+            style={{ width: `${(0.08 + (engineer ? 0.38 : 0.45)) * 100}%` }}
           >
-            <span className="text-[10px] font-medium tracking-wider text-muted">{h.title}</span>
-            <span
-              className={`h-1.5 w-1.5 rounded-full ${
-                h.prov === 'PUBLIC'
-                  ? 'bg-ok'
-                  : h.prov === 'MODEL_INFERENCE'
-                  ? 'bg-purple-400'
-                  : h.prov === 'DERIVED'
-                  ? 'bg-accent'
-                  : 'bg-faint'
-              }`}
-              title={h.prov}
-            />
+            <span>📥 INPUT · Raw LWD Telemetry</span>
           </div>
-        ))}
+          <div className="flex-1 flex items-center justify-center py-0.5 text-purple-400">
+            <span>⚡ OUTPUT · Real-Time ML Inversion & Geopressure</span>
+          </div>
+        </div>
+
+        <Plot
+          data={fig.traces as never}
+          layout={fig.layout as never}
+          config={plotConfig}
+          useResizeHandler
+          style={{ width: '100%', height: '100%' }}
+        />
+        <div className="pointer-events-none absolute left-0 right-0 top-4 flex" style={{ paddingLeft: 52 }}>
+          {fig.headers.map((h) => (
+            <div
+              key={h.title}
+              className="flex items-center justify-center gap-1"
+              style={{ width: `${h.w * 100}%`, marginLeft: `${h.gap * 100}%` }}
+            >
+              <span className="text-[10px] font-medium tracking-wider text-muted">{h.title}</span>
+              <span
+                className={`h-1.5 w-1.5 rounded-full ${
+                  h.prov === 'PUBLIC'
+                    ? 'bg-ok'
+                    : h.prov === 'MODEL_INFERENCE'
+                    ? 'bg-purple-400'
+                    : h.prov === 'DERIVED'
+                    ? 'bg-accent'
+                    : 'bg-faint'
+                }`}
+                title={h.prov}
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -227,24 +246,123 @@ function build(
     { title: 'ML LITH', w: lithoW, gap: 0, prov: 'MODEL_INFERENCE' },
   ];
 
-  // Lithology invisible scatter trace for hover tooltips
-  const lithoClasses = data.columns['ml.litho.class'] as string[];
-  const lithoHoverText = y.map((depth, idx) => {
-    const cls = lithoClasses[idx] ?? 'UNKNOWN';
-    return `<b>Depth:</b> ${depth.toFixed(1)} m<br><b>ML Facies:</b> ${cls} (XGBoost)<br><b>Confidence:</b> 92%`;
-  });
-  traces.push({
-    type: 'scatter',
-    mode: 'markers',
-    name: 'ML Lithology',
-    x: y.map(() => 0.5),
-    y,
-    xaxis: 'x',
-    yaxis: 'y',
-    marker: { size: 0.1, opacity: 0 },
-    hovertext: lithoHoverText,
-    hoverinfo: 'text',
-  });
+  const hasRibbon = 'vol.cum_shale' in data.columns;
+  if (hasRibbon) {
+    const cumShale = series(data, 'vol.cum_shale', upto) as number[];
+    const cumSand = series(data, 'vol.cum_sand', upto) as number[];
+    const cumLime = series(data, 'vol.cum_lime', upto) as number[];
+    const cumTotal = series(data, 'vol.cum_total', upto) as number[];
+
+    const vShale = series(data, 'vol.SHALE', upto) as number[];
+    const vSand = series(data, 'vol.SAND', upto) as number[];
+    const vLime = series(data, 'vol.LIME', upto) as number[];
+    const vPhie = series(data, 'vol.PHIE', upto) as number[];
+    const lithoClasses = data.columns['ml.litho.class'] as string[];
+
+    // Stacked Area Traces (Fill rightwards: Shale -> Sand -> Lime -> Porosity)
+    // 1. Shale (0 -> cumShale): Forest Olive Green
+    traces.push({
+      type: 'scatter',
+      mode: 'lines',
+      name: 'V_shale',
+      x: cumShale,
+      y,
+      xaxis: 'x',
+      yaxis: 'y',
+      fill: 'tozerox',
+      fillcolor: '#4B5A4A',
+      line: { color: '#3A4839', width: 0.8 },
+      hoverinfo: 'skip',
+    });
+
+    // 2. Sandstone (cumShale -> cumSand): Golden Amber Yellow
+    traces.push({
+      type: 'scatter',
+      mode: 'lines',
+      name: 'V_sand',
+      x: cumSand,
+      y,
+      xaxis: 'x',
+      yaxis: 'y',
+      fill: 'tonextx',
+      fillcolor: '#FBBF24',
+      line: { color: '#D97706', width: 0.8 },
+      hoverinfo: 'skip',
+    });
+
+    // 3. Limestone (cumSand -> cumLime): Slate Blue / Carbonate
+    traces.push({
+      type: 'scatter',
+      mode: 'lines',
+      name: 'V_lime',
+      x: cumLime,
+      y,
+      xaxis: 'x',
+      yaxis: 'y',
+      fill: 'tonextx',
+      fillcolor: '#5B7EA6',
+      line: { color: '#3B597B', width: 0.8 },
+      hoverinfo: 'skip',
+    });
+
+    // 4. Effective Porosity (cumLime -> cumTotal=1.0): Sky Blue / Pore Fluid
+    traces.push({
+      type: 'scatter',
+      mode: 'lines',
+      name: 'PHIE',
+      x: cumTotal,
+      y,
+      xaxis: 'x',
+      yaxis: 'y',
+      fill: 'tonextx',
+      fillcolor: 'rgba(56, 189, 248, 0.45)',
+      line: { color: '#0284C7', width: 0.8 },
+      hoverinfo: 'skip',
+    });
+
+    // Hover inspector scatter trace overlay
+    const lithoHoverText = y.map((depth, idx) => {
+      const cls = lithoClasses[idx] ?? 'UNKNOWN';
+      const sh = ((vShale[idx] ?? 0) * 100).toFixed(1);
+      const sa = ((vSand[idx] ?? 0) * 100).toFixed(1);
+      const li = ((vLime[idx] ?? 0) * 100).toFixed(1);
+      const po = ((vPhie[idx] ?? 0) * 100).toFixed(1);
+      return `<b>Depth:</b> ${depth.toFixed(1)} m<br><b>ML Facies:</b> ${cls}<br><b>V<sub>shale</sub>:</b> ${sh}%<br><b>V<sub>sand</sub>:</b> ${sa}%<br><b>V<sub>lime</sub>:</b> ${li}%<br><b>φ<sub>e</sub> (Por):</b> ${po}%`;
+    });
+    traces.push({
+      type: 'scatter',
+      mode: 'markers',
+      name: 'ML Lithology Inversion',
+      x: y.map(() => 0.5),
+      y,
+      xaxis: 'x',
+      yaxis: 'y',
+      marker: { size: 0.1, opacity: 0 },
+      hovertext: lithoHoverText,
+      hoverinfo: 'text',
+    });
+  } else {
+    // Fallback: Invisible scatter trace for hover tooltips with facies only
+    const lithoClasses = data.columns['ml.litho.class'] as string[];
+    const lithoHoverText = y.map((depth, idx) => {
+      const cls = lithoClasses[idx] ?? 'UNKNOWN';
+      const p = (data.columns[`ml.litho.probs.${cls}`] as (number | null)[] | undefined)?.[idx];
+      const conf = p == null ? '—' : `${Math.round(p * 100)}%`;
+      return `<b>Depth:</b> ${depth.toFixed(1)} m<br><b>ML Facies:</b> ${cls}<br><b>P(${cls}):</b> ${conf}`;
+    });
+    traces.push({
+      type: 'scatter',
+      mode: 'markers',
+      name: 'ML Lithology',
+      x: y.map(() => 0.5),
+      y,
+      xaxis: 'x',
+      yaxis: 'y',
+      marker: { size: 0.1, opacity: 0 },
+      hovertext: lithoHoverText,
+      hoverinfo: 'text',
+    });
+  }
 
   defs.forEach((tr, k) => {
     const x0 = lithoW + gap * (k + 1) + w * k;
@@ -277,7 +395,7 @@ function build(
         connectgaps: false,
         fill: c.fill,
         fillcolor: c.fillcolor,
-        line: { color: c.color, width: c.width ?? 1.6, ...(c.dash ? { dash: c.dash } : {}) },
+        line: { color: c.color, width: c.width ?? 1.6, ...(c.dash ? { dash: c.dash } : {}) }, // facts-ok: line px width
         ...(markers ? { marker: { color: c.color, size: 6, symbol: 'diamond', line: { color: t.bgPanel, width: 1 } } } : {}),
         hovertemplate: `${c.name} %{x:.2f}<extra></extra>`,
       });

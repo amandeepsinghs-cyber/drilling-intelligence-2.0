@@ -4,7 +4,7 @@ Handles:
 - Upstream audio PCM (16 kHz mono) streamed from browser microphone via push-to-talk.
 - Downstream audio PCM (24 kHz mono) streamed to browser for low-latency playback.
 - Real-time tool execution against physics models and canonical scenario facts.
-- Proactive watchdog event injections (4,172 m, 4,195 m, 4,205 m).
+- Proactive watchdog event injections at the YAML trigger depths (T3 / T8 / T9).
 - Automatic UI side-effect dispatch (memos, approvals, fan-out, ROP capping).
 - Graceful offline / rehearsal fallback if network or quota is unavailable.
 """
@@ -13,12 +13,13 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import os
 from typing import Any
 
 from fastapi import WebSocket, WebSocketDisconnect
 
 from app.agent.prompts import get_agent_system_prompt
-from app.agent.tools import execute_tool
+from app.agent.tools import execute_tool, set_live_depth
 from app.core.config import get_settings
 
 logger = logging.getLogger("di2.live_session")
@@ -185,111 +186,225 @@ def _build_genai_tools() -> list[Any]:
     return [types.Tool(function_declarations=func_decls)]
 
 
+_CLOSED = object()  # sentinel pushed on the inbound queue when the browser disconnects
+
+MAX_CONSECUTIVE_FAILURES = 3
+DEBUG_RECONNECT = os.getenv("DI_DEBUG_RECONNECT", "0") == "1"
+
+
+async def _safe_send_json(websocket: WebSocket, payload: dict) -> bool:
+    try:
+        await websocket.send_json(payload)
+        return True
+    except Exception:
+        return False
+
+
+def _build_live_config(types: Any, system_prompt: str, tools: list[Any], handle: str | None) -> Any:
+    """LiveConnectConfig with session resumption + sliding-window compression (P0-1)."""
+    return types.LiveConnectConfig(
+        response_modalities=[types.Modality.AUDIO],
+        output_audio_transcription=types.AudioTranscriptionConfig(),
+        input_audio_transcription=types.AudioTranscriptionConfig(),
+        system_instruction=types.Content(parts=[types.Part.from_text(text=system_prompt)]),
+        tools=tools,
+        speech_config=types.SpeechConfig(
+            voice_config=types.VoiceConfig(
+                prebuilt_voice_config=types.PrebuiltVoiceConfig(voice_name="Aoede")
+            )
+        ),
+        # Resumption: server issues handles; reconnecting with the latest handle keeps conversation memory.
+        session_resumption=types.SessionResumptionConfig(handle=handle),
+        # Compression: lifts the audio-session length cap so a 30-min board demo never hits the wall.
+        context_window_compression=types.ContextWindowCompressionConfig(
+            sliding_window=types.SlidingWindow(),
+        ),
+    )
+
+
 async def handle_live_websocket(websocket: WebSocket) -> None:
-    """Entry point for /ws/live WebSocket connections."""
+    """Entry point for /ws/live WebSocket connections.
+
+    Lifecycle (P0-1):
+      browser WS --(one reader task)--> inbound queue --> current Gemini session
+      Gemini sessions are replaced transparently on GoAway / drop using a resumption handle,
+      so the browser socket and the conversation memory survive. Only after
+      MAX_CONSECUTIVE_FAILURES do we degrade to the rehearsal engine and tell the UI 'fallback'.
+    """
     await websocket.accept()
     settings = get_settings()
 
-    # If offline mode is requested, run deterministic offline session
-    if settings.offline:
-        await _run_offline_session(websocket)
-        return
+    inbound: asyncio.Queue = asyncio.Queue()
 
+    async def browser_reader() -> None:
+        try:
+            while True:
+                msg = await websocket.receive()
+                if msg.get("type") == "websocket.disconnect":
+                    break
+                await inbound.put(msg)
+        except (WebSocketDisconnect, RuntimeError):
+            pass
+        except Exception as e:  # pragma: no cover - defensive
+            logger.error(f"browser_reader error: {e}")
+        finally:
+            await inbound.put(_CLOSED)
+
+    reader_task = asyncio.create_task(browser_reader())
+    try:
+        if settings.offline:
+            await _safe_send_json(websocket, {"type": "status", "status": "fallback",
+                                              "message": "DI_OFFLINE=1 - rehearsal engine."})
+            await _run_offline_session(websocket, inbound)
+            return
+        await _run_resilient_live(websocket, inbound, settings)
+    finally:
+        reader_task.cancel()
+
+
+async def _run_resilient_live(websocket: WebSocket, inbound: asyncio.Queue, settings: Any) -> None:
     try:
         from google import genai
         from google.genai import types
+    except Exception as e:
+        await _safe_send_json(websocket, {"type": "status", "status": "fallback",
+                                          "message": f"google-genai unavailable ({type(e).__name__})."})
+        await _run_offline_session(websocket, inbound)
+        return
 
-        client = genai.Client(
-            vertexai=True,
-            project=settings.project_id or "drilling-intelligence",
-            location=settings.region or "us-central1",
-        )
-
+    client = genai.Client(
+        vertexai=True,
+        project=settings.project_id or "drilling-intelligence",
+        location=settings.region or "us-central1",
+    )
+    try:
         system_prompt = get_agent_system_prompt()
         tools = _build_genai_tools()
+    except Exception as e:  # a broken prompt/tool spec must degrade, not kill the socket
+        logger.error(f"Live setup failed: {type(e).__name__}: {e}")
+        await _safe_send_json(websocket, {"type": "status", "status": "fallback",
+                                          "message": f"Agent setup error ({type(e).__name__}). Rehearsal engine active."})
+        await _run_offline_session(websocket, inbound)
+        return
+    model_name = settings.models.get("live", "gemini-3.8-live")
 
-        config = types.LiveConnectConfig(
-            response_modalities=[types.Modality.AUDIO],
-            output_audio_transcription=types.AudioTranscriptionConfig(),
-            system_instruction=types.Content(parts=[types.Part.from_text(text=system_prompt)]),
-            tools=tools,
-            speech_config=types.SpeechConfig(
-                voice_config=types.VoiceConfig(
-                    prebuilt_voice_config=types.PrebuiltVoiceConfig(voice_name="Aoede")
-                )
-            ),
-        )
+    state: dict[str, Any] = {"handle": None, "resumable": False}
+    failures = 0
+    ever_connected = False
 
-        model_name = settings.models.get("live", "gemini-3.8-live")
+    while True:
+        handle = state["handle"] if state["resumable"] else None
+        resuming = ever_connected
+        await _safe_send_json(websocket, {"type": "status",
+                                          "status": "reconnecting" if resuming else "connecting",
+                                          "model": model_name})
+        try:
+            config = _build_live_config(types, system_prompt, tools, handle)
+            logger.info(f"Gemini Live connect model={model_name} resume={'yes' if handle else 'no'}")
+            async with client.aio.live.connect(model=model_name, config=config) as session:
+                failures = 0
+                await _safe_send_json(websocket, {
+                    "type": "status",
+                    "status": "resumed" if resuming else "connected",
+                    "model": model_name,
+                    "memory": bool(handle),
+                })
+                ever_connected = True
+                reason = await _run_bidi_stream(websocket, session, inbound, state)
+            logger.info(f"Gemini Live session ended: {reason}")
+            if reason == "browser_closed":
+                return
+            # go_away / server_closed / debug_reconnect -> loop and resume with the latest handle.
+            continue
+        except Exception as e:
+            failures += 1
+            logger.warning(f"Gemini Live failure {failures}/{MAX_CONSECUTIVE_FAILURES}: "
+                           f"{type(e).__name__}: {e}")
+            if failures >= MAX_CONSECUTIVE_FAILURES:
+                await _safe_send_json(websocket, {
+                    "type": "status",
+                    "status": "fallback",
+                    "message": f"Gemini Live unavailable ({type(e).__name__}). Rehearsal engine active.",
+                })
+                await _run_offline_session(websocket, inbound)
+                return
+            # A stale handle can itself be the cause; drop it after the second failure.
+            if failures >= 2:
+                state["resumable"] = False
+            await asyncio.sleep(0.5 * failures)
 
-        logger.info(f"Connecting to Gemini Live with model {model_name}...")
-        await websocket.send_json({"type": "status", "status": "connecting", "model": model_name})
 
-        async with client.aio.live.connect(model=model_name, config=config) as session:
-            await websocket.send_json({"type": "status", "status": "connected", "model": model_name})
-            await _run_bidi_stream(websocket, session)
-
-    except Exception as e:
-        logger.warning(f"Gemini Live online connection failed: {e}. Falling back to rehearsal session.")
-        await websocket.send_json({
-            "type": "status",
-            "status": "fallback",
-            "message": f"Online session unavailable ({type(e).__name__}). Running rehearsal engine.",
-        })
-        await _run_offline_session(websocket)
-
-
-async def _run_bidi_stream(websocket: WebSocket, session: Any) -> None:
-    """Manages the two concurrent streaming tasks: client -> gemini and gemini -> client."""
+async def _run_bidi_stream(websocket: WebSocket, session: Any, inbound: asyncio.Queue,
+                           state: dict[str, Any]) -> str:
+    """Pump one Gemini session. Returns why it ended:
+    'browser_closed' | 'go_away' | 'server_closed' | 'debug_reconnect'.
+    Raises on unexpected upstream errors so the caller can count failures.
+    """
     from google.genai import types
 
-    stop_event = asyncio.Event()
+    async def client_to_gemini() -> str:
+        while True:
+            message = await inbound.get()
+            if message is _CLOSED:
+                return "browser_closed"
+            if message.get("bytes"):
+                await session.send_realtime_input(
+                    audio=types.Blob(data=message["bytes"], mime_type="audio/pcm;rate=16000")
+                )
+                continue
+            if not message.get("text"):
+                continue
+            try:
+                data = json.loads(message["text"])
+            except json.JSONDecodeError:
+                continue
+            msg_type = data.get("type")
+            if isinstance(data.get("md_m"), (int, float)):
+                set_live_depth(float(data["md_m"]))  # A-8: tools answer for the live bit depth
+            if msg_type == "context":
+                continue
+            if msg_type in ("text", "prompt"):
+                await _safe_send_json(websocket, {"type": "voice_state", "state": "thinking"})
+                await session.send_client_content(
+                    turns=[types.Content(role="user", parts=[types.Part.from_text(text=data.get("text", ""))])],
+                    turn_complete=True,
+                )
+            elif msg_type == "proactive_event":
+                prompt = data.get("prompt") or data.get("prompt_injection", "")
+                await _safe_send_json(websocket, {"type": "voice_state", "state": "alert"})
+                await session.send_client_content(
+                    turns=[types.Content(role="user", parts=[types.Part.from_text(text=prompt)])],
+                    turn_complete=True,
+                )
+            elif msg_type == "audio_end":
+                await session.send_realtime_input(audio_stream_end=True)
+            elif msg_type == "interrupt":
+                await _safe_send_json(websocket, {"type": "interrupted"})
+            elif msg_type == "debug_reconnect" and DEBUG_RECONNECT:
+                return "debug_reconnect"
 
-    async def client_to_gemini():
-        try:
-            while not stop_event.is_set():
-                message = await websocket.receive()
-                if "bytes" in message and message["bytes"]:
-                    # Binary PCM 16kHz audio from mic
-                    pcm_data = message["bytes"]
-                    await session.send_realtime_input(
-                        media=types.Blob(data=pcm_data, mime_type="audio/pcm;rate=16000")
-                    )
-                elif "text" in message and message["text"]:
-                    try:
-                        data = json.loads(message["text"])
-                        msg_type = data.get("type")
-                        if msg_type == "text" or msg_type == "prompt":
-                            text_prompt = data.get("text", "")
-                            await websocket.send_json({"type": "voice_state", "state": "thinking"})
-                            await session.send_client_content(
-                                turns=[types.Content(parts=[types.Part.from_text(text=text_prompt)])],
-                                turn_complete=True,
-                            )
-                        elif msg_type == "proactive_event":
-                            prompt = data.get("prompt") or data.get("prompt_injection", "")
-                            await websocket.send_json({"type": "voice_state", "state": "alert"})
-                            await session.send_client_content(
-                                turns=[types.Content(parts=[types.Part.from_text(text=prompt)])],
-                                turn_complete=True,
-                            )
-                        elif msg_type == "interrupt":
-                            await websocket.send_json({"type": "interrupted"})
-                    except json.JSONDecodeError:
-                        pass
-        except WebSocketDisconnect:
-            stop_event.set()
-        except Exception as e:
-            logger.error(f"client_to_gemini error: {e}")
-            stop_event.set()
-
-    async def gemini_to_client():
-        try:
-            current_caption = []
-            while not stop_event.is_set():
+    async def gemini_to_client() -> str:
+            current_caption: list[str] = []
+            # Gemini emits an empty turn_complete right after a tool call, before it speaks the answer.
+            # Forwarding it made the browser treat the turn as finished ~0.5 s in (A-2). Swallow it.
+            turn_output = False
+            tool_since_output = False
+            while True:
+                got_any = False
                 async for response in session.receive():
+                    got_any = True
+                    # 0. Session lifecycle: resumption handles + GoAway
+                    sru = getattr(response, "session_resumption_update", None)
+                    if sru is not None and getattr(sru, "resumable", False) and getattr(sru, "new_handle", None):
+                        state["handle"] = sru.new_handle
+                        state["resumable"] = True
+                    if getattr(response, "go_away", None) is not None:
+                        logger.info(f"Gemini Live GoAway (time_left={response.go_away.time_left})")
+                        return "go_away"
+
                     # 1. Check for tool calls
                     if response.tool_call is not None:
+                        tool_since_output = True
                         await websocket.send_json({"type": "voice_state", "state": "thinking"})
                         tool_responses = []
                         for fc in response.tool_call.function_calls:
@@ -342,6 +457,7 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any) -> None:
                         if getattr(sc, "output_transcription", None):
                             ot = sc.output_transcription
                             if getattr(ot, "text", None):
+                                turn_output = True
                                 current_caption.append(ot.text)
                                 await websocket.send_json({
                                     "type": "caption_delta",
@@ -353,10 +469,12 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any) -> None:
                         if sc.model_turn is not None:
                             for part in sc.model_turn.parts:
                                 if part.inline_data and part.inline_data.data:
+                                    turn_output = True
                                     # Send binary 24 kHz audio chunk directly to browser
                                     await websocket.send_bytes(part.inline_data.data)
                                     await websocket.send_json({"type": "voice_state", "state": "speaking"})
                                 if part.text:
+                                    turn_output = True
                                     current_caption.append(part.text)
                                     await websocket.send_json({
                                         "type": "caption_delta",
@@ -364,7 +482,11 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any) -> None:
                                         "role": "agent",
                                     })
 
-                        if sc.turn_complete:
+                        if sc.turn_complete and not turn_output and tool_since_output:
+                            logger.debug("Swallowed empty turn_complete after tool call")
+                        elif sc.turn_complete:
+                            turn_output = False
+                            tool_since_output = False
                             full_text = " ".join(current_caption).strip()
                             current_caption = []
                             await websocket.send_json({
@@ -373,42 +495,70 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any) -> None:
                             })
                             await websocket.send_json({"type": "voice_state", "state": "idle"})
 
-        except WebSocketDisconnect:
-            stop_event.set()
+                        # Presenter speech transcription (Hindi/Hinglish) for on-screen captions
+                        it = getattr(sc, "input_transcription", None)
+                        if it is not None and getattr(it, "text", None):
+                            await _safe_send_json(websocket, {"type": "input_transcript", "text": it.text})
+
+                if not got_any:
+                    # receive() yielded nothing: upstream closed cleanly. Let the caller resume.
+                    return "server_closed"
+
+    async def guarded_gemini_to_client() -> str:
+        try:
+            return await gemini_to_client()
         except Exception as e:
-            logger.error(f"gemini_to_client error: {e}")
-            stop_event.set()
+            # Normal close codes (1000/1001, e.g. "GoAway deadline exceeded") are resumable, not failures.
+            try:
+                from websockets.exceptions import ConnectionClosedOK
+                if isinstance(e, ConnectionClosedOK):
+                    return "server_closed"
+            except Exception:
+                pass
+            if "1000" in str(e) or "1001" in str(e):
+                return "server_closed"
+            raise
 
     t1 = asyncio.create_task(client_to_gemini())
-    t2 = asyncio.create_task(gemini_to_client())
+    t2 = asyncio.create_task(guarded_gemini_to_client())
 
     done, pending = await asyncio.wait([t1, t2], return_when=asyncio.FIRST_COMPLETED)
     for p in pending:
         p.cancel()
+    for p in pending:
+        try:
+            await p
+        except (asyncio.CancelledError, Exception):
+            pass
+    finished = done.pop()
+    return finished.result()  # re-raises upstream errors for the caller's failure counter
 
 
-async def _run_offline_session(websocket: WebSocket) -> None:
-    """Runs interactive rehearsal session if offline or fallback."""
-    from app.scenario.facts import facts, turns
+async def _run_offline_session(websocket: WebSocket, inbound: asyncio.Queue) -> None:
+    """Runs interactive rehearsal session if offline or fallback. Reads from the shared inbound queue."""
+    from app.scenario.facts import turns
 
-    await websocket.send_json({"type": "status", "status": "rehearsal_active"})
-    try:
-        while True:
-            msg = await websocket.receive()
-            if "text" in msg and msg["text"]:
-                data = json.loads(msg["text"])
-                mtype = data.get("type")
-                if mtype in ("text", "prompt", "proactive_event"):
-                    await websocket.send_json({"type": "voice_state", "state": "speaking"})
-                    # Echo rehearsal response or tool events
-                    turn_num = data.get("turn", 0)
-                    t_list = turns().get("turns", [])
-                    turn_spec = next((t for t in t_list if t["n"] == turn_num), None)
-                    if turn_spec and turn_spec.get("tools"):
-                        for tname in turn_spec["tools"]:
-                            res = execute_tool(tname)
-                            await websocket.send_json({"type": "tool_call", "name": tname, "status": "done", "result": res})
-                    await asyncio.sleep(0.5)
-                    await websocket.send_json({"type": "voice_state", "state": "idle"})
-    except WebSocketDisconnect:
-        pass
+    await _safe_send_json(websocket, {"type": "status", "status": "rehearsal_active"})
+    while True:
+        msg = await inbound.get()
+        if msg is _CLOSED:
+            return
+        if not msg.get("text"):
+            continue
+        try:
+            data = json.loads(msg["text"])
+        except json.JSONDecodeError:
+            continue
+        mtype = data.get("type")
+        if mtype in ("text", "prompt", "proactive_event"):
+            await _safe_send_json(websocket, {"type": "voice_state", "state": "speaking"})
+            turn_num = data.get("turn", 0)
+            t_list = turns().get("turns", [])
+            turn_spec = next((t for t in t_list if t["n"] == turn_num), None)
+            if turn_spec and turn_spec.get("tools"):
+                for tname in turn_spec["tools"]:
+                    res = execute_tool(tname)
+                    await _safe_send_json(websocket, {"type": "tool_call", "name": tname, "status": "done", "result": res})
+            await asyncio.sleep(0.5)
+            await _safe_send_json(websocket, {"type": "turn_complete", "full_text": ""})
+            await _safe_send_json(websocket, {"type": "voice_state", "state": "idle"})

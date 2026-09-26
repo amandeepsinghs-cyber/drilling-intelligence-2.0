@@ -14,8 +14,10 @@ export default function WhatIfDrawer() {
   const close = useUi((s) => s.close);
   const { data, bundle, md } = useScenario();
   const i = data ? indexAt(data, md) : 0;
-  const mwNow = num(data, 'mud.MW_IN_PPG', i) ?? 11.2;
-  const ropNow = num(data, 'drilling.ROP', i) ?? 12;
+  const mwNow = num(data, 'mud.MW_IN_PPG', i) ?? bundle?.facts.mud.initial.mw_ppg ?? 0;
+  const ropNow = num(data, 'drilling.ROP', i) ?? bundle?.facts.drilling.rop_cap_m_hr ?? 0;
+  const horizon = bundle?.facts.ml.kick_horizon_m ?? 0;
+  const alarm = bundle?.facts.ml.kick_alarm_threshold ?? 1;
   const [mw, setMw] = useState(mwNow);
   const [rop, setRop] = useState(ropNow);
   const [res, setRes] = useState<WhatIfResult | null>(null);
@@ -25,7 +27,7 @@ export default function WhatIfDrawer() {
   useEffect(() => {
     if (!open || !data || !bundle) return;
     const f = bundle.facts;
-    const ahead = (data.columns['derived.PP'] as number[]).slice(i, indexAt(data, md + 30) + 1);
+    const ahead = (data.columns['derived.PP'] as number[]).slice(i, indexAt(data, md + f.ml.kick_horizon_m) + 1);
     const ecdF = num(data, 'derived.ECD', i) ?? 0;
     const resid = ecdF - ecdCalibrated(mwNow, ropNow);
     const h = setTimeout(async () => {
@@ -55,8 +57,8 @@ export default function WhatIfDrawer() {
               <Stat k="ECD" v={`${fmt(res.ecd_ppg)} ppg`} p={res.provenance.ecd_ppg} />
               <Stat k="ECD → FIT" v={`${fmt(res.ecd_fit_margin_ppg)} ppg`} cls={tone(res.ecd_fit_margin_ppg)} p="DERIVED" />
               <Stat k="Overbalance @ bit" v={`${res.overbalance_psi_now > 0 ? '+' : ''}${res.overbalance_psi_now} psi`} cls={res.overbalance_psi_now < 0 ? 'text-risk' : ''} p="DERIVED" />
-              <Stat k="Worst UB next 30 m" v={`${fmt(res.forecast_underbalance_ppg_30m)} ppg`} cls={res.forecast_underbalance_ppg_30m > 0 ? 'text-risk' : 'text-ok'} p="DERIVED" />
-              <Stat k="P(kick) 30 m" v={`${Math.round(res.p_kick_30m * 100)}%`} cls={res.p_kick_30m > 0.5 ? 'text-risk' : res.p_kick_30m > 0.15 ? 'text-warn' : 'text-ok'} p={res.provenance.p_kick_30m} />
+              <Stat k={`Worst UB next ${horizon} m`} v={`${fmt(res.forecast_underbalance_ppg_30m)} ppg`} cls={res.forecast_underbalance_ppg_30m > 0 ? 'text-risk' : 'text-ok'} p="DERIVED" />
+              <Stat k={`P(kick) ${horizon} m`} v={`${Math.round(res.p_kick_30m * 100)}%`} cls={res.p_kick_30m > alarm ? 'text-risk' : res.p_kick_30m > 0.15 ? 'text-warn' : 'text-ok'} p={res.provenance.p_kick_30m} />
               <Stat k="P(losses)" v={`${Math.round(res.p_loss * 100)}%`} cls={res.p_loss > 0.3 ? 'text-risk' : res.p_loss > 0.1 ? 'text-warn' : 'text-ok'} p={res.provenance.p_loss} />
               <Stat k="Max ROP · SOP margin" v={`${res.rop_max_m_hr} m/hr`} p={res.provenance.rop_max_m_hr} />
               <Stat k="Barite" v={res.barite ? `${res.barite.mt} MT · ${res.barite.bags_50kg} bags` : '—'} p="DERIVED" />

@@ -65,10 +65,15 @@ def mudlog(md: np.ndarray, well_id: str) -> dict[str, np.ndarray]:
         conn[i] = overrides.get(round(float(c), 3), gas[i] + m["conn_gas_excess_pct"])
         if round(float(c), 3) in overrides:
             gas[i] = min(gas[i], overrides[round(float(c), 3)])
-    comp = m["composition"]
+    comp, comp_u3 = m["composition"], m.get("composition_U3", m["composition"])
     out = {"GAS_TOTAL": gas, "CONN_GAS": conn}
+    in_u3 = uid == "U3"
     for k, frac in comp.items():
-        out[k] = gas * 10_000 * frac  # ppm
+        out[k] = gas * 10_000 * np.where(in_u3, comp_u3[k], frac)  # ppm
+    # Gas Wetness Ratio Wh = (C2 + C3 + C4 + C5) / (C1 + C2 + C3 + C4 + C5) * 100
+    heavy = out.get("C2", 0) + out.get("C3", 0) + out.get("C4", 0) + out.get("C5", 0)
+    total_hc = out.get("C1", 0) + heavy
+    out["GAS_WETNESS"] = np.where(total_hc > 0, (heavy / np.maximum(total_hc, 1e-4)) * 100.0, 0.0)
     return out
 
 

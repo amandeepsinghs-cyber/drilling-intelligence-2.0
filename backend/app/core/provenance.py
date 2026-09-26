@@ -13,8 +13,14 @@ class Provenance(StrEnum):
     NOT_RECORDED = "NOT_RECORDED"    # channel absent in the source
 
 
-CURVES = ("GR", "RDEP", "RMED", "RHOB", "NPHI", "DT", "PEF", "CALI")
+CURVES = (
+    "GR", "GR_UP", "GR_DN",
+    "RDEP", "RMED", "RSHAL",
+    "RHOB", "NPHI", "PEF", "CALI",
+    "DT", "DTSM", "VPVS",
+    "PHIE", "SW",
+)
 DRILLING = ("ROP", "WOB", "RPM", "TORQUE", "SPP", "HKLD", "FLOW_IN", "FLOW_OUT", "DXC")
-MUDLOG = ("GAS_TOTAL", "C1", "C2", "C3", "C4", "C5", "CONN_GAS")
+MUDLOG = ("GAS_TOTAL", "C1", "C2", "C3", "C4", "C5", "CONN_GAS", "GAS_WETNESS")
 MUD = ("MW_IN_PPG", "MW_OUT_PPG", "PV", "YP", "PIT_VOL_BBL")
 DERIVED = ("OBG", "PP", "FG", "FIT", "ECD", "OVERBAL_PSI", "ECD_FIT_MARGIN")

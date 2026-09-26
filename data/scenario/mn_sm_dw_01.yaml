@@ -58,6 +58,28 @@ stratigraphy:
     litho_class: LIMESTONE
     notes: "ROP drops, torque rises; TD / casing point at 4450 m"
 
+reservoir:                       # U3 main pay — owner-approved 2026-09-26 (spoken/printed values)
+  unit: U3
+  sand_top_m: 4195
+  gwc_m: 4270
+  gross_gas_column_m: 75         # 4195 → 4270
+  net_to_gross: 0.84
+  quartz_pct: 82
+  phie_pct: 24.2
+  permeability_md: 180
+  gas_c1_pct_min: 88             # dry gas: C1 > 88 % of C1–C5
+  fluid: "dry gas"
+  # Generator-only parameters (ASSUMED; never spoken): Archie + fluid model
+  sw_gas_leg: 0.22
+  sw_water_leg: 0.95
+  rw_ohmm: 0.10                  # gives Rt ≈ 35 ohm·m in the gas leg (Archie, PHIE 0.242, Sw 0.22)
+  archie: { a: 1.0, m: 2.0, n: 2.0 }
+
+mudlog:
+  bottoms_up_lag_min: 45         # cuttings travel time bit → shakers (owner-approved)
+  # Depth lag is DERIVED, never stored: lag_m = ROP (m/hr) × 45/60
+  #   at 22 m/hr → 16.5 m · at 12 m/hr → 9 m · at 34 m/hr (drilling break) → 25.5 m
+
 pressure:
   obg_ppg_at_sand_top: 14.0
   obg_sg_at_sand_top: 1.68
@@ -94,6 +116,15 @@ drilling:
   rop_drilling_break_m_hr: 34
   rop_cap_m_hr: 12
   flow_gpm: 850                  # ASSUMED
+
+ml:                              # model / display config (not measurements)
+  kick_horizon_m: 30             # P(kick) and worst-underbalance are computed over the next 30 m
+  kick_alarm_threshold: 0.5      # UI turns red / "exceeds alarm threshold" at P(kick) >= 0.5
+  pp_lookahead_m: 50             # forecast_pore_pressure default look-ahead & "next 50 m" band on the log
+  # ASSUMED model output: probabilistic ML mud-weight recommendation around the deterministic value (mud.weighted.mw_ppg).
+  # P10 keeps >= 0.10 ppg over forecast sand PP; P90 keeps ECD below the shoe FIT.
+  mw_rec_p10_ppg: 11.58
+  mw_rec_p90_ppg: 11.76
 
 checkpoints:                     # brief §3C table
   - md_m: 4120
@@ -133,6 +164,7 @@ checkpoints:                     # brief §3C table
     p_kick_30m: 0.05
   - md_m: 4205
     label: "After ROP cap"
+    frame_md_m: 4205.125           # first log sample after the break interval (display depth stays 4,205 m)
     mw_ppg: 11.65
     ecd_ppg: 11.86
     rop_m_hr: 12
@@ -163,6 +195,7 @@ ids:
   wcr_id: "WCR-MN-SM-DW-01 Draft v1.0"
 
 provenance_footer: >-
-  Petrophysical data: real public logs (IODP / FORCE 2020, CC0 / NOLD), depth-registered
-  to an illustrative Mahanadi deepwater scenario. Drilling, mud-log and chemistry channels,
-  offset reports & SOPs are simulated. Plug-in to ONGC data = pilot scope.
+  Illustrative scenario. Well logs are high-resolution synthetic data generated from
+  petrophysical and geomechanical models (Archie, Wyllie, Eaton) calibrated to this scenario;
+  drilling, mud-log and chemistry channels, offset reports & SOPs are simulated.
+  Plug-in to ONGC data = pilot scope.

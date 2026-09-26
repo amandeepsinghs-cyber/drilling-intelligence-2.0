@@ -3,14 +3,26 @@
 schema_version: 1
 
 turns:
-  - { n: 0,  md_m: 4120, leader: presenter, mode: typed,  intent: status_check,        tools: [get_well_status] }
-  - { n: 1,  md_m: 4120, leader: presenter, mode: voice,  intent: arm_watchdog,        tools: [] }
-  - { n: 2,  md_m: 4140, leader: presenter, mode: voice,  intent: status_lithology,    tools: [get_well_status, get_lithology] }
-  - { n: 3,  md_m: 4172, leader: agent,     mode: proactive, trigger: T3_PRESSURE_RAMP, tools: [forecast_pore_pressure, lookup_offset_events] }
-  - { n: 4,  md_m: 4172, leader: presenter, mode: voice,  intent: offsets_and_sop,     tools: [search_knowledge] }
-  - { n: 5,  md_m: 4172, leader: agent,     mode: voice,  intent: recommend_weight_up, tools: [compute_barite, compute_ecd, create_moc_memo] }
-  - { n: 6,  md_m: 4172, leader: presenter, mode: voice,  intent: approve,             tools: [request_approval] }
-  - { n: 7,  md_m: 4172, leader: presenter, mode: voice,  intent: fanout,              tools: [dispatch_fanout] }
-  - { n: 8,  md_m: 4195, leader: agent,     mode: proactive, trigger: T8_OFFSET_DEPTH,  tools: [get_well_status] }
-  - { n: 9,  md_m: 4205, leader: agent,     mode: proactive, trigger: T9_DRILLING_BREAK, tools: [compute_ecd, set_rop_cap] }
-  - { n: 10, md_m: 4450, leader: presenter, mode: voice,  intent: generate_wcr,        tools: [generate_wcr, writeback_lessons] }
+  # Act 1 — See the rock before the mudlog
+  - { n: 0,  label: "T0",  act: 1, md_m: 4120, leader: presenter, mode: typed,     intent: status_check, tools: [get_well_status] }
+  - { n: 1,  label: "T1",  act: 1, md_m: 4120, leader: presenter, mode: voice,     intent: arm_watchdog, tools: [] }
+  - { n: 2,  label: "T2",  act: 1, md_m: 4130, leader: presenter, mode: voice,     intent: wellbore_status_details, tools: [get_well_status] }
+  - { n: 3,  label: "T3",  act: 1, md_m: 4140, leader: presenter, mode: voice,     intent: formation_and_cuttings_lag, tools: [get_lithology] }
+
+  # Act 2 — The window closes
+  - { n: 4,  label: "T4a", act: 2, md_m: 4145, leader: presenter, mode: voice,     intent: eta_next_zone_query, tools: [] }
+  - { n: 5,  label: "T4b", act: 2, md_m: 4145, leader: presenter, mode: voice,     intent: prospective_sand_preview, tools: [forecast_pore_pressure, get_lithology] }
+  - { n: 6,  label: "T5",  act: 2, md_m: 4172, leader: agent,     mode: proactive, trigger: T3_PRESSURE_RAMP, tools: [forecast_pore_pressure] }
+  - { n: 7,  label: "T6",  act: 2, md_m: 4172, leader: presenter, mode: voice,     intent: nearby_rig_complications, tools: [search_knowledge, lookup_offset_events] }
+
+  # Act 3 — Human decides, agent executes
+  - { n: 8,  label: "T7",  act: 3, md_m: 4172, leader: presenter, mode: voice,     intent: recommend_weight_up, tools: [compute_barite, compute_ecd, create_moc_memo] }
+  - { n: 9,  label: "T8",  act: 3, md_m: 4172, leader: presenter, mode: voice,     intent: approve, tools: [request_approval] }
+  - { n: 10, label: "T9",  act: 3, md_m: 4172, leader: presenter, mode: voice,     intent: fanout, tools: [dispatch_fanout] }
+
+  # Act 4 — Other side of the window + the report
+  - { n: 11, label: "T10", act: 4, md_m: 4195, leader: agent,     mode: proactive, trigger: T8_OFFSET_DEPTH, tools: [get_well_status] }
+  - { n: 12, label: "T11", act: 4, md_m: 4205, leader: agent,     mode: proactive, trigger: T9_DRILLING_BREAK, tools: [compute_ecd, set_rop_cap] }
+  - { n: 13, label: "T12", act: 4, md_m: 4300, leader: presenter, mode: voice,     intent: draft_shift_log, tools: [draft_shift_log] }
+  - { n: 14, label: "T13", act: 4, md_m: 4450, leader: presenter, mode: voice,     intent: generate_wcr, tools: [generate_wcr, writeback_lessons] }
+

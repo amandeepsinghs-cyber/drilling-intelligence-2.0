@@ -3,9 +3,11 @@ import clsx from 'clsx';
 import { hms, indexAt, num } from '../../lib/frames';
 import { useScenario } from '../../state/scenarioStore';
 import { runTurn } from '../../state/turnMachine';
+import { useUi } from '../../state/uiStore';
 
 export default function Timeline() {
   const { data, bundle, md, playing, speed, fired, togglePlay, setSpeed, setMd } = useScenario();
+  const board = useUi((s) => s.mode) === 'board';
   if (!data || !bundle) return <div className="panel h-[68px]" />;
   const f = bundle.facts;
   const lo = f.checkpoints[0].md_m - 20, hi = f.well.live_interval_m.td;
@@ -48,6 +50,7 @@ export default function Timeline() {
         <div className="pointer-events-none absolute top-[11px] h-[17px] w-[17px] -translate-x-1/2 rounded-full border-2 border-accent bg-app shadow-glow"
           style={{ left: `${pct(md)}%` }} />
       </div>
+      {!board && (<>
       <div className="flex items-center gap-1">
         {[1, 2, 5].map((s) => (
           <button key={s} onClick={() => setSpeed(s)} className={clsx('kbd px-2 py-0.5', speed === s && 'border-accent text-accent')}>{s} m/s</button>
@@ -59,6 +62,7 @@ export default function Timeline() {
             className={clsx('kbd h-6 w-6 justify-center px-0', tn.leader === 'agent' && 'border-accent/40 text-accent')}>{tn.n}</button>
         ))}
       </div>
+      </>)}
     </div>
   );
 }

@@ -3,9 +3,12 @@ import { create } from 'zustand';
 
 export type Overlay = 'memo' | 'audit' | 'whatif' | 'wcr' | 'phone' | 'help';
 type Lang = 'both' | 'en' | 'hi';
+/** LIVE: Gemini Live answers and its tool calls drive the UI. SCRIPTED: deterministic mock script (rehearsal / outage). */
+export type AgentMode = 'LIVE' | 'SCRIPTED';
 
 interface UiState {
   mode: 'board' | 'engineer';
+  agentMode: AgentMode;
   theme: 'dark' | 'light';
   lang: Lang;
   view3d: boolean;
@@ -13,6 +16,8 @@ interface UiState {
   toast: { text: string; tone: 'ok' | 'warn' | 'risk' | 'info'; id: number } | null;
   setMode: (m: UiState['mode']) => void;
   toggleMode: () => void;
+  setAgentMode: (m: AgentMode) => void;
+  toggleAgentMode: () => void;
   toggleTheme: () => void;
   cycleLang: () => void;
   toggle3d: () => void;
@@ -24,6 +29,14 @@ interface UiState {
 }
 
 const none: Record<Overlay, boolean> = { memo: false, audit: false, whatif: false, wcr: false, phone: false, help: false };
+
+const getSavedAgentMode = (): AgentMode => {
+  if (typeof window !== 'undefined') {
+    const saved = localStorage.getItem('sagar_drishti_agent_mode');
+    if (saved === 'LIVE' || saved === 'SCRIPTED') return saved;
+  }
+  return 'LIVE';
+};
 
 const getSavedTheme = (): 'dark' | 'light' => {
   if (typeof window !== 'undefined') {
@@ -41,6 +54,7 @@ if (typeof document !== 'undefined') {
 
 export const useUi = create<UiState>((set) => ({
   mode: 'board',
+  agentMode: getSavedAgentMode(),
   theme: initialTheme,
   lang: 'both',
   view3d: false,
@@ -48,6 +62,16 @@ export const useUi = create<UiState>((set) => ({
   toast: null,
   setMode: (mode) => set({ mode }),
   toggleMode: () => set((s) => ({ mode: s.mode === 'board' ? 'engineer' : 'board' })),
+  setAgentMode: (agentMode) => {
+    if (typeof window !== 'undefined') localStorage.setItem('sagar_drishti_agent_mode', agentMode);
+    set({ agentMode });
+  },
+  toggleAgentMode: () =>
+    set((s) => {
+      const agentMode: AgentMode = s.agentMode === 'LIVE' ? 'SCRIPTED' : 'LIVE';
+      if (typeof window !== 'undefined') localStorage.setItem('sagar_drishti_agent_mode', agentMode);
+      return { agentMode, toast: { text: `Agent mode: ${agentMode}`, tone: agentMode === 'LIVE' ? 'ok' : 'warn', id: Date.now() } };
+    }),
   toggleTheme: () =>
     set((s) => {
       const theme = s.theme === 'dark' ? 'light' : 'dark';

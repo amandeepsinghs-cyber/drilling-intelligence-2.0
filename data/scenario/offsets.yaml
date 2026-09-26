@@ -8,6 +8,17 @@ offsets:
     distance_km: 3.2
     location: { lat: 19.47, lon: 87.32 }
     summary: "Drilled to TD without well-control events (reference well)."
+    wcr:                                   # values quoted in WCR-MN-DW-01 (O3)
+      water_depth_m: 1595
+      td_md_m: 4650
+      u1_shale_m: [3980, 4145]
+      sand_top_m: 4188
+      net_pay_m: 75
+      phie_pct_range: [22, 26]
+      shoe_13_375_md_m: 3820
+      shoe_fit_ppg: 12.15
+      mw_ppg: 11.30
+      max_conn_gas_pct: 4.2
     documents: ["WCR-MN-DW-01"]
 
   - id: MN-DW-02
@@ -20,12 +31,21 @@ offsets:
       formation: "Top Miocene channel sand (U3)"
       mw_ppg: 11.15
       mw_sg: 1.34
+      underbalance_ppg: 0.33           # 11.48 − 11.15; = 236 psi at 4,195 m (equals SIDPP)
       gain_bbl: 12
       sidpp_psi: 236
+      sicp_psi: 310
+      gas_peak_pct: 18.4
       formation_pressure_ppg: 11.48
       kill_mw_ppg: 11.65
       kill_mw_sg: 1.40
+      npt_h: 36.5                      # canonical (WCR previously said 36 h)
       rop_restriction_m_hr: [11, 12]
+    wcr:
+      shoe_13_375_md_m: 3840
+      shoe_fit_ppg: 12.05
+      nct_departure_md_m: 4152
+      dt_us_ft: { from: 86, to: 104 }
     documents: ["WCR-MN-DW-02", "INC-MN-DW-02-KICK-4195"]
 
   - id: MN-DW-03
@@ -34,11 +54,17 @@ offsets:
     location: { lat: 19.44, lon: 87.37 }
     incident:
       type: LOSSES
-      md_m: 4222
+      md_m: 4222                       # canonical (WCR previously said 4,220 m)
       formation: "Miocene channel sand (U3), drilling break"
+      mw_ppg: 11.70
+      ecd_before_ppg: 11.88
       ecd_ppg: 12.18
+      rop_before_m_hr: 13
       rop_m_hr: 26
       loss_rate_bbl_hr: 28
+      total_loss_bbl: 310
+      lcm_ppb: 40
+      shoe_13_375_md_m: 3860
       cause: "No ROP cap or hole-cleaning sweeps during drilling break"
     documents: ["WCR-MN-DW-03", "INC-MN-DW-03-LOSS-4222"]
 
@@ -49,7 +75,20 @@ offsets:
     incident:
       type: LOSSES_DIFF_STICKING
       notes: "Vuggy carbonate losses and differential sticking precedent"
+      md_m: 2850
+      mw_ppg: 10.80
+      loss_rate_bbl_hr: 45
+      pit_drop_bbl: 35
+      static_loss_bbl_hr: 20
+      freeing_pill_bbl: 50
+      jarring_h: 14.5
+      npt_h: 48.0
     documents: ["WCR-MH-112"]
+
+sop_parameters:                          # policy numbers quoted in the synthetic SOP / LL corpus (O3)
+  ONGC-SM-SOP-04: { weight_up_min_distance_above_sand_m: 20, dt_excursion_trigger_us_ft: 8, min_overbalance_at_sand_psi: 100 }
+  ONGC-HC-SOP-05: { apl_max_ppg: 0.35, sweep_volume_bbl: 20, sweep_interval_m: 100 }
+  ONGC-MC-SOP-02: { addition_duration_h: [2.5, 3.0] }
 
 sops:
   - { id: "ONGC-SM-SOP-04", title: "Deepwater Narrow-Window Drilling: Pre-emptive Weight-Up, Flow-Check Triggers, ROP Cap at Drilling Breaks" }

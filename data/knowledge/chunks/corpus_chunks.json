@@ -90,8 +90,8 @@
     "doc_type": "SOP",
     "section_path": "5. Drilling Break Protocol & ROP Cap",
     "page": 2,
-    "text": "## 5. Drilling Break Protocol & ROP Cap\n- **Sand Entry at 4,195 m MD**:\n  - Main reservoir pay (Miocene slope-channel turbidite sandstone) exhibits instantaneous ROP acceleration up to 34 m/hr.\n  - **Mandatory Action**: The driller must immediately throttle WOB/RPM to cap ROP at **$\\le 12\\text{ m/hr}$**.\n  - **Flow Check**: Perform a mandatory 15-minute static flow check at 4,196 m MD (pumps off, trip tank monitoring).\n  - Uncapped ROP in narrow windows generates heavy cuttings loading and annular friction surges that cause catastrophic losses (reference: `INC-MN-DW-03-LOSS-4222`).",
-    "tokens": 86,
+    "text": "## 5. Drilling Break Protocol & ROP Cap\n- **Sand Entry at 4,195 m MD**:\n   - Main reservoir pay (Miocene slope-channel turbidite sandstone) exhibits instantaneous ROP acceleration up to 34 m/hr.\n   - **Mandatory Action**: The driller must immediately throttle WOB/RPM to cap ROP at **$\\le 12\\text{ m/hr}$**.\n   - **Flow Check**: Perform a mandatory 15-minute static flow check immediately on penetrating the U3 sand top (4,195 m MD) (pumps off, trip tank monitoring).\n   - Uncapped ROP in narrow windows generates heavy cuttings loading and annular friction surges that cause catastrophic losses (reference: `INC-MN-DW-03-LOSS-4222`).",
+    "tokens": 92,
     "well_id": "MN-SM-DW-01",
     "tags": [
       "narrow-window",
@@ -156,10 +156,10 @@
     "chunk_id": "ONGC-HC-SOP-05-C02",
     "doc_id": "ONGC-HC-SOP-05",
     "doc_type": "SOP",
-    "section_path": "2. Hydraulic Limits for 12-1/4 in Section at 4,200 m MD",
+    "section_path": "2. Hydraulic Limits for 12-1/4 in Section across the U3 sand (4,195\u20134,290 m MD)",
     "page": 1,
-    "text": "## 2. Hydraulic Limits for 12-1/4 in Section at 4,200 m MD\n- Nominal flow rate: 850 gpm.\n- Maximum allowable ECD: 12.00 ppg (shoe FIT: 12.10 ppg).\n- Dynamic annular pressure loss must not exceed 0.35 ppg equivalent over static mud weight.",
-    "tokens": 43,
+    "text": "## 2. Hydraulic Limits for 12-1/4 in Section across the U3 sand (4,195\u20134,290 m MD)\n- Nominal flow rate: 850 gpm.\n- Maximum allowable ECD: 12.00 ppg (shoe FIT: 12.10 ppg).\n- Dynamic annular pressure loss must not exceed 0.35 ppg equivalent over static mud weight.",
+    "tokens": 46,
     "well_id": "MN-SM-DW-01",
     "tags": [
       "hole-cleaning",
@@ -669,7 +669,7 @@
     "doc_type": "WCR",
     "section_path": "2. Sequence of Events",
     "page": 1,
-    "text": "## 2. Sequence of Events\n- Mud weight was elevated to 11.70 ppg to protect against sand overpressure.\n- At 4,220 m MD, the bit entered a highly porous sand streak; ROP doubled from 13 m/hr to 26 m/hr without driller intervention.\n- Cuttings loading in the 12-1/4 in annulus caused downhole ECD to spike to 12.18 ppg.\n- The 13-3/8 in casing shoe at 3,860 m broke down, sustaining 28 bbl/hr continuous loss.\n- Total mud lost to formation: 310 bbl before LCM pill (calcium carbonate blend 40 ppb) restored partial integrity.",
+    "text": "## 2. Sequence of Events\n- Mud weight was elevated to 11.70 ppg to protect against sand overpressure.\n- At 4,222 m MD, the bit entered a highly porous sand streak; ROP doubled from 13 m/hr to 26 m/hr without driller intervention.\n- Cuttings loading in the 12-1/4 in annulus caused downhole ECD to spike to 12.18 ppg.\n- The 13-3/8 in casing shoe at 3,860 m broke down, sustaining 28 bbl/hr continuous loss.\n- Total mud lost to formation: 310 bbl before LCM pill (calcium carbonate blend 40 ppb) restored partial integrity.",
     "tokens": 93,
     "well_id": "MN-DW-03",
     "tags": [
@@ -837,7 +837,7 @@
     "doc_type": "WCR",
     "section_path": "2. Influx Event Analysis",
     "page": 1,
-    "text": "## 2. Influx Event Analysis\n- **Casing Shoe**: 13-3/8 in shoe at 3,840 m MD (FIT 12.05 ppg).\n- **Encountered Condition**: Normal compaction trend baseline departed at 4,152 m MD. Resistivity declined from 2.8 ohm-m to 1.4 ohm-m; compressional sonic increased from 86 us/ft to 104 us/ft.\n- **Kick Mechanism**: Mud weight was kept at initial 11.15 ppg. Top Miocene sand (U3) pressure was 11.48 ppg, creating a 0.33 ppg (150 psi) underbalance.\n- **Well Kill Execution**: The well was shut in with the subsea annular preventer. Wait & Weight kill method executed using **11.65 ppg (1.40 SG)** kill mud. 36 hours of NPT incurred.",
+    "text": "## 2. Influx Event Analysis\n- **Casing Shoe**: 13-3/8 in shoe at 3,840 m MD (FIT 12.05 ppg).\n- **Encountered Condition**: Normal compaction trend baseline departed at 4,152 m MD. Resistivity declined from 2.8 ohm-m to 1.4 ohm-m; compressional sonic increased from 86 us/ft to 104 us/ft.\n- **Kick Mechanism**: Mud weight was kept at initial 11.15 ppg. Top Miocene sand (U3) pressure was 11.48 ppg, creating a 0.33 ppg (236 psi) underbalance.\n- **Well Kill Execution**: The well was shut in with the subsea annular preventer. Wait & Weight kill method executed using **11.65 ppg (1.40 SG)** kill mud. 36.5 hours of NPT incurred.",
     "tokens": 105,
     "well_id": "MN-DW-02",
     "tags": [
@@ -1021,6 +1021,138 @@
     ]
   },
   {
+    "chunk_id": "INC-MN-SM-DW-01-WARN-4172-C00",
+    "doc_id": "INC-MN-SM-DW-01-WARN-4172",
+    "doc_type": "INCIDENT",
+    "section_path": "INC-MN-SM-DW-01-WARN-4172: Hazard Preemption & Near-Miss Log (illustrative)",
+    "page": 1,
+    "text": "# INC-MN-SM-DW-01-WARN-4172: Hazard Preemption & Near-Miss Log (illustrative)",
+    "tokens": 8,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "incident",
+      "near-miss",
+      "overpressure",
+      "watchdog",
+      "pre-emption"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4150.0,
+      4195.0
+    ]
+  },
+  {
+    "chunk_id": "INC-MN-SM-DW-01-WARN-4172-C01",
+    "doc_id": "INC-MN-SM-DW-01-WARN-4172",
+    "doc_type": "INCIDENT",
+    "section_path": "1. Executive Summary",
+    "page": 1,
+    "text": "## 1. Executive Summary\nOn 2026-09-21 at 22:45 UTC, while drilling 12-1/4 in open hole at 4,172 m MD, the Sagar Drishti agentic watchdog identified a severe pore pressure ramp in the Upper Miocene transition zone (U2). Sensor fusion detected a dxc trend reversal from 4,160 m MD, acoustic sonic slowness excursion of +12 \u03bcs/ft above normal compaction trend (NCT), and connection gas rising from 0.4% to 1.1%. Lookahead geomechanics predicted pore pressure ramping to 11.48 ppg at the top Miocene U3 pay sand (4,195 m MD), which would have left the well 200 psi underbalanced with active 11.20 ppg mud. Immediate pre-emptive weight-up prevented a recurrence of offset incident `INC-MN-DW-02-KICK-4195` (where MN-DW-02 took a 12 bbl gas kick with 236 psi SIDPP at 4,195 m MD).",
+    "tokens": 127,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "incident",
+      "near-miss",
+      "overpressure",
+      "watchdog",
+      "pre-emption"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4150.0,
+      4195.0
+    ]
+  },
+  {
+    "chunk_id": "INC-MN-SM-DW-01-WARN-4172-C02",
+    "doc_id": "INC-MN-SM-DW-01-WARN-4172",
+    "doc_type": "INCIDENT",
+    "section_path": "2. Chronological Sequence of Events",
+    "page": 1,
+    "text": "## 2. Chronological Sequence of Events\n- **2026-09-21 20:30 UTC (4,150 m MD)**: Bit entered basal seal. Initial subtle departure on corrected d-exponent noted.\n- **2026-09-21 22:15 UTC (4,160 m MD)**: dxc reversal and sonic DT departing from the normal compaction trend.\n- **2026-09-21 22:45 UTC (4,172 m MD)**: Connection gas spiked to 2.4%. Agent fired proactive voice warning.\n- **2026-09-21 23:00 UTC (4,172 m MD)**: Driller stopped rotary, spaced out, and conducted a 15-minute static flow check. Flow check was negative.\n- **2026-09-22 01:30 UTC**: Formal MEMO-SM-2026-09 approved. Commenced barite addition of 39.8 MT barite (796 bags of 50 kg) to weight active system to 11.65 ppg (1.40 SG).\n- **2026-09-22 05:45 UTC**: Mud weight in/out parity confirmed at 11.65 ppg. Resumed drilling with +120 psi overbalance.",
+    "tokens": 128,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "incident",
+      "near-miss",
+      "overpressure",
+      "watchdog",
+      "pre-emption"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4150.0,
+      4195.0
+    ]
+  },
+  {
+    "chunk_id": "INC-MN-SM-DW-01-WARN-4172-C03",
+    "doc_id": "INC-MN-SM-DW-01-WARN-4172",
+    "doc_type": "INCIDENT",
+    "section_path": "3. Root Cause & Contributing Factors",
+    "page": 1,
+    "text": "## 3. Root Cause & Contributing Factors\n- **Centroid Effect**: Rapid structural steepening in the Miocene channel turbidite charged the crestal sand to 11.48 ppg.\n- **Narrow Margin**: Upper loss threshold capped by 13-3/8 in casing shoe FIT at 12.10 ppg, requiring precise ECD management.",
+    "tokens": 45,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "incident",
+      "near-miss",
+      "overpressure",
+      "watchdog",
+      "pre-emption"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4150.0,
+      4195.0
+    ]
+  },
+  {
+    "chunk_id": "INC-MN-SM-DW-01-WARN-4172-C04",
+    "doc_id": "INC-MN-SM-DW-01-WARN-4172",
+    "doc_type": "INCIDENT",
+    "section_path": "4. Corrective & Preventive Actions",
+    "page": 1,
+    "text": "## 4. Corrective & Preventive Actions\n- Mud weight was elevated pre-emptively to 11.65 ppg (1.40 SG) kill mud before entering 4,195 m MD sand contact.\n- ROP capped at 12 m/hr during sand penetration to maintain circulating ECD below 12.10 ppg shoe FIT.\n- Avoided 36.5 hours of NPT.",
+    "tokens": 50,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "incident",
+      "near-miss",
+      "overpressure",
+      "watchdog",
+      "pre-emption"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4150.0,
+      4195.0
+    ]
+  },
+  {
+    "chunk_id": "INC-MN-SM-DW-01-WARN-4172-C05",
+    "doc_id": "INC-MN-SM-DW-01-WARN-4172",
+    "doc_type": "INCIDENT",
+    "section_path": "5. Formal Sign-off",
+    "page": 1,
+    "text": "## 5. Formal Sign-off\n- **Company Man**: Authorized\n- **Drilling Superintendent**: Approved\n- **Lead Geoscientist**: Verified",
+    "tokens": 16,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "incident",
+      "near-miss",
+      "overpressure",
+      "watchdog",
+      "pre-emption"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4150.0,
+      4195.0
+    ]
+  },
+  {
     "chunk_id": "INC-MN-DW-03-LOSS-4222-C00",
     "doc_id": "INC-MN-DW-03-LOSS-4222",
     "doc_type": "INCIDENT",
@@ -1102,6 +1234,934 @@
     "md_range": [
       4215,
       4230
+    ]
+  },
+  {
+    "chunk_id": "INC-MH-112-DIFF-STICK-2850-C00",
+    "doc_id": "INC-MH-112-DIFF-STICK-2850",
+    "doc_type": "INCIDENT",
+    "section_path": "INC-MH-112-DIFF-STICK-2850: Historical Carbonate Losses & Sticking (illustrative)",
+    "page": 1,
+    "text": "# INC-MH-112-DIFF-STICK-2850: Historical Carbonate Losses & Sticking (illustrative)",
+    "tokens": 8,
+    "well_id": "MH-112",
+    "tags": [
+      "incident",
+      "losses",
+      "differential-sticking",
+      "mumbai-high",
+      "carbonate"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      2800.0,
+      2900.0
+    ]
+  },
+  {
+    "chunk_id": "INC-MH-112-DIFF-STICK-2850-C01",
+    "doc_id": "INC-MH-112-DIFF-STICK-2850",
+    "doc_type": "INCIDENT",
+    "section_path": "1. Incident Overview",
+    "page": 1,
+    "text": "## 1. Incident Overview\nDuring exploration drilling on Mumbai High reference well MH-112 in fractured Miocene limestone, total fluid losses of 45 bbl/hr occurred when drilling overbalanced through a depleted vuggy zone at 2,850 m MD. Continued pipe manipulation while attempting to mix LCM led to differential sticking of the 8-1/2 in BHA against permeable limestone filter cake.",
+    "tokens": 58,
+    "well_id": "MH-112",
+    "tags": [
+      "incident",
+      "losses",
+      "differential-sticking",
+      "mumbai-high",
+      "carbonate"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      2800.0,
+      2900.0
+    ]
+  },
+  {
+    "chunk_id": "INC-MH-112-DIFF-STICK-2850-C02",
+    "doc_id": "INC-MH-112-DIFF-STICK-2850",
+    "doc_type": "INCIDENT",
+    "section_path": "2. Sequence of Events",
+    "page": 1,
+    "text": "## 2. Sequence of Events\n- **Day 14 04:30**: Drilling in limestone at 2,850 m MD with 10.80 ppg mud. Sudden loss of returns observed; pit level dropped 35 bbl in 45 minutes.\n- **Day 14 05:20**: Stopped pumps to perform dynamic loss assessment. Static losses stabilized at 20 bbl/hr.\n- **Day 14 06:15**: Attempted to pull off bottom; string became differentially stuck with 80 klbf overpull.\n- **Day 14 11:00**: Spotted 50 bbl hydrocarbon-based freeing pipe pill around BHA.\n- **Day 15 02:00**: String jarred free after 14.5 hours of jarring operations. Total NPT incurred: 48.0 hours.",
+    "tokens": 98,
+    "well_id": "MH-112",
+    "tags": [
+      "incident",
+      "losses",
+      "differential-sticking",
+      "mumbai-high",
+      "carbonate"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      2800.0,
+      2900.0
+    ]
+  },
+  {
+    "chunk_id": "INC-MH-112-DIFF-STICK-2850-C03",
+    "doc_id": "INC-MH-112-DIFF-STICK-2850",
+    "doc_type": "INCIDENT",
+    "section_path": "3. Lessons for Deepwater Project Samudra Manthan",
+    "page": 1,
+    "text": "## 3. Lessons for Deepwater Project Samudra Manthan\n- In transition zones and depleted sections, overbalance must be tightly constrained to prevent differential sticking.\n- When drilling narrow margins in MN-SM-DW-01, maintaining ECD strictly within the 11.48 ppg pore pressure to 12.10 ppg shoe FIT envelope is essential to prevent both kicks and severe loss-induced pipe sticking.",
+    "tokens": 57,
+    "well_id": "MH-112",
+    "tags": [
+      "incident",
+      "losses",
+      "differential-sticking",
+      "mumbai-high",
+      "carbonate"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      2800.0,
+      2900.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-02-C00",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-02",
+    "doc_type": "DDR",
+    "section_path": "DDR-MN-SM-DW-01-SHIFT-02: Daily Drilling Report: SHIFT-02 (2026-09-20 NIGHT (18:00 - 06:00)) (illustrative)",
+    "page": 1,
+    "text": "# DDR-MN-SM-DW-01-SHIFT-02: Daily Drilling Report: SHIFT-02 (2026-09-20 NIGHT (18:00 - 06:00)) (illustrative)",
+    "tokens": 12,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-02"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      3950.0,
+      4075.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-02-C01",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-02",
+    "doc_type": "DDR",
+    "section_path": "1. General Well & Shift Data",
+    "page": 1,
+    "text": "## 1. General Well & Shift Data\n- **Well Identifier**: MN-SM-DW-01 (Mahanadi Offshore Deepwater)\n- **Operator**: ONGC Deepwater Operations (Project Samudra Manthan)\n- **Date**: 2026-09-20\n- **Tour**: NIGHT (18:00 - 06:00)\n- **Depth Interval**: 3950.0 m to 4075.0 m MD\n- **Progress**: 125.0 m (Average ROP: 15.2 m/hr)\n- **Current Hole Section**: 12-1/4 in open hole (13-3/8 in casing shoe at 3,850 m MD, FIT 12.10 ppg)",
+    "tokens": 67,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-02"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      3950.0,
+      4075.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-02-C02",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-02",
+    "doc_type": "DDR",
+    "section_path": "2. Drilling Fluid & Hydraulic Summary",
+    "page": 1,
+    "text": "## 2. Drilling Fluid & Hydraulic Summary\n- **Active Mud Weight In**: 11.20 ppg (1.34 SG)\n- **Active Mud Weight Out**: 11.21 ppg (1.34 SG)\n- **Annular Equivalent Circulating Density (ECD)**: 11.41 ppg\n- **Margin to Casing Shoe FIT (12.10 ppg)**: +0.69 ppg\n- **Active System Volume**: 3,100 bbl SOBM",
+    "tokens": 50,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-02"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      3950.0,
+      4075.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-02-C03",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-02",
+    "doc_type": "DDR",
+    "section_path": "3. 12-Hour Operational Chronology",
+    "page": 1,
+    "text": "## 3. 12-Hour Operational Chronology\n- **06:00 - 18:00 / 18:00 - 06:00**: Drilling 12-1/4 in hole in U1 shale seal. Hole cleaning good; swept 30 bbl high-vis pill at 4,020 m.\n- **LWD Telemetry**: Continuous decoding of GR, RDEP, DT, RHOB, NPHI.",
+    "tokens": 43,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-02"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      3950.0,
+      4075.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-02-C04",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-02",
+    "doc_type": "DDR",
+    "section_path": "4. Handover Notes & Safety Observation",
+    "page": 1,
+    "text": "## 4. Handover Notes & Safety Observation\n- **Handover Summary**: Torque steady at 12.5 kft-lb. LWD telemetry 100% decode. Connection gas < 0.5%. Continue drilling ahead as per program.\n- **Well Control Status**: Normal / No unmanaged influx.\n- **Tour Supervisor**: K. Das (Tour B) (Role: Tour Driller)\n- **Approval Sign-off**: Drilling Superintendent & Company Man",
+    "tokens": 56,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-02"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      3950.0,
+      4075.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-03-C00",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-03",
+    "doc_type": "DDR",
+    "section_path": "DDR-MN-SM-DW-01-SHIFT-03: Daily Drilling Report: SHIFT-03 (2026-09-21 DAY (06:00 - 18:00)) (illustrative)",
+    "page": 1,
+    "text": "# DDR-MN-SM-DW-01-SHIFT-03: Daily Drilling Report: SHIFT-03 (2026-09-21 DAY (06:00 - 18:00)) (illustrative)",
+    "tokens": 12,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-03"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4075.0,
+      4150.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-03-C01",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-03",
+    "doc_type": "DDR",
+    "section_path": "1. General Well & Shift Data",
+    "page": 1,
+    "text": "## 1. General Well & Shift Data\n- **Well Identifier**: MN-SM-DW-01 (Mahanadi Offshore Deepwater)\n- **Operator**: ONGC Deepwater Operations (Project Samudra Manthan)\n- **Date**: 2026-09-21\n- **Tour**: DAY (06:00 - 18:00)\n- **Depth Interval**: 4075.0 m to 4150.0 m MD\n- **Progress**: 75.0 m (Average ROP: 13.8 m/hr)\n- **Current Hole Section**: 12-1/4 in open hole (13-3/8 in casing shoe at 3,850 m MD, FIT 12.10 ppg)",
+    "tokens": 67,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-03"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4075.0,
+      4150.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-03-C02",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-03",
+    "doc_type": "DDR",
+    "section_path": "2. Drilling Fluid & Hydraulic Summary",
+    "page": 1,
+    "text": "## 2. Drilling Fluid & Hydraulic Summary\n- **Active Mud Weight In**: 11.20 ppg (1.34 SG)\n- **Active Mud Weight Out**: 11.20 ppg (1.34 SG)\n- **Annular Equivalent Circulating Density (ECD)**: 11.42 ppg\n- **Margin to Casing Shoe FIT (12.10 ppg)**: +0.68 ppg\n- **Active System Volume**: 3,100 bbl SOBM",
+    "tokens": 50,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-03"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4075.0,
+      4150.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-03-C03",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-03",
+    "doc_type": "DDR",
+    "section_path": "3. 12-Hour Operational Chronology",
+    "page": 1,
+    "text": "## 3. 12-Hour Operational Chronology\n- **06:00 - 18:00 / 18:00 - 06:00**: Drilling ahead in basal U1. Approaching prognosed top of Miocene transition zone (U2) at 4,150 m.\n- **LWD Telemetry**: Continuous decoding of GR, RDEP, DT, RHOB, NPHI.",
+    "tokens": 40,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-03"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4075.0,
+      4150.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-03-C04",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-03",
+    "doc_type": "DDR",
+    "section_path": "4. Handover Notes & Safety Observation",
+    "page": 1,
+    "text": "## 4. Handover Notes & Safety Observation\n- **Handover Summary**: Mud weight maintained at 11.20 ppg. Standpipe pressure steady. Mud logger alerted to monitor sonic slowness and dxc trends closely.\n- **Well Control Status**: Normal / No unmanaged influx.\n- **Tour Supervisor**: R. Sharma (Tour A) (Role: Tour Driller)\n- **Approval Sign-off**: Drilling Superintendent & Company Man",
+    "tokens": 57,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-03"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4075.0,
+      4150.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-01-C00",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-01",
+    "doc_type": "DDR",
+    "section_path": "DDR-MN-SM-DW-01-SHIFT-01: Daily Drilling Report: SHIFT-01 (2026-09-20 DAY (06:00 - 18:00)) (illustrative)",
+    "page": 1,
+    "text": "# DDR-MN-SM-DW-01-SHIFT-01: Daily Drilling Report: SHIFT-01 (2026-09-20 DAY (06:00 - 18:00)) (illustrative)",
+    "tokens": 12,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-01"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      3850.0,
+      3950.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-01-C01",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-01",
+    "doc_type": "DDR",
+    "section_path": "1. General Well & Shift Data",
+    "page": 1,
+    "text": "## 1. General Well & Shift Data\n- **Well Identifier**: MN-SM-DW-01 (Mahanadi Offshore Deepwater)\n- **Operator**: ONGC Deepwater Operations (Project Samudra Manthan)\n- **Date**: 2026-09-20\n- **Tour**: DAY (06:00 - 18:00)\n- **Depth Interval**: 3850.0 m to 3950.0 m MD\n- **Progress**: 100.0 m (Average ROP: 14.5 m/hr)\n- **Current Hole Section**: 12-1/4 in open hole (13-3/8 in casing shoe at 3,850 m MD, FIT 12.10 ppg)",
+    "tokens": 67,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-01"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      3850.0,
+      3950.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-01-C02",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-01",
+    "doc_type": "DDR",
+    "section_path": "2. Drilling Fluid & Hydraulic Summary",
+    "page": 1,
+    "text": "## 2. Drilling Fluid & Hydraulic Summary\n- **Active Mud Weight In**: 11.20 ppg (1.34 SG)\n- **Active Mud Weight Out**: 11.20 ppg (1.34 SG)\n- **Annular Equivalent Circulating Density (ECD)**: 11.40 ppg\n- **Margin to Casing Shoe FIT (12.10 ppg)**: +0.70 ppg\n- **Active System Volume**: 3,100 bbl SOBM",
+    "tokens": 50,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-01"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      3850.0,
+      3950.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-01-C03",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-01",
+    "doc_type": "DDR",
+    "section_path": "3. 12-Hour Operational Chronology",
+    "page": 1,
+    "text": "## 3. 12-Hour Operational Chronology\n- **06:00 - 18:00 / 18:00 - 06:00**: Drilled out 13-3/8 in shoe track at 3,850 m MD. Performed Formation Integrity Test (FIT) to 12.10 ppg EMW (1.45 SG). Commenced 12-1/4 in open hole drilling in Upper Miocene compact marine shale (U1).\n- **LWD Telemetry**: Continuous decoding of GR, RDEP, DT, RHOB, NPHI.",
+    "tokens": 58,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-01"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      3850.0,
+      3950.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-01-C04",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-01",
+    "doc_type": "DDR",
+    "section_path": "4. Handover Notes & Safety Observation",
+    "page": 1,
+    "text": "## 4. Handover Notes & Safety Observation\n- **Handover Summary**: Parameters stable. WOB 18 klbf, RPM 120, standpipe pressure steady. Background gas 0.3%. Shakers showing firm shale cuttings.\n- **Well Control Status**: Normal / No unmanaged influx.\n- **Tour Supervisor**: R. Sharma (Tour A) (Role: Tour Driller)\n- **Approval Sign-off**: Drilling Superintendent & Company Man",
+    "tokens": 55,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-01"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      3850.0,
+      3950.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-04-C00",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-04",
+    "doc_type": "DDR",
+    "section_path": "DDR-MN-SM-DW-01-SHIFT-04: Daily Drilling Report: SHIFT-04 (2026-09-21 NIGHT (18:00 - 06:00)) (illustrative)",
+    "page": 1,
+    "text": "# DDR-MN-SM-DW-01-SHIFT-04: Daily Drilling Report: SHIFT-04 (2026-09-21 NIGHT (18:00 - 06:00)) (illustrative)",
+    "tokens": 12,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-04"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4150.0,
+      4172.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-04-C01",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-04",
+    "doc_type": "DDR",
+    "section_path": "1. General Well & Shift Data",
+    "page": 1,
+    "text": "## 1. General Well & Shift Data\n- **Well Identifier**: MN-SM-DW-01 (Mahanadi Offshore Deepwater)\n- **Operator**: ONGC Deepwater Operations (Project Samudra Manthan)\n- **Date**: 2026-09-21\n- **Tour**: NIGHT (18:00 - 06:00)\n- **Depth Interval**: 4150.0 m to 4172.0 m MD\n- **Progress**: 22.0 m (Average ROP: 11.0 m/hr)\n- **Current Hole Section**: 12-1/4 in open hole (13-3/8 in casing shoe at 3,850 m MD, FIT 12.10 ppg)",
+    "tokens": 67,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-04"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4150.0,
+      4172.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-04-C02",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-04",
+    "doc_type": "DDR",
+    "section_path": "2. Drilling Fluid & Hydraulic Summary",
+    "page": 1,
+    "text": "## 2. Drilling Fluid & Hydraulic Summary\n- **Active Mud Weight In**: 11.20 ppg (1.34 SG)\n- **Active Mud Weight Out**: 11.20 ppg (1.34 SG)\n- **Annular Equivalent Circulating Density (ECD)**: 11.42 ppg\n- **Margin to Casing Shoe FIT (12.10 ppg)**: +0.68 ppg\n- **Active System Volume**: 3,100 bbl SOBM",
+    "tokens": 50,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-04"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4150.0,
+      4172.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-04-C03",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-04",
+    "doc_type": "DDR",
+    "section_path": "3. 12-Hour Operational Chronology",
+    "page": 1,
+    "text": "## 3. 12-Hour Operational Chronology\n- **06:00 - 18:00 / 18:00 - 06:00**: Entered U2 transition zone at 4,150 m. Observed initial dxc trend departure. At 4,172 m MD, agent watchdog alert fired: sonic slowness departure +12 \u03bcs/ft off NCT, connection gas rising from 0.8% to 2.4%. Warning point reached.\n- **LWD Telemetry**: Continuous decoding of GR, RDEP, DT, RHOB, NPHI.",
+    "tokens": 61,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-04"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4150.0,
+      4172.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-04-C04",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-04",
+    "doc_type": "DDR",
+    "section_path": "4. Handover Notes & Safety Observation",
+    "page": 1,
+    "text": "## 4. Handover Notes & Safety Observation\n- **Handover Summary**: Sagar Drishti Agent flagged 200 psi underbalance ramp in 23 m. Superintendent convened MOC review. Flow check negative. Barite staging commenced.\n- **Well Control Status**: Normal / No unmanaged influx.\n- **Tour Supervisor**: K. Das (Tour B) (Role: Tour Driller)\n- **Approval Sign-off**: Drilling Superintendent & Company Man",
+    "tokens": 58,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-04"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4150.0,
+      4172.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-08-C00",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-08",
+    "doc_type": "DDR",
+    "section_path": "DDR-MN-SM-DW-01-SHIFT-08: Daily Drilling Report: SHIFT-08 (2026-09-24 NIGHT (18:00 - 06:00)) (illustrative)",
+    "page": 1,
+    "text": "# DDR-MN-SM-DW-01-SHIFT-08: Daily Drilling Report: SHIFT-08 (2026-09-24 NIGHT (18:00 - 06:00)) (illustrative)",
+    "tokens": 12,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-08"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4360.0,
+      4450.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-08-C01",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-08",
+    "doc_type": "DDR",
+    "section_path": "1. General Well & Shift Data",
+    "page": 1,
+    "text": "## 1. General Well & Shift Data\n- **Well Identifier**: MN-SM-DW-01 (Mahanadi Offshore Deepwater)\n- **Operator**: ONGC Deepwater Operations (Project Samudra Manthan)\n- **Date**: 2026-09-24\n- **Tour**: NIGHT (18:00 - 06:00)\n- **Depth Interval**: 4360.0 m to 4450.0 m MD\n- **Progress**: 90.0 m (Average ROP: 11.2 m/hr)\n- **Current Hole Section**: 12-1/4 in open hole (13-3/8 in casing shoe at 3,850 m MD, FIT 12.10 ppg)",
+    "tokens": 67,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-08"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4360.0,
+      4450.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-08-C02",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-08",
+    "doc_type": "DDR",
+    "section_path": "2. Drilling Fluid & Hydraulic Summary",
+    "page": 1,
+    "text": "## 2. Drilling Fluid & Hydraulic Summary\n- **Active Mud Weight In**: 11.65 ppg (1.40 SG)\n- **Active Mud Weight Out**: 11.65 ppg (1.40 SG)\n- **Annular Equivalent Circulating Density (ECD)**: 11.85 ppg\n- **Margin to Casing Shoe FIT (12.10 ppg)**: +0.25 ppg\n- **Active System Volume**: 3,100 bbl SOBM",
+    "tokens": 50,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-08"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4360.0,
+      4450.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-08-C03",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-08",
+    "doc_type": "DDR",
+    "section_path": "3. 12-Hour Operational Chronology",
+    "page": 1,
+    "text": "## 3. 12-Hour Operational Chronology\n- **06:00 - 18:00 / 18:00 - 06:00**: Reached section Total Depth (TD) at 4,450 m MD / TVD. Circulated hole clean; pumped 50 bbl high-density sweep. Performed wiper trip to casing shoe; zero drag or tight hole observed. Prepared for logging and 9-5/8 in casing run.\n- **LWD Telemetry**: Continuous decoding of GR, RDEP, DT, RHOB, NPHI.",
+    "tokens": 63,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-08"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4360.0,
+      4450.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-08-C04",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-08",
+    "doc_type": "DDR",
+    "section_path": "4. Handover Notes & Safety Observation",
+    "page": 1,
+    "text": "## 4. Handover Notes & Safety Observation\n- **Handover Summary**: Section completed with ZERO lost-time incidents and ZERO kicks. Autonomous WCR generation initiated.\n- **Well Control Status**: Normal / No unmanaged influx.\n- **Tour Supervisor**: K. Das (Tour B) (Role: Tour Driller)\n- **Approval Sign-off**: Drilling Superintendent & Company Man",
+    "tokens": 50,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-08"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4360.0,
+      4450.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-07-C00",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-07",
+    "doc_type": "DDR",
+    "section_path": "DDR-MN-SM-DW-01-SHIFT-07: Daily Drilling Report: SHIFT-07 (2026-09-23 DAY (06:00 - 18:00)) (illustrative)",
+    "page": 1,
+    "text": "# DDR-MN-SM-DW-01-SHIFT-07: Daily Drilling Report: SHIFT-07 (2026-09-23 DAY (06:00 - 18:00)) (illustrative)",
+    "tokens": 12,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-07"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4235.0,
+      4360.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-07-C01",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-07",
+    "doc_type": "DDR",
+    "section_path": "1. General Well & Shift Data",
+    "page": 1,
+    "text": "## 1. General Well & Shift Data\n- **Well Identifier**: MN-SM-DW-01 (Mahanadi Offshore Deepwater)\n- **Operator**: ONGC Deepwater Operations (Project Samudra Manthan)\n- **Date**: 2026-09-23\n- **Tour**: DAY (06:00 - 18:00)\n- **Depth Interval**: 4235.0 m to 4360.0 m MD\n- **Progress**: 125.0 m (Average ROP: 14.0 m/hr)\n- **Current Hole Section**: 12-1/4 in open hole (13-3/8 in casing shoe at 3,850 m MD, FIT 12.10 ppg)",
+    "tokens": 67,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-07"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4235.0,
+      4360.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-07-C02",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-07",
+    "doc_type": "DDR",
+    "section_path": "2. Drilling Fluid & Hydraulic Summary",
+    "page": 1,
+    "text": "## 2. Drilling Fluid & Hydraulic Summary\n- **Active Mud Weight In**: 11.65 ppg (1.40 SG)\n- **Active Mud Weight Out**: 11.65 ppg (1.40 SG)\n- **Annular Equivalent Circulating Density (ECD)**: 11.85 ppg\n- **Margin to Casing Shoe FIT (12.10 ppg)**: +0.25 ppg\n- **Active System Volume**: 3,100 bbl SOBM",
+    "tokens": 50,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-07"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4235.0,
+      4360.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-07-C03",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-07",
+    "doc_type": "DDR",
+    "section_path": "3. 12-Hour Operational Chronology",
+    "page": 1,
+    "text": "## 3. 12-Hour Operational Chronology\n- **06:00 - 18:00 / 18:00 - 06:00**: Drilling through U3 sand base into U4 argillaceous limestone at 4,290 m. Cuttings transition to light grey dolomitic limestone. Torque increased from 11 kft-lb to 16 kft-lb.\n- **LWD Telemetry**: Continuous decoding of GR, RDEP, DT, RHOB, NPHI.",
+    "tokens": 51,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-07"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4235.0,
+      4360.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-07-C04",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-07",
+    "doc_type": "DDR",
+    "section_path": "4. Handover Notes & Safety Observation",
+    "page": 1,
+    "text": "## 4. Handover Notes & Safety Observation\n- **Handover Summary**: ROP naturally declining in hard carbonate stringers. Gas dropped to 0.4%. Mud properties stable.\n- **Well Control Status**: Normal / No unmanaged influx.\n- **Tour Supervisor**: R. Sharma (Tour A) (Role: Tour Driller)\n- **Approval Sign-off**: Drilling Superintendent & Company Man",
+    "tokens": 51,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-07"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4235.0,
+      4360.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-05-C00",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-05",
+    "doc_type": "DDR",
+    "section_path": "DDR-MN-SM-DW-01-SHIFT-05: Daily Drilling Report: SHIFT-05 (2026-09-22 DAY (06:00 - 18:00)) (illustrative)",
+    "page": 1,
+    "text": "# DDR-MN-SM-DW-01-SHIFT-05: Daily Drilling Report: SHIFT-05 (2026-09-22 DAY (06:00 - 18:00)) (illustrative)",
+    "tokens": 12,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-05"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4172.0,
+      4195.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-05-C01",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-05",
+    "doc_type": "DDR",
+    "section_path": "1. General Well & Shift Data",
+    "page": 1,
+    "text": "## 1. General Well & Shift Data\n- **Well Identifier**: MN-SM-DW-01 (Mahanadi Offshore Deepwater)\n- **Operator**: ONGC Deepwater Operations (Project Samudra Manthan)\n- **Date**: 2026-09-22\n- **Tour**: DAY (06:00 - 18:00)\n- **Depth Interval**: 4172.0 m to 4195.0 m MD\n- **Progress**: 23.0 m (Average ROP: 9.5 m/hr)\n- **Current Hole Section**: 12-1/4 in open hole (13-3/8 in casing shoe at 3,850 m MD, FIT 12.10 ppg)",
+    "tokens": 67,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-05"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4172.0,
+      4195.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-05-C02",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-05",
+    "doc_type": "DDR",
+    "section_path": "2. Drilling Fluid & Hydraulic Summary",
+    "page": 1,
+    "text": "## 2. Drilling Fluid & Hydraulic Summary\n- **Active Mud Weight In**: 11.65 ppg (1.40 SG)\n- **Active Mud Weight Out**: 11.64 ppg (1.39 SG)\n- **Annular Equivalent Circulating Density (ECD)**: 11.84 ppg\n- **Margin to Casing Shoe FIT (12.10 ppg)**: +0.26 ppg\n- **Active System Volume**: 3,100 bbl SOBM",
+    "tokens": 50,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-05"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4172.0,
+      4195.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-05-C03",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-05",
+    "doc_type": "DDR",
+    "section_path": "3. 12-Hour Operational Chronology",
+    "page": 1,
+    "text": "## 3. 12-Hour Operational Chronology\n- **06:00 - 18:00 / 18:00 - 06:00**: Executed MOC-MN-SM-DW-01-003: weighted active mud system from 11.20 to 11.65 ppg using 39.8 MT (796 bags) barite. Circulated and conditioned mud to uniform density. Resumed controlled drilling through U2 base.\n- **LWD Telemetry**: Continuous decoding of GR, RDEP, DT, RHOB, NPHI.",
+    "tokens": 54,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-05"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4172.0,
+      4195.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-05-C04",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-05",
+    "doc_type": "DDR",
+    "section_path": "4. Handover Notes & Safety Observation",
+    "page": 1,
+    "text": "## 4. Handover Notes & Safety Observation\n- **Handover Summary**: Reached 4,195 m MD (offset MN-DW-02 kick depth). Maintained +120 psi overbalance. Zero pit gain, zero gas influx. Rig spread cost protected.\n- **Well Control Status**: Normal / No unmanaged influx.\n- **Tour Supervisor**: R. Sharma (Tour A) (Role: Tour Driller)\n- **Approval Sign-off**: Drilling Superintendent & Company Man",
+    "tokens": 59,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-05"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4172.0,
+      4195.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-06-C00",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-06",
+    "doc_type": "DDR",
+    "section_path": "DDR-MN-SM-DW-01-SHIFT-06: Daily Drilling Report: SHIFT-06 (2026-09-22 NIGHT (18:00 - 06:00)) (illustrative)",
+    "page": 1,
+    "text": "# DDR-MN-SM-DW-01-SHIFT-06: Daily Drilling Report: SHIFT-06 (2026-09-22 NIGHT (18:00 - 06:00)) (illustrative)",
+    "tokens": 12,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-06"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4195.0,
+      4235.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-06-C01",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-06",
+    "doc_type": "DDR",
+    "section_path": "1. General Well & Shift Data",
+    "page": 1,
+    "text": "## 1. General Well & Shift Data\n- **Well Identifier**: MN-SM-DW-01 (Mahanadi Offshore Deepwater)\n- **Operator**: ONGC Deepwater Operations (Project Samudra Manthan)\n- **Date**: 2026-09-22\n- **Tour**: NIGHT (18:00 - 06:00)\n- **Depth Interval**: 4195.0 m to 4235.0 m MD\n- **Progress**: 40.0 m (Average ROP: 12.0 m/hr)\n- **Current Hole Section**: 12-1/4 in open hole (13-3/8 in casing shoe at 3,850 m MD, FIT 12.10 ppg)",
+    "tokens": 67,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-06"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4195.0,
+      4235.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-06-C02",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-06",
+    "doc_type": "DDR",
+    "section_path": "2. Drilling Fluid & Hydraulic Summary",
+    "page": 1,
+    "text": "## 2. Drilling Fluid & Hydraulic Summary\n- **Active Mud Weight In**: 11.65 ppg (1.40 SG)\n- **Active Mud Weight Out**: 11.65 ppg (1.40 SG)\n- **Annular Equivalent Circulating Density (ECD)**: 11.86 ppg\n- **Margin to Casing Shoe FIT (12.10 ppg)**: +0.24 ppg\n- **Active System Volume**: 3,100 bbl SOBM",
+    "tokens": 50,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-06"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4195.0,
+      4235.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-06-C03",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-06",
+    "doc_type": "DDR",
+    "section_path": "3. 12-Hour Operational Chronology",
+    "page": 1,
+    "text": "## 3. 12-Hour Operational Chronology\n- **06:00 - 18:00 / 18:00 - 06:00**: Tagged U3 main turbidite gas sand at 4,195 m. Encountered drilling break at 4,205 m (instantaneous ROP 34 m/hr). Immediately capped ROP at 12 m/hr as per SOP-04 recommendation to prevent annular overloading. ECD controlled at 11.86 ppg (safe by 0.24 ppg below 12.10 shoe FIT).\n- **LWD Telemetry**: Continuous decoding of GR, RDEP, DT, RHOB, NPHI.",
+    "tokens": 70,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-06"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4195.0,
+      4235.0
+    ]
+  },
+  {
+    "chunk_id": "DDR-MN-SM-DW-01-SHIFT-06-C04",
+    "doc_id": "DDR-MN-SM-DW-01-SHIFT-06",
+    "doc_type": "DDR",
+    "section_path": "4. Handover Notes & Safety Observation",
+    "page": 1,
+    "text": "## 4. Handover Notes & Safety Observation\n- **Handover Summary**: Preempted offset MN-DW-03 loss precedent (28 bbl/hr). Mud losses 0 bbl. Excellent sand quality: 24.2% porosity, dry gas C1 > 88%.\n- **Well Control Status**: Normal / No unmanaged influx.\n- **Tour Supervisor**: K. Das (Tour B) (Role: Tour Driller)\n- **Approval Sign-off**: Drilling Superintendent & Company Man",
+    "tokens": 58,
+    "well_id": "MN-SM-DW-01",
+    "tags": [
+      "ddr",
+      "shift-report",
+      "operations",
+      "shift-06"
+    ],
+    "authoring": "synthetic",
+    "md_range": [
+      4195.0,
+      4235.0
     ]
   }
 ]

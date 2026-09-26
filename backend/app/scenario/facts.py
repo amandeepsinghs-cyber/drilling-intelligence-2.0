@@ -35,6 +35,11 @@ def profiles() -> dict:
     return _load("profiles.yaml")
 
 
+@lru_cache
+def shift_notes() -> dict:
+    return _load("shift_notes.yaml")
+
+
 def unit_at(md_m: float) -> dict:
     """Stratigraphic unit containing md (top inclusive, base exclusive; last unit inclusive)."""
     units = facts()["stratigraphy"]
@@ -50,8 +55,14 @@ def checkpoint(label: str) -> dict:
 
 def scenario_bundle() -> dict:
     """Everything the frontend needs to render the narrative without hard-coded numbers."""
-    return {"facts": facts(), "offsets": offsets(), "turns": turns()["turns"]}
+    return {
+        "facts": facts(),
+        "offsets": offsets(),
+        "turns": turns()["turns"],
+        "shift_notes": shift_notes(),
+    }
 
 
 def data_dir() -> Path:
     return REPO_ROOT / "data"
+

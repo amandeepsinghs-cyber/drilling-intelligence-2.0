@@ -1,11 +1,8 @@
-"""Real-LWD drop-in: registration math + PUBLIC-over-SYNTHETIC precedence without editing values."""
-import json
-
+"""Pilot-scope real-LWD drop-in utility: registration math only (demo frames are hi-res SYNTHETIC, O6)."""
 import numpy as np
 import pandas as pd
 import pytest
 
-from app.scenario import frames as frames_mod
 from app.scenario.registration import convert, map_curves, register_depth, resample
 
 
@@ -36,18 +33,3 @@ def test_resample_keeps_gaps():
     out = resample(df, "DEPTH", np.arange(4000, 4011.5, 0.5), max_gap_m=2.0)
     assert out["GR"].iloc[1] == pytest.approx(1.5)
     assert np.isnan(out.loc[out.md_m == 4005, "GR"]).all()
-
-
-def test_public_curves_take_precedence(tmp_path, monkeypatch):
-    md = np.round(np.arange(4000, 4460.25, 0.5), 3)
-    real_gr = 50 + 10 * np.sin(md / 7)
-    p = tmp_path / "mn_sm_dw_01.parquet"
-    pd.DataFrame({"md_m": md, "GR": real_gr}).to_parquet(p, index=False)
-    p.with_suffix(".meta.json").write_text(json.dumps({"provenance": "PUBLIC", "dataset_id": "test"}))
-    monkeypatch.setattr(frames_mod, "lwd_path", lambda _w: p)
-    fs = frames_mod.build_frames()
-    assert fs.provenance["curves.GR"] == "PUBLIC"
-    assert np.allclose(fs.df["curves.GR"], real_gr)          # values untouched
-    assert fs.provenance["curves.DT"] == "SYNTHETIC"         # absent curve → labelled stand-in
-    assert fs.provenance["overlays.DT_SCN"] == "SIMULATED"   # scenario signature as separate overlay
-    assert fs.meta["curve_sources"]["GR"] == "public"

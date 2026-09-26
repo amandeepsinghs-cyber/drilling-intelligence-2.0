@@ -4,12 +4,13 @@
 # UI headlines or the agent speaks is still a checkpoint in mn_sm_dw_01.yaml, and
 # backend/tests/scenario/test_frames.py asserts the generated frames reproduce them.
 #
-# Real-data drop-in (SDD §5.5): the `lwd:` block is ONLY used when no PUBLIC log has
-# been registered at data/processed/lwd/<well>.parquet. Everything else (drilling,
-# mud-log, mud, pressure) stays scenario-driven by design.
+# Well logs are HIGH-RESOLUTION SYNTHETIC (O6): the `hires:` block parameterises the
+# forward petrophysical model in backend/app/scenario/hires_well.py (mineral/fluid
+# endpoints, bed model, tool vertical resolution, noise). No real log is used.
+# Column contract: docs/data/column_contract.md.
 # ─────────────────────────────────────────────────────────────────────────────
 schema_version: 1
-grid: { top_m: 4000, base_m: 4460, step_m: 0.5 }
+grid: { top_m: 4000, base_m: 4460, step_m: 0.125 }   # 8 samples/m (finer than 0.5 ft LWD); checkpoints land on-grid
 seed_salt: "di2-stub-v1"
 
 pressure:
@@ -22,7 +23,7 @@ rop:
   compaction_per_m: 0.0005       # relative ROP decline with depth in U1
   transition_rise_from_m: 4155
   transition_peak_m_hr: 26       # undercompacted shale drills faster → dxc reversal
-  controlled_from_m: 4172.5      # first depth after MOC approval + weight-up
+  controlled_from_m: 4172.125    # first sample after MOC approval + weight-up (grid 0.125 m)
   break_interval_m: [4203.5, 4205.0]
   limestone_m_hr: 8
   residual_cuttings_until_m: 4290
@@ -45,7 +46,8 @@ mudlog:
   background_gas_pct: { U1: 0.4, U2_end: 0.9, post_weightup: 0.6, U3: 3.5, U3_break_peak: 5.0, U4: 0.8 }
   conn_gas_pct_overrides: [ { md_m: 4143.5, pct: 0.6 }, { md_m: 4172, pct: 1.1 } ]
   conn_gas_excess_pct: 0.3       # default connection-gas bump over background elsewhere
-  composition: { C1: 0.82, C2: 0.09, C3: 0.05, C4: 0.025, C5: 0.015 }
+  composition: { C1: 0.82, C2: 0.09, C3: 0.05, C4: 0.025, C5: 0.015 }      # background (shale-sourced, wetter)
+  composition_U3: { C1: 0.905, C2: 0.05, C3: 0.025, C4: 0.012, C5: 0.008 } # dry gas: C1 > reservoir.gas_c1_pct_min
 
 mud:
   pv_weighted_cp: 30
@@ -54,30 +56,52 @@ mud:
 
 ml_baseline:                     # heuristic stand-ins until Phase 6 trained models
   p_kick_anchors: [[4000, 0.04], [4120, 0.04], [4150, 0.05], [4160, 0.10], [4172, 0.71],
-                   [4172.5, 0.06], [4195, 0.06], [4205, 0.05], [4205.5, 0.04], [4460, 0.04]]
-  p_kick_logistic: { floor: 0.04, span: 0.90, u0_ppg: 0.2266, scale_ppg: 0.05, lookahead_m: 30 }
+                   [4172.125, 0.06], [4195, 0.06], [4205, 0.05], [4205.125, 0.04], [4460, 0.04]]
+  p_kick_logistic: { floor: 0.04, span: 0.90, u0_ppg: 0.2266, scale_ppg: 0.05 }   # horizon: mn_sm_dw_01.yaml ml.kick_horizon_m
   p_loss_logistic: { floor: 0.02, span: 0.60, m0_ppg: 0.10, scale_ppg: 0.03 }
   ecd_margin_target_ppg: 0.24
   rop_max_clip_m_hr: 40
   stringers_m: [4158, 4166, 4181, 4188]
   stringer_thickness_m: 1.0
 
-lwd:                             # SYNTHETIC stand-in petrophysics (replaced by PUBLIC on drop-in)
-  smooth_sigma_samples: 1.5
-  noise_sigma_samples: 3
-  dt_nct: { top_m: 4000, top_us_ft: 90.0, per_m: -0.0133 }   # normal compaction trend
+hires:                           # HIGH-RESOLUTION SYNTHETIC forward model (O6) — ASSUMED generator params, never spoken
+  # Mineral / fluid endpoints (standard petrophysics tables)
+  minerals:                      # rho g/cc · neutron (limestone units) · PEF b/e · DT us/ft
+    quartz:  { rho: 2.65, nphi: -0.02, pef: 1.81, dt: 55.5 }
+    clay:    { rho: 2.62, nphi: 0.33,  pef: 3.40, dt: 70.0 }
+    calcite: { rho: 2.71, nphi: 0.00,  pef: 5.08, dt: 47.5 }
+  fluids:                        # rho g/cc · hydrogen index · PEF · DT us/ft
+    brine:    { rho: 1.05, hi: 1.00, pef: 0.36, dt: 189 }
+    filtrate: { rho: 0.80, hi: 1.00, pef: 0.12 }       # SOBM base oil (non-conductive)
+    gas:      { rho: 0.25, hi: 0.35, pef: 0.10 }       # dry gas at ~8,000 psi
+  shale_clay_fraction: 0.75      # shale solids = 75 % clay + 25 % quartz silt
+  cbw_per_clay: 0.25             # clay-bound water per unit clay volume (PHIE = PHIT - CBW)
+  gr: { clean_api: 25, per_vsh_api: 100, azimuthal_sd_api: 2.0 }
+  # Bed / composition model per unit: vsh (shale fraction of solids), calcite fraction, PHIT
+  units:
+    U1: { vsh: 0.80, vsh_sd: 0.04, calc: 0.04, phit_top: 0.155, phit_base: 0.148 }
+    U2: { vsh_top: 0.72, vsh_mid: 0.55, vsh_base: 0.72, vsh_sd: 0.05, calc: 0.15, phit: 0.125 }
+    U3: { vsh_sand: 0.18, vsh_sand_sd: 0.03, calc_sand: 0.045, vsh_interbed: 0.85,
+          sand_bed_mean_m: 4.0, interbed_mean_m: 0.8, interbed_min_m: 0.3, first_sand_min_m: 12.0 }
+    U4: { vsh: 0.33, vsh_sd: 0.04, calc: 0.62, phit: 0.07, archie_m: 2.2 }
+  stringer: { vsh: 0.10, calc: 0.85, phit: 0.04 }
+  shale_phit_n: { top: 0.155, base: 0.148 }           # normally-compacted shale PHIT (trend)
+  undercompaction_phit_per_ppg: 0.094                  # disequilibrium compaction: +PHIT per ppg PP above normal
+  lithology_blend: { vsh_clean: 0.20, vsh_shaly: 0.50 } # DT/R shale-vs-matrix weighting ramp
+  flushed_zone:                  # SOBM invasion (shallow): filtrate displaces movable fluid only
+    residual_gas_sat: 0.35
+    filtrate_sat_water_leg: 0.40
+  gwc_transition_m: 2.0          # capillary transition above GWC
+  gas_dt_effect_us_ft: 5.0       # Gassmann-lite: slowing in gas leg at full (1-Sw)
+  transition_gas_decay_m: 15.0   # U2 gas/transition DT term rises toward the sand with this length scale
+  vpvs: { shale: 2.05, gas_sand: 1.60, water_sand: 1.85, limestone: 1.90 }
+  eaton: { dt_exponent: 3.0 }
+  radial_j: { shallow: 0.70, medium: 0.35, deep: 0.05 } # pseudo-geometric factors (flushed-zone weight)
+  dt_nct_per_m: -0.0133          # normal compaction trend slope; anchor = warning-point DT - T3 departure (YAML)
   rdep_nct: { top_m: 4000, top_ohmm: 2.6, per_m: 0.002 }
-  U1: { GR: [105, 5], RHOB: [2.38, 0.015], NPHI: [0.33, 0.01], PEF: [3.1, 0.1], CALI: [12.35, 0.03] }
-  U2:
-    GR: [88, 6]
-    RHOB_anchors: [[4150, 2.38], [4194.5, 2.30]]
-    NPHI_anchors: [[4150, 0.33], [4194.5, 0.37]]
-    DT_anchors: [[4150, 88.0], [4160, 92.5], [4172, 101.0], [4194.5, 106.0]]
-    RDEP_anchors: [[4150, 2.9], [4172, 1.9], [4194.5, 1.6]]
-    PEF: [3.2, 0.1]
-    CALI: [12.7, 0.06]
-    stringer: { GR: 40, RDEP: 8.0, RHOB: 2.62, NPHI: 0.12, PEF: 4.8, DT: 70 }
-  U3: { GR: [45, 4], RDEP: [36, 4], RHOB: [2.22, 0.02], NPHI: [0.19, 0.012], DT: [93, 1.5], PEF: [2.0, 0.1], CALI: [12.30, 0.02] }
-  U4: { GR: [58, 6], RDEP: [14, 3], RHOB: [2.55, 0.02], NPHI: [0.11, 0.01], DT: [68, 2], PEF: [4.9, 0.15], CALI: [12.30, 0.02] }
-  noise_sd: { DT: 1.0, RDEP_log10: 0.04 }
-  rmed_ratio: { SHALE: 0.92, SILTSTONE: 0.92, SAND: 0.60, LIMESTONE: 0.85 }
+  tool_resolution_m: { GR: 0.30, RHOB: 0.45, NPHI: 0.45, PEF: 0.30, DT: 0.60, RSHAL: 0.40, RMED: 0.80, RDEP: 1.50, CALI: 0.15 }
+  noise: { GR_rel: 0.025, RHOB: 0.010, NPHI: 0.007, PEF: 0.06, DT: 0.5, R_log10: 0.012, CALI: 0.015, PHIE: 0.005 }
+  noise_corr_m: 0.20
+  caliper: { bit_in: 12.25, shale_in: 12.32, u2_in: 12.55, sand_in: 12.25, lime_in: 12.28,
+             washouts_m: [[4153.0, 1.2, 13.1], [4163.0, 0.8, 12.9], [4184.5, 1.0, 13.0]] }  # [top, thickness, max in]
+  washout_rhob_per_in: -0.10     # density reads low in enlarged hole (mud-filled standoff)

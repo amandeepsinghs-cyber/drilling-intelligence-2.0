@@ -9,7 +9,7 @@ import ProvenanceChip from '../common/ProvenanceChip';
 const FIELDS: [string, string, string][] = [
   ['mud.MW_IN_PPG', 'Mud weight in', 'ppg'], ['derived.ECD', 'ECD', 'ppg'], ['derived.PP', 'Pore pressure', 'ppg'],
   ['derived.FG', 'Fracture gradient', 'ppg'], ['derived.OBG', 'Overburden', 'ppg'], ['derived.OVERBAL_PSI', 'Overbalance', 'psi'],
-  ['derived.ECD_FIT_MARGIN', 'ECD→FIT margin', 'ppg'], ['ml.p_kick', 'P(kick) 30 m', ''], ['ml.p_loss', 'P(losses)', ''],
+  ['derived.ECD_FIT_MARGIN', 'ECD→FIT margin', 'ppg'], ['ml.p_kick', 'P(kick) · look-ahead', ''], ['ml.p_loss', 'P(losses)', ''],
   ['drilling.ROP', 'ROP', 'm/hr'], ['drilling.DXC', 'dxc', ''], ['curves.GR', 'Gamma ray', 'API'], ['curves.DT', 'Sonic', 'µs/ft'],
   ['curves.RDEP', 'Deep resistivity', 'Ω·m'], ['mudlog.GAS_TOTAL', 'Total gas', '%'],
 ];

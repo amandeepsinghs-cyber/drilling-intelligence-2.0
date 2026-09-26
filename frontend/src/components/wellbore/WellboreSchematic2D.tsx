@@ -61,7 +61,7 @@ export default function WellboreSchematic2D() {
       <rect x={cx - 16} y={y(mudline) - 14} width={32} height={14} rx={2} fill="#3A4652" stroke="#7B8794" />
       {/* casing strings */}
       {prog.map((c, i) => {
-        const w = widths[i] ?? 16;
+        const w = widths[i] ?? 16; // facts-ok: SVG px width, not a well fact
         return (
           <g key={c.size}>
             <rect x={cx - w / 2 - 3} y={y(mudline)} width={3} height={y(c.md_m) - y(mudline)} fill="url(#steel)" />

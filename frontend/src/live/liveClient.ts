@@ -9,21 +9,56 @@ import { useUi } from '../state/uiStore';
 import { audioPlayer } from './audioPlayer';
 import { micCapture } from './micCapture';
 
-export type LiveStatus = 'disconnected' | 'connecting' | 'connected' | 'fallback';
+export type LiveStatus = 'disconnected' | 'connecting' | 'connected' | 'reconnecting' | 'fallback';
 
 class LiveClient {
   private ws: WebSocket | null = null;
   private status: LiveStatus = 'disconnected';
   private statusListeners: Array<(s: LiveStatus) => void> = [];
   private currentAgentMsgId: string | null = null;
+  private currentPresenterMsgId: string | null = null;
   private reconnectTimer: number | null = null;
+  private turnWaiters: Array<(ok: boolean) => void> = [];
+  /** Turn number / proactive flag stamped onto the next Live agent bubble (set by turnMachine). */
+  private nextTurnMeta: { turn?: number; proactive?: boolean } = {};
+
+  public setNextTurnMeta(meta: { turn?: number; proactive?: boolean }): void {
+    this.nextTurnMeta = meta;
+  }
 
   public getStatus(): LiveStatus {
     return this.status;
   }
 
+  /** @deprecated use isLive(); kept for callers that only need "socket usable". */
   public isConnected(): boolean {
-    return this.status === 'connected' || this.status === 'fallback';
+    return this.status === 'connected' || this.status === 'reconnecting' || this.status === 'fallback';
+  }
+
+  /** True only when a real Gemini Live session is (or is being transparently resumed) behind the socket. */
+  public isLive(): boolean {
+    return this.status === 'connected' || this.status === 'reconnecting';
+  }
+
+  /** Resolves true on the next agent turn_complete, false on timeout. */
+  public waitForTurnComplete(timeoutMs = 25000): Promise<boolean> {
+    return new Promise((resolve) => {
+      const t = window.setTimeout(() => {
+        this.turnWaiters = this.turnWaiters.filter((w) => w !== done);
+        resolve(false);
+      }, timeoutMs);
+      const done = (ok: boolean) => {
+        window.clearTimeout(t);
+        resolve(ok);
+      };
+      this.turnWaiters.push(done);
+    });
+  }
+
+  private resolveTurnWaiters(ok: boolean) {
+    const ws = this.turnWaiters;
+    this.turnWaiters = [];
+    ws.forEach((w) => w(ok));
   }
 
   public onStatusChange(cb: (s: LiveStatus) => void): () => void {
@@ -35,8 +70,18 @@ class LiveClient {
   }
 
   private setStatus(s: LiveStatus) {
+    const prev = this.status;
     this.status = s;
     this.statusListeners.forEach((l) => l(s));
+    // P0-2: a real outage must never leave the show waiting on a Live answer that will not come.
+    if (s === 'fallback' && prev !== 'fallback') {
+      const U = useUi.getState();
+      if (U.agentMode === 'LIVE') {
+        U.setAgentMode('SCRIPTED');
+        U.notify('Gemini Live unavailable — switched to SCRIPTED mode (press V to retry LIVE)', 'warn');
+      }
+      this.resolveTurnWaiters(false);
+    }
   }
 
   private getWsUrl(): string {
@@ -79,9 +124,12 @@ class LiveClient {
         }
       };
 
+      const sock = this.ws;
       this.ws.onclose = () => {
+        if (this.ws !== sock && this.ws !== null) return; // stale socket replaced by retryLive()
         this.setStatus('disconnected');
-        this.scheduleReconnect();
+        this.resolveTurnWaiters(false);
+        if (this.ws === sock) this.scheduleReconnect();
       };
 
       this.ws.onerror = () => {
@@ -115,6 +163,12 @@ class LiveClient {
     this.setStatus('disconnected');
   }
 
+  /** After a fallback the backend socket is pinned to the rehearsal engine; a fresh socket retries Gemini. */
+  public retryLive(): void {
+    this.disconnect();
+    this.connect();
+  }
+
   private handleServerEvent(msg: Record<string, any>): void {
     const A = useAgent.getState();
     const S = useScenario.getState();
@@ -125,8 +179,26 @@ class LiveClient {
     switch (msg.type) {
       case 'status':
         if (msg.status === 'connected') this.setStatus('connected');
-        if (msg.status === 'fallback') this.setStatus('fallback');
+        if (msg.status === 'reconnecting') this.setStatus('reconnecting');
+        if (msg.status === 'resumed') {
+          this.setStatus('connected');
+          U.notify(msg.memory ? 'Gemini Live session resumed — conversation memory kept' : 'Gemini Live session reconnected', 'info');
+        }
+        if (msg.status === 'fallback' || msg.status === 'rehearsal_active') this.setStatus('fallback');
         break;
+
+      case 'input_transcript': {
+        // Presenter's own speech (Hindi/Hinglish) transcribed by Gemini Live.
+        const text = msg.text as string;
+        if (!text) break;
+        if (!this.currentPresenterMsgId) {
+          this.currentPresenterMsgId = A.push({ role: 'presenter', en: text, hi: text, md: currMd, tools: [], citations: [] });
+        } else {
+          const target = useAgent.getState().messages.find((m) => m.id === this.currentPresenterMsgId);
+          if (target) A.update(this.currentPresenterMsgId, { en: target.en + text, hi: target.hi + text });
+        }
+        break;
+      }
 
       case 'voice_state':
         A.setVoice(msg.state as VoiceState);
@@ -144,6 +216,7 @@ class LiveClient {
             md: currMd,
             tools: [{ name: toolName, status: toolStatus }],
             citations: [],
+            ...this.nextTurnMeta,
           });
         } else {
           const currentMsgs = useAgent.getState().messages;
@@ -161,6 +234,7 @@ class LiveClient {
 
       case 'caption_delta': {
         const text = msg.text as string;
+        this.currentPresenterMsgId = null;
         if (!this.currentAgentMsgId) {
           this.currentAgentMsgId = A.push({
             role: 'agent',
@@ -169,14 +243,15 @@ class LiveClient {
             md: currMd,
             tools: [],
             citations: [],
+            ...this.nextTurnMeta,
           });
         } else {
           const currentMsgs = useAgent.getState().messages;
           const target = currentMsgs.find((m) => m.id === this.currentAgentMsgId);
           if (target) {
             A.update(this.currentAgentMsgId, {
-              en: (target.en ? target.en + ' ' : '') + text,
-              hi: (target.hi ? target.hi + ' ' : '') + text,
+              en: (target.en ?? '') + text,
+              hi: (target.hi ?? '') + text,
             });
           }
         }
@@ -185,7 +260,10 @@ class LiveClient {
 
       case 'turn_complete':
         this.currentAgentMsgId = null;
+        this.currentPresenterMsgId = null;
+        this.nextTurnMeta = {};
         A.setVoice('idle');
+        this.resolveTurnWaiters(true);
         break;
 
       case 'action': {
@@ -254,15 +332,24 @@ class LiveClient {
   /**
    * Push-to-talk: start recording audio from mic and streaming to /ws/live.
    */
+  /** A-8: tell the backend the live bit depth so tools answer for *this* depth, not a default. */
+  private sendContext(): void {
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      this.ws.send(JSON.stringify({ type: 'context', md_m: useScenario.getState().md }));
+    }
+  }
+
   public async startTalking(): Promise<void> {
     audioPlayer.interrupt(); // Barge-in: cut agent speech immediately
     this.currentAgentMsgId = null;
+    this.currentPresenterMsgId = null;
 
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
       this.connect();
     }
 
     useAgent.getState().setVoice('listening');
+    this.sendContext();
 
     await micCapture.start((chunk: Uint8Array) => {
       if (this.ws && this.ws.readyState === WebSocket.OPEN) {
@@ -278,21 +365,27 @@ class LiveClient {
     if (micCapture.isCapturing()) {
       micCapture.stop();
       useAgent.getState().setVoice('thinking');
+      // Tell Gemini the utterance is over so it answers immediately instead of waiting for VAD silence.
+      if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+        this.ws.send(JSON.stringify({ type: 'audio_end' }));
+      }
     }
   }
 
   /**
    * Send text prompt directly to live agent.
    */
-  public sendText(text: string, turn?: number): void {
+  public sendText(text: string, turn?: number, display?: { en: string; hi: string }): void {
     const A = useAgent.getState();
     const currMd = useScenario.getState().md || 4120;
     audioPlayer.interrupt();
+    this.currentAgentMsgId = null;
+    this.currentPresenterMsgId = null;
 
     A.push({
       role: 'presenter',
-      en: text,
-      hi: text,
+      en: display?.en ?? text,
+      hi: display?.hi ?? text,
       md: currMd,
       tools: [],
       citations: [],
@@ -302,7 +395,10 @@ class LiveClient {
     A.setVoice('thinking');
 
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify({ type: 'prompt', text, turn }));
+      this.ws.send(JSON.stringify({ type: 'prompt', text, turn, md_m: useScenario.getState().md }));
+    } else {
+      A.setVoice('idle');
+      useUi.getState().notify('Live agent not connected — press N for the scripted turn, or V to switch mode', 'warn');
     }
   }
 

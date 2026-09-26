@@ -86,7 +86,7 @@ def rop(md: np.ndarray) -> np.ndarray:
 
 
 def residual_cuttings(md: np.ndarray) -> np.ndarray:
-    """Cuttings-bed residual after the drilling break (brief §3C 'after ROP cap' = +0.02 ppg)."""
+    """Cuttings-bed residual after the drilling break (brief §3C 'after ROP cap' = +0.02 ppg)."""  # facts-ok: docstring cites profiles.yaml
     b1 = profiles()["rop"]["break_interval_m"][1]
     until = profiles()["rop"]["residual_cuttings_until_m"]
     resid_ppg = round(checkpoint_ecd("After ROP cap") - ecd_calibrated(

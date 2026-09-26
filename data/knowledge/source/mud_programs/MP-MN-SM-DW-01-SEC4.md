@@ -1,7 +1,7 @@
 ---
 doc_id: MP-MN-SM-DW-01-SEC4
 doc_type: MUD_PROGRAM
-title: "Drilling Fluid Program: 12-1/4 in Hole Section (4,120\u20134,450 m MD) (illustrative)"
+title: "Drilling Fluid Program: 12-1/4 in Hole Section (4120\u20134450 m MD) (illustrative)"
 well_id: MN-SM-DW-01
 md_range:
 - 4120

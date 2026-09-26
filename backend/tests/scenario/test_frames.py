@@ -16,7 +16,7 @@ def row(fs, md):
 
 
 def test_grid(fs):
-    assert fs.df["md_m"].iloc[0] == 4000 and fs.df["md_m"].iloc[-1] == 4460 and len(fs.df) == 921
+    assert fs.df["md_m"].iloc[0] == 4000 and fs.df["md_m"].iloc[-1] == 4460 and len(fs.df) == 3681
 
 
 @pytest.mark.parametrize("md,mw,ecd,rop,pk", [
@@ -61,8 +61,9 @@ def test_ghost_path_is_unchanged_mw(fs):
 
 def test_provenance_labels(fs):
     p = fs.provenance
-    # Curves are PUBLIC when real LWD was dropped in (data/processed/lwd/*.parquet), else SYNTHETIC.
-    assert all(p[f"curves.{c}"] in ("SYNTHETIC", "PUBLIC") for c in ("GR", "RDEP", "DT"))
+    # Petrophysics is high-resolution SYNTHETIC (O6); no real log is loaded.
+    assert all(p[f"curves.{c}"] == "SYNTHETIC" for c in ("GR", "RDEP", "DT"))
+    assert p["truth.VSH"] == "SYNTHETIC" and fs.meta["lwd_source"]["source"] == "synthetic_hires"
     assert p["derived.ECD"] == "DERIVED" and p["drilling.ROP"] == "SIMULATED"
     assert p["ml.p_kick"] == "MODEL_INFERENCE"
 

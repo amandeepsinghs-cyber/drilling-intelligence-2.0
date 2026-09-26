@@ -73,8 +73,14 @@ OBG ≈ (1,620 × 1.03 + 2,550 × 2.1) / 4,195 ≈ 1.67 SG ≈ 14.0 ppg
 PP (sand top) = 11.48 ppg (1.38 SG)  <  FIT 12.10 ppg (1.45 SG)  <  OBG ~14.0 ppg   ✅
 ```
 
-* **Pore pressure** is computed by **Eaton in the shales** (from sonic/resistivity deviation off the NCT). **Sand pressure** at the top of the channel sand comes from **centroid / lateral-transfer** correction. That is why the sand can be more pressured than the adjacent shale trend suggests.
-* **Fracture gradient**: the continuous curve is **Matthews-Kelly**. The **governing limit** is the **13⅜" shoe FIT (12.10 ppg)**.
+* **Pre-Drill Geomechanical Studies**: Prior to spud, 1D basin geomechanical models (Eaton normal compaction trends, seismic velocity inversion, and Matthews-Kelly fracture gradient) establish the baseline drilling window.
+* **Real-Time Dynamic Calibration**: As drilling proceeds, LWD sensors dynamically update the model. Sonic slowness excursions above NCT and inverted d-exponent (**dxc**) reversals alert to overpressure ahead of the bit.
+* **Pore Pressure & Fracture Gradient Limits**:
+  - Sand pore pressure ramps to **11.48 ppg (1.38 SG)** at 4,195 m.
+  - The governing upper fracture limit is capped by the **13⅜" casing shoe FIT at 12.10 ppg (1.45 SG)**.
+* **ML Optimal Recommended Mud Weight**:
+  - The ML optimization engine constantly evaluates the narrow 0.62 ppg safe corridor.
+  - It forecasts: *"Next zone (4,195 m) poses a dual hazard: active MW of 11.20 ppg will take a kick (~200 psi underbalanced); raising MW above 11.85 ppg will push circulating ECD past the 12.10 ppg shoe FIT, fracturing the shoe and inducing severe losses. The optimal ML recommended mud weight is **11.65 ppg (1.40 SG)**, providing +120 psi overbalance at 4,195 m while keeping annular ECD at 11.84 ppg (safe by 0.26 ppg)."*
 * **Why the window is "both-sides-sensitive"**: the deep water column lowers the overburden, which caps the FG. Rapid Mio-Pliocene deposition traps fluids in the channel sands, which raises the PP.
 
 ```
@@ -83,8 +89,9 @@ PP (sand top) = 11.48 ppg (1.38 SG)  <  FIT 12.10 ppg (1.45 SG)  <  OBG ~14.0 pp
 ──────┼───────────────────────┼──────────────────┼──────────────────────┼──────► EMW
       │  shale PP (normal)    │  🟢 SAFE WINDOW  │  🔴 LOSSES (shoe FIT) │ Overburden
       │   🔴 KICK if MW <     │   0.62 ppg only  │  if ECD >             │
-      │   sand PP at 4,195 m  │                  │                       │
+      │   sand PP at 4,195 m  │   ML REC: 11.65  │  12.10 ppg FIT        │
 ```
+
 
 ### C. Scenario Numbers (single source of truth: the Scenario Engine)
 
@@ -218,16 +225,16 @@ Four logical operational stores in BigQuery, with a Parquet mirror for offline m
 
 ---
 
-#### Turn 2 — Status & Live ML Lithology (`4,140 m`)
+#### Turn 2 — Status, Live ML Lithology & Prospective Zone (`4,140 m`)
 * **Action**: Advance the slider from 4,120 to 4,140 m.
 * **You say**:
-  > **"Thoda batayenge abhi well ke andar kya chal raha hai? ML model kya lithology dikha raha hai?"**
-  > *(थोड़ा बताएंगे अभी वेल के अंदर क्या चल रहा है? ML मॉडल क्या लिथोलॉजी दिखा रहा है?)*
-  > *("Can you tell me what's happening inside the well right now? What lithology is the ML model showing?")*
+  > **"Abhi hum kis formation mein hain, aur hamara prospective zone kab aayega? Uski lithology aur reservoir quality kaisi hai?"**
+  > *(अभी हम किस formation में हैं, और हमारा prospective zone कब आएगा? उसकी lithology और reservoir quality कैसी है?)*
+  > *("What formation are we drilling through now, and when do we hit our prospective zone? What is its lithology and reservoir quality?")*
 * **Agent says**:
-  > *"Sir, 4,140 meter par hum abhi bhi Upper Miocene marine shale mein hain — ML model 91% confidence se shale dikha raha hai. Gamma Ray 105 API, resistivity normal compaction trend par hai. Mud weight 1.34 SG, sab stable hai."*
-  > *("Sir, at 4,140 m we're still in the Upper Miocene marine shale. The ML model shows shale with 91% confidence. Gamma ray is 105 API and resistivity is on the normal compaction trend. Mud weight 1.34 SG, everything stable.")*
-* **Screen**: SHAP mini-bar shows GR and RHOB–NPHI as the top drivers.
+  > *"Sir, 4,140 meter par hum compact marine seal shale mein hain (GR ~95 API, sonic 104 µs/ft trend par). Hamara main prospective pay sand (Miocene Unit U3) aage 55 meter par, 4,195 meter par aayega — lagbhag 1 hr 34 min mein. ML facies model aur stratigraphic inversion ke hisaab se yeh clean channel sand hai: 82% quartz, 24.2% average porosity, ~180 mD permeability aur 75 meter gross pay (0.84 net-to-gross), sweet dry gas (C1 > 88%) aur predicted Gas-Water Contact 4,270 meter par."*
+  > *("Sir, at 4,140 m we are in compact marine seal shale (GR ~95 API, sonic on trend). Our main prospective pay sand (Miocene Unit U3) is expected 55 m ahead at 4,195 m MD—about 1 hr 34 min at current ROP. ML facies and stratigraphic inversion predict clean channel sand: 82% quartz, 24.2% porosity, ~180 mD permeability across 75 m gross pay (0.84 net-to-gross), with sweet dry gas (C1 > 88%) and predicted Gas-Water Contact at 4,270 m.")*
+* **Screen**: SHAP mini-bar shows GR, RHOB–NPHI and DTC as the top drivers; prospective pay sand target banner highlights depth-to-target (55 m).
 
 ---
 
@@ -244,15 +251,15 @@ Four logical operational stores in BigQuery, with a Parquet mirror for offline m
 
 ---
 
-#### Turn 4 — Institutional Memory: Offsets & SOP (`4,172 m`)
+#### Turn 4 — Nearby Rig Complications & Mitigations (`4,172 m`)
 * **You say**:
-  > **"Pichhle wells mein is zone ke paas kya hua tha? WCR aur SOP mein kya likha hai?"**
-  > *(पिछले वेल्स में इस ज़ोन के पास क्या हुआ था? WCR और SOP में क्या लिखा है?)*
-  > *("What happened near this zone in the earlier wells? What do the WCR and SOP say?")*
+  > **"Paas wale rig par — MN-DW-02 par — kahan complication aayi thi? Aur kya aayi thi, and how did they mitigate it?"**
+  > *(पास वाले रिग पर — MN-DW-02 पर — कहाँ complication आई थी? और क्या आई थी, and how did they mitigate it?)*
+  > *("On the nearby rig — MN-DW-02 — where did the complication occur, what exactly happened, and how did they mitigate it?")*
 * **Agent says**:
-  > *"Sir, do sabak hain. Pehla — MN-DW-02 mein 4,195 meter par 11.15 ppg mud ke saath kick aayi thi; unhe 11.65 tak weight-up karna pada. Doosra — MN-DW-03 mein jab sand mein drilling break aaya aur 26 meter per hour se drill kiya, to ECD 12.18 tak gaya aur 28 barrel per hour losses hue. Isliye SOP-04 kehta hai: sand se pehle hi weight-up karo, aur drilling break par ROP cap lagao."*
-  > *("Sir, there are two lessons. First: in MN-DW-02 there was a kick at 4,195 m with 11.15 ppg mud, and they had to weight up to 11.65. Second: in MN-DW-03, when the drilling break came in the sand and they drilled at 26 m/hr, ECD reached 12.18 and they had losses of 28 barrels per hour. That's why SOP-04 says: weight up before the sand, and put an ROP cap on at the drilling break.")*
-* **Screen**: RAG panel shows **three citation cards with page refs**: `WCR-MN-DW-02`, `WCR-MN-DW-03`, `ONGC-SM-SOP-04`. Optionally, one **real public DDR / proceedings excerpt** (Volve or IODP) is shown as corroborating industry precedent, with its source caption.
+  > *"Sir, MN-DW-02 (1.8 km door) mein isi pay sand ke top par 4,195 meter par complication aayi thi. Wahan 11.15 ppg mud se drill kar rahe the, lekin formation pressure 11.48 ppg tha — 150 psi underbalanced! 12 barrel gas kick aayi, SIDPP 236 psi hua, aur 36.5 ghante NPT laga. Unhone annular preventer band karke choke manifold se gas circulate ki aur 11.65 ppg (1.40 SG) kill mud se well ko stabilize kiya. Aur paas ke MN-DW-03 mein 4,222 meter par 26 m/hr ROP par 28 bbl/hr losses hue, jise 40 ppb LCM pill aur SOP-04 ke tahat 12 m/hr ROP cap lagakar mitigate kiya gaya."*
+  > *("Sir, on MN-DW-02 (1.8 km East), the complication hit at 4,195 m MD at the top of this exact pay sand. Drilling with 11.15 ppg mud against 11.48 ppg pore pressure left them 150 psi underbalanced, taking a 12 bbl gas kick with 236 psi SIDPP and 36.5 hrs NPT. They mitigated it by shutting in on the annular preventer, circulating out the kick via the choke manifold, and weighting up kill mud to 11.65 ppg (1.40 SG) under SOP-04. Furthermore, on MN-DW-03 (2.4 km SSE), severe losses of 28 bbl/hr occurred at 4,222 m when ROP surged to 26 m/hr; they mitigated that by pumping a 40 ppb LCM pill, squeezing the shoe, and capping ROP at 12 m/hr.")*
+* **Screen**: RAG panel shows **three citation cards with page refs**: `INC-MN-DW-02-KICK-4195`, `INC-MN-DW-03-LOSS-4222`, `ONGC-SM-SOP-04`.
 
 ---
 

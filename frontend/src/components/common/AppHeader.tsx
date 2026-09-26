@@ -37,7 +37,7 @@ export default function AppHeader() {
             </div>
             <span className="chip border-ok/40 text-ok"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-ok" />Live · simulated feed</span>
             {approvedMw && <span className="chip border-accent/40 text-accent">MOC active</span>}
-            <span className="chip border-strong text-faint">{source === 'api' ? 'API' : 'offline'}</span>
+            {ui.mode === 'engineer' && <span className="chip border-strong text-faint">{source === 'api' ? 'API' : 'offline'}</span>}
           </div>
         )}
       </div>
@@ -46,9 +46,11 @@ export default function AppHeader() {
           <button className={seg(ui.mode === 'board')} onClick={() => ui.setMode('board')}>Board</button>
           <button className={seg(ui.mode === 'engineer')} onClick={() => ui.setMode('engineer')}>Engineer</button>
         </div>
+        {ui.mode === 'engineer' && (<>
         <button className={clsx('btn py-1 text-[11px]', ui.view3d && 'border-accent/60 text-accent')} onClick={ui.toggle3d} title="3D offset view (D)">3D</button>
         <button className="btn py-1 text-[11px]" onClick={() => ui.toggle('whatif')} title="What-if (W)">What-if</button>
         <button className="btn py-1 text-[11px]" onClick={() => ui.toggle('audit')} title="Audit (A)">Audit</button>
+        </>)}
         <button className="btn py-1 text-[11px] font-medium" onClick={ui.toggleTheme} title="Toggle Theme (T)">
           {ui.theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
         </button>

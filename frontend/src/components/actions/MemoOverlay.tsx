@@ -40,7 +40,7 @@ export default function MemoOverlay() {
               <div>
                 <h3 className="mb-1 font-semibold">1 · Situation</h3>
                 <p className="text-slate-700">dxc reversal from {f.triggers.T3_PRESSURE_RAMP.conditions.dxc_reversal_from_m as number} m, sonic above normal compaction trend, connection gas {(warn.conn_gas_pct as { from: number }).from}% → {(warn.conn_gas_pct as { to: number }).to}%.
-                  Forecast pore pressure {fmt(warn.pp_forecast_ppg as number)} ppg at {warn.pp_forecast_at_m as number} m ({warn.distance_to_hazard_m as number} m ahead). At {fmt(f.mud.initial.mw_ppg)} ppg: {warn.overbalance_if_unchanged_psi as number} psi (underbalanced); P(kick, 30 m) {Math.round((warn.p_kick_30m_if_unchanged as number) * 100)}%.</p>
+                  Forecast pore pressure {fmt(warn.pp_forecast_ppg as number)} ppg at {warn.pp_forecast_at_m as number} m ({warn.distance_to_hazard_m as number} m ahead). At {fmt(f.mud.initial.mw_ppg)} ppg: {warn.overbalance_if_unchanged_psi as number} psi (underbalanced); P(kick, {f.ml.kick_horizon_m} m) {Math.round((warn.p_kick_30m_if_unchanged as number) * 100)}%.</p>
               </div>
               <div>
                 <h3 className="mb-1 font-semibold">2 · Recommendation</h3>
@@ -56,7 +56,7 @@ export default function MemoOverlay() {
                 <table className="w-full"><tbody>
                   {row('ECD at sand top', `${fmt(sand.ecd_ppg as number)} ppg  vs shoe FIT ${fmt(f.casing.last_shoe.fit_ppg)} ppg  (margin ${fmt(f.casing.last_shoe.fit_ppg - (sand.ecd_ppg as number))})`)}
                   {row('Overbalance at sand top', `+${sand.overbalance_psi as number} psi`)}
-                  {row('P(kick, 30 m)', `${Math.round((sand.p_kick_30m as number) * 100)}%`)}
+                  {row(`P(kick, ${f.ml.kick_horizon_m} m)`, `${Math.round((sand.p_kick_30m as number) * 100)}%`)}
                 </tbody></table>
               </div>
               <div>

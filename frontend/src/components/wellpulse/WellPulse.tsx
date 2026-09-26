@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import type { Provenance } from '../../api/types';
 import { fmt, indexAt, num, str } from '../../lib/frames';
 import { overbalancePsi, ppgToSg } from '../../lib/physics';
-import { useScenario } from '../../state/scenarioStore';
+import { useScenario, type KpiId } from '../../state/scenarioStore';
 import { useUi } from '../../state/uiStore';
 import KpiNumber from '../common/KpiNumber';
 import ProvenanceChip from '../common/ProvenanceChip';
@@ -74,8 +74,8 @@ function Kpi({
   );
 }
 
-export default function WellPulse() {
-  const { data, bundle, md, hazardOn, approvedMw, ropCapped } = useScenario();
+export default function WellPulse({ only }: { only?: KpiId[] } = {}) {
+  const { data, bundle, md, hazardOn, approvedMw, ropCapped, fired } = useScenario();
   const mode = useUi((s) => s.mode);
   if (!data || !bundle) return <div className="panel h-[112px]" />;
 
@@ -101,125 +101,69 @@ export default function WellPulse() {
 
   const obTone: Tone = ob === null ? 'neutral' : ob < 0 ? 'risk' : ob < 100 ? 'warn' : 'ok';
   const mTone: Tone = margin === null ? 'neutral' : margin < 0.1 ? 'risk' : margin < 0.2 ? 'warn' : 'ok';
-  const pkTone: Tone = pk === null ? 'neutral' : pk >= 0.5 ? 'risk' : pk >= 0.15 ? 'warn' : 'ok';
+  const pkTone: Tone = pk === null ? 'neutral' : pk >= f.ml.kick_alarm_threshold ? 'risk' : pk >= 0.15 ? 'warn' : 'ok';
 
-  // ML model outputs
-  const lithClass = str(data, 'ml.litho.class', i) ?? 'SHALE';
-  const mlTargetMw = 11.65;
-  const needsWeightUp = md >= 4150 && !approvedMw;
+  // ML outputs — all numbers from the scenario YAML / frames, never literals.
+  const lithClass = str(data, 'ml.litho.class', i) ?? '—';
+  const recMw = f.mud.weighted.mw_ppg;
+  const needsWeightUp = !!fired.T3_PRESSURE_RAMP && !approvedMw;
+  const delta = recMw - f.mud.initial.mw_ppg;
+
+  const all: Record<KpiId, JSX.Element | null> = {
+    depth: (
+      <Kpi key="depth" big={big} label="Bit depth · MD" value={md} unit="m" digits={1}
+        sub={`${unit.id} · shoe ${f.casing.last_shoe.md_m.toLocaleString('en-IN')} m`} />
+    ),
+    litho: (
+      <Kpi key="litho" big={big} label="ML lithology at bit" textValue={lithClass}
+        tone={lithClass === 'SAND' ? 'warn' : 'neutral'} prov="MODEL_INFERENCE"
+        sub={`ML facies · ${unit.name.split(':')[0]}`} />
+    ),
+    mw: (
+      <Kpi key="mw" big={big} label="Mud weight · active" value={mw} unit="ppg"
+        tone={needsWeightUp ? 'warn' : 'ok'} prov={p['mud.MW_IN_PPG']}
+        sub={
+          approvedMw
+            ? `${fmt(recMw)} ppg (${fmt(f.mud.weighted.mw_sg)} SG) · MOC approved`
+            : needsWeightUp
+            ? `ML rec ${fmt(recMw)} ppg (+${fmt(delta)} ppg)`
+            : `${fmt(ppgToSg(mw ?? f.mud.initial.mw_ppg))} SG · on plan`
+        }
+        subTone={needsWeightUp ? 'warn' : approvedMw ? 'ok' : undefined} />
+    ),
+    pp: (
+      <Kpi key="pp" big={big} label="Pore pressure @ bit" value={pp} unit="ppg" prov={p['derived.PP']}
+        sub={hazardOn ? `sand top forecast ${fmt(ppTop)} ppg` : 'on normal compaction trend'}
+        subTone={hazardOn ? 'warn' : undefined} />
+    ),
+    overbal: (
+      <Kpi key="overbal" big={big} label="Overbalance" value={ob} unit="psi" digits={0} sign tone={obTone}
+        prov={p['derived.OVERBAL_PSI']}
+        sub={hazardOn && !approvedMw ? `if unchanged @ sand: ${Math.round(obIfUnchanged)} psi` : 'minimum +100 psi target'}
+        subTone={hazardOn && !approvedMw ? 'risk' : undefined} />
+    ),
+    ecdfit: (
+      <Kpi key="ecdfit" big={big} label="ECD → FIT margin" value={margin} unit="ppg" tone={mTone}
+        prov={p['derived.ECD_FIT_MARGIN']}
+        sub={ecd ? `ECD ${fmt(ecd)} vs FIT ${fmt(f.casing.last_shoe.fit_ppg)}` : ''} />
+    ),
+    pkick: (
+      <Kpi key="pkick" big={big} label={`P(kick) · next ${f.ml.kick_horizon_m} m`} value={pk === null ? null : pk * 100} unit="%" digits={0}
+        tone={pkTone} prov={p['ml.p_kick']}
+        sub={pk && pk >= f.ml.kick_alarm_threshold ? `exceeds ${Math.round(f.ml.kick_alarm_threshold * 100)}% alarm threshold` : 'ML kick-risk model'} />
+    ),
+    rop: (
+      <Kpi key="rop" big={big} label="ROP" value={rop} unit="m/hr" digits={0} prov={p['drilling.ROP']}
+        tone={rop !== null && rop > 30 ? 'warn' : 'neutral'}
+        sub={ropCapped ? `capped ${f.drilling.rop_cap_m_hr} m/hr by agent` : rop !== null && rop > 30 ? 'drilling break in progress' : 'normal penetration'}
+        subTone={ropCapped ? 'ok' : rop !== null && rop > 30 ? 'warn' : undefined} />
+    ),
+  };
+  const order: KpiId[] = only ?? ['depth', 'litho', 'mw', 'pp', 'overbal', 'ecdfit', 'pkick', 'rop'];
 
   return (
     <div className="panel flex h-[112px] shrink-0 items-stretch overflow-hidden">
-      {/* 1. Bit Depth */}
-      <Kpi
-        big={big}
-        label="Bit depth · MD"
-        value={md}
-        unit="m"
-        digits={1}
-        sub={`${unit.id} · shoe ${f.casing.last_shoe.md_m.toLocaleString('en-IN')} m`}
-      />
-
-      {/* 2. ML Lithology Facies (User requested ML model output) */}
-      <Kpi
-        big={big}
-        label="ML Lithology"
-        textValue={lithClass}
-        tone={lithClass === 'SAND' ? 'warn' : lithClass === 'SILTSTONE' ? 'neutral' : 'ok'}
-        prov="MODEL_INFERENCE"
-        sub={`XGBoost (92% conf) · ${unit.name.split(':')[0]}`}
-      />
-
-      {/* 3. Mud Weight (Active vs ML Recommendation) */}
-      <Kpi
-        big={big}
-        label="Mud Weight (Active / ML Rec)"
-        value={mw}
-        unit="ppg"
-        tone={needsWeightUp ? 'warn' : 'ok'}
-        prov="MODEL_INFERENCE"
-        sub={
-          approvedMw
-            ? `11.65 ppg (1.40 SG) · MOC approved`
-            : needsWeightUp
-            ? `ML Rec: 11.65 ppg (+0.45 ppg req)`
-            : `${fmt(ppgToSg(mw ?? 11.2))} SG (on plan)`
-        }
-        subTone={needsWeightUp ? 'warn' : approvedMw ? 'ok' : undefined}
-      />
-
-      {/* 4. Pore Pressure @ Bit & Forecast */}
-      <Kpi
-        big={big}
-        label="Pore Pressure @ bit"
-        value={pp}
-        unit="ppg"
-        prov={p['derived.PP']}
-        sub={hazardOn ? `sand top forecast ${fmt(ppTop)} ppg` : 'on normal compaction trend'}
-        subTone={hazardOn ? 'warn' : undefined}
-      />
-
-      {/* 5. Overbalance at bit */}
-      <Kpi
-        big={big}
-        label="Overbalance"
-        value={ob}
-        unit="psi"
-        digits={0}
-        sign
-        tone={obTone}
-        prov={p['derived.OVERBAL_PSI']}
-        sub={
-          hazardOn && !approvedMw
-            ? `if unchanged @ sand: ${Math.round(obIfUnchanged)} psi`
-            : 'minimum +100 psi target'
-        }
-        subTone={hazardOn && !approvedMw ? 'risk' : undefined}
-      />
-
-      {/* 6. Annular ECD vs Casing Shoe FIT */}
-      {!big && (
-        <Kpi
-          big={big}
-          label="ECD → FIT margin"
-          value={margin}
-          unit="ppg"
-          tone={mTone}
-          prov={p['derived.ECD_FIT_MARGIN']}
-          sub={ecd ? `ECD ${fmt(ecd)} vs FIT ${fmt(f.casing.last_shoe.fit_ppg)}` : ''}
-        />
-      )}
-
-      {/* 7. P(kick) next 30m */}
-      <Kpi
-        big={big}
-        label="P(kick) · next 30 m"
-        value={pk === null ? null : pk * 100}
-        unit="%"
-        digits={0}
-        tone={pkTone}
-        prov={p['ml.p_kick']}
-        sub={pk && pk >= 0.5 ? 'exceeds 50% alarm threshold' : 'baseline ML model'}
-      />
-
-      {/* 8. ROP & Cap */}
-      <Kpi
-        big={big}
-        label="ROP"
-        value={rop}
-        unit="m/hr"
-        digits={0}
-        prov={p['drilling.ROP']}
-        tone={rop !== null && rop > 30 ? 'warn' : 'neutral'}
-        sub={
-          ropCapped
-            ? `capped ${f.drilling.rop_cap_m_hr} m/hr by agent`
-            : rop !== null && rop > 30
-            ? 'drilling break in progress'
-            : 'normal penetration'
-        }
-        subTone={ropCapped ? 'ok' : rop !== null && rop > 30 ? 'warn' : undefined}
-      />
+      {order.map((k) => all[k])}
     </div>
   );
 }

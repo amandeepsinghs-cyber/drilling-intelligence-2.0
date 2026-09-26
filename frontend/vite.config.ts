@@ -6,6 +6,8 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5173,
+    // Reachable via the Cloudtop hostname too (Vite otherwise answers 403 to non-localhost Host headers).
+    allowedHosts: true,
     proxy: {
       '/api': `http://localhost:${process.env.DI2_API_PORT ?? '8765'}`,
       '/ws': { target: `ws://localhost:${process.env.DI2_API_PORT ?? '8765'}`, ws: true },

@@ -18,7 +18,7 @@ tags:
 ## 1. Scope
 Applies to large-diameter deepwater hole sections (12-1/4 in and 17-1/2 in) where annular fluid velocities must balance hole cleaning against excessive Equivalent Circulating Density (ECD).
 
-## 2. Hydraulic Limits for 12-1/4 in Section at 4,200 m MD
+## 2. Hydraulic Limits for 12-1/4 in Section across the U3 sand (4,195–4,290 m MD)
 - Nominal flow rate: 850 gpm.
 - Maximum allowable ECD: 12.00 ppg (shoe FIT: 12.10 ppg).
 - Dynamic annular pressure loss must not exceed 0.35 ppg equivalent over static mud weight.

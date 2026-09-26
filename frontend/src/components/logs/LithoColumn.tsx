@@ -8,24 +8,29 @@ type Annotation = Record<string, unknown>;
 export function lithoShapes(data: Columnar, upto: number, units: Unit[], xref: string, showFuture: boolean): Shape[] {
   const md = data.md_m;
   const cls = data.columns['ml.litho.class'] as string[];
+  const hasRibbon = 'vol.cum_shale' in data.columns;
   const shapes: Shape[] = [];
-  let start = 0;
 
-  for (let i = 1; i <= upto + 1; i++) {
-    if (i === upto + 1 || cls[i] !== cls[start]) {
-      const top = md[start];
-      const bot = md[Math.min(i, upto)];
-      const lithClass = cls[start] as keyof typeof tokens.litho;
-      shapes.push({
-        type: 'rect', xref, yref: 'y', x0: 0, x1: 1, y0: top, y1: bot,
-        fillcolor: tokens.litho[lithClass] ?? '#555',
-        line: { color: 'rgba(0,0,0,0.3)', width: 1 },
-        layer: 'below',
-      });
-      start = i;
+  // If no ribbon data, fall back to discrete facies blocks
+  if (!hasRibbon) {
+    let start = 0;
+    for (let i = 1; i <= upto + 1; i++) {
+      if (i === upto + 1 || cls[i] !== cls[start]) {
+        const top = md[start];
+        const bot = md[Math.min(i, upto)];
+        const lithClass = cls[start] as keyof typeof tokens.litho;
+        shapes.push({
+          type: 'rect', xref, yref: 'y', x0: 0, x1: 1, y0: top, y1: bot,
+          fillcolor: tokens.litho[lithClass] ?? '#555',
+          line: { color: 'rgba(0,0,0,0.3)', width: 1 },
+          layer: 'below',
+        });
+        start = i;
+      }
     }
   }
 
+  // Ahead of bit / future prognosis
   if (showFuture) {
     for (const u of units) {
       if (u.base_m <= md[upto]) continue;
@@ -77,15 +82,26 @@ export function lithoAnnotations(data: Columnar, upto: number, xref: string): An
 export default function LithoLegend() {
   return (
     <div className="flex items-center gap-2.5 text-[10px] text-muted">
-      <span className="rounded bg-accent/15 px-1 py-0.5 text-[9px] font-semibold text-accent border border-accent/30">
-        ML XGBoost
+      <span className="rounded bg-purple-500/15 px-1 py-0.5 text-[9px] font-semibold text-purple-400 border border-purple-500/30">
+        ML Petrophysics · 0–100%
       </span>
-      {Object.entries(tokens.litho).map(([k, c]) => (
-        <span key={k} className="flex items-center gap-1">
-          <span className="h-2 w-2 rounded-sm border border-black/30" style={{ background: c }} />
-          {k.toLowerCase()}
-        </span>
-      ))}
+      <span className="flex items-center gap-1">
+        <span className="h-2 w-2 rounded-sm border border-black/30 bg-[#4B5A4A]" />
+        shale
+      </span>
+      <span className="flex items-center gap-1">
+        <span className="h-2 w-2 rounded-sm border border-black/30 bg-[#FBBF24]" />
+        sandstone
+      </span>
+      <span className="flex items-center gap-1">
+        <span className="h-2 w-2 rounded-sm border border-black/30 bg-[#5B7EA6]" />
+        limestone
+      </span>
+      <span className="flex items-center gap-1">
+        <span className="h-2 w-2 rounded-sm border border-black/30 bg-[#38BDF8]" />
+        porosity (φe)
+      </span>
     </div>
   );
 }
+

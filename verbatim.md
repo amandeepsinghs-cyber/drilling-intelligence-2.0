@@ -122,3 +122,51 @@
 ## Audio File 4 (Confirmation Note)
 
 > "Just to let you know, I want the verbatim of all the files that I currently made. So give me the entire verbatim—the entire conversation—this 4.59 minutes file and this second file as well that I gave. So it should be the complete story."
+
+---
+
+## Audio File 5 (Feature Architecture: ML Lithology & Dynamic Mud Weight, plus 10–15 Crescendo Conversation Flow)
+
+> "So I will be sending this text and I would need verbatim on this.
+>
+> The first thing I would like is to have an idea on the actual conversation that will be happening, and I think everything should happen on the back of that.
+>
+> So the features that I said should be there was:
+>
+> 1. **First, the lithology should be there.**
+>    Lithology I have put one particular sample what I was expecting. And I think we can build that. And depending on if it is a limestone, sandstone area or shale—so one column from 0 to 100, it should have different facies, right, like mostly it is 30% shale or 50% sand or whatever else is there in terms of the lithology interpretation. So this is one particular column after the logs, what I see.
+>    So first this is a feature. And I have set one sample in this particular repo, so this is the first feature.
+>
+> 2. **Second feature I said that there can be the previous fracture gradient and pore pressure.**
+>    And then we can say that the mud weight would also be given by the forward machine learning models. This is what we also said. So this is maybe the second column. Think about it.
+>    And to get how do we do it, we have in Drilling Intelligence the previous version of this, I have a code. In that it was there. So either it should be there in the data or in the code. I think it should be most likely in the data. So we can think about how to make that as well.
+>
+> So this is the second piece that everything from lithology:
+> - Even though the first feature, the lithology usually has a delay because the mud chemist gives let's say 15 minutes delay. But you can use the telemetry data to predict that lithology in advance. Maybe it is already being done by companies like Schlumberger, but this is what we can say.
+> - Second, we can also do similar for mud weight: you have the optimal mud weight, you know, for so many wells. We can use that data to give real-time optimal mud weight. So one is the static image, but based on the real-time scenario of what you have observed in the overburden—because now you have the entire visibility of, okay, what have you observed above—so the mud weight, everything would change, right, from the overbalance pressure to other things. So it will compute that mud weight via deterministic and by probabilistic. Probabilistic when I say probabilistic I mean machine learning. This is the second.
+>
+> And the conversation that I want to have is, there would be maybe categories of conversation:
+> - **First category** would be the basic updates, you know, the hi hellos, how are you doing type.
+> - The **second category** would be maybe I will ask some questions about, uh: *'Did you receive'* or *'How much time would it take for the next zone?'* Then she will ask a follow-up, *'Which zone are you talking about? At what—what is the expected depth?'* Then I will tell the expected depth, let's say. And it will respond to me that it will take this time.
+>
+> So think about the conversation in your head that, okay, what can be the 10 back-and-forth questions that will lead to a crescendo, right?
+>
+> So once we have mapped that entire conversation from this, right, or the demo flow, then we can go back and build those features.
+>
+> So first I would like you to give me that, okay, what can be those 10 to 15 questions back and forth, and what is the expected response from the Gemini Live?
+>
+> I think then we can go back from there and start building."
+
+---
+
+## Audio File 6 (Audience & Stakes: Senior Geoscientist in a 5-Star Room with ONGC Board of Directors — High-Value Commercial Urgency)
+
+> "And I would say just imagine that you are a very senior geoscientist who have seen a lot of these operations, and you know the curious questions and the kind of conversations that there are in the room.
+>
+> It can be trivial question, it can be something that is interesting.
+>
+> And also think about that you are engaging in the room in a five star with the Board of Directors. So they should also be—they should also be entertained by the value, not in a joking way, but by the value. So there can be incremental questions that one can ask, uh, to the agent.
+>
+> And ultimately they should feel, the Board of Directors in ONGC should feel the power and the potential, right, and should feel like:
+> **'Oh yes, this is what we should deploy immediately, otherwise we are leaving money on the table.'**"
+

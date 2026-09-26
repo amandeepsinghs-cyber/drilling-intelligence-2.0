@@ -44,10 +44,10 @@ This Standard Operating Procedure establishes operational protocols for safely t
 
 ## 5. Drilling Break Protocol & ROP Cap
 - **Sand Entry at 4,195 m MD**:
-  - Main reservoir pay (Miocene slope-channel turbidite sandstone) exhibits instantaneous ROP acceleration up to 34 m/hr.
-  - **Mandatory Action**: The driller must immediately throttle WOB/RPM to cap ROP at **$\le 12\text{ m/hr}$**.
-  - **Flow Check**: Perform a mandatory 15-minute static flow check at 4,196 m MD (pumps off, trip tank monitoring).
-  - Uncapped ROP in narrow windows generates heavy cuttings loading and annular friction surges that cause catastrophic losses (reference: `INC-MN-DW-03-LOSS-4222`).
+   - Main reservoir pay (Miocene slope-channel turbidite sandstone) exhibits instantaneous ROP acceleration up to 34 m/hr.
+   - **Mandatory Action**: The driller must immediately throttle WOB/RPM to cap ROP at **$\le 12\text{ m/hr}$**.
+   - **Flow Check**: Perform a mandatory 15-minute static flow check immediately on penetrating the U3 sand top (4,195 m MD) (pumps off, trip tank monitoring).
+   - Uncapped ROP in narrow windows generates heavy cuttings loading and annular friction surges that cause catastrophic losses (reference: `INC-MN-DW-03-LOSS-4222`).
 
 ## 6. Records & Regulatory References
 - MOC records must be logged into RTOC digital ledger.

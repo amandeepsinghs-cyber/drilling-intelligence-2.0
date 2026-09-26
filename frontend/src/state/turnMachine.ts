@@ -8,15 +8,18 @@ import { chime } from '../lib/chime';
 import { indexAt, num } from '../lib/frames';
 import { useAgent } from './agentStore';
 import { useLedger } from './ledgerStore';
-import { useScenario, type TriggerId } from './scenarioStore';
+import { actOfTurn, turnsOfAct, useScenario, type ActId, type TriggerId } from './scenarioStore';
 import { useUi } from './uiStore';
 import { liveClient } from '../live/liveClient';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 let busy = false;
+let lastTurn = -1;
 let watchdog = false;
 
 export const isWatchdogArmed = () => watchdog;
+export const getLastTurn = () => lastTurn;
+export const isBusy = () => busy;
 
 function snapshot(md: number): Record<string, number | null> {
   const { data } = useScenario.getState();
@@ -31,20 +34,41 @@ function snapshot(md: number): Record<string, number | null> {
   };
 }
 
-/** Apply the state a turn assumes, silently (used when the presenter jumps turns during rehearsal). */
+/** Turn numbers by role, read from turns.yaml (trigger / intent) so renumbering the script never breaks side effects. */
+export interface TurnRoles { watch: number; t3: number; memo: number; approve: number; fanout: number; t8: number; t9: number; wcr: number }
+export function turnRoles(turns: { n: number; trigger?: string; intent?: string }[]): TurnRoles {
+  const by = (p: (t: { trigger?: string; intent?: string }) => boolean) => turns.find(p)?.n ?? -1; // facts-ok: "not found" sentinel
+  return {
+    watch: by((t) => t.intent === 'arm_watchdog'),
+    t3: by((t) => t.trigger === 'T3_PRESSURE_RAMP'),
+    memo: by((t) => t.intent === 'recommend_weight_up'),
+    approve: by((t) => t.intent === 'approve'),
+    fanout: by((t) => t.intent === 'fanout'),
+    t8: by((t) => t.trigger === 'T8_OFFSET_DEPTH'),
+    t9: by((t) => t.trigger === 'T9_DRILLING_BREAK'),
+    wcr: by((t) => t.intent === 'generate_wcr'),
+  };
+}
+const roles = () => turnRoles(useScenario.getState().bundle?.turns ?? []);
+
+/** Apply the state a turn assumes — everything from roles strictly *before* turn n — silently (rehearsal jumps). */
 function ensurePrereqs(n: number) {
   const s = useScenario.getState();
   const f = s.bundle!.facts;
   const L = useLedger.getState();
-  if (n >= 2) watchdog = true;
-  if (n >= 4 && !s.fired.T3_PRESSURE_RAMP) s.markFired('T3_PRESSURE_RAMP');
-  if (n >= 7 && !s.approvedMw) {
-    s.approve();
+  const R = roles();
+  const before = (role: number) => role >= 0 && n > role;
+  if (before(R.watch)) watchdog = true;
+  if (before(R.t3) && !s.fired.T3_PRESSURE_RAMP) s.markFired('T3_PRESSURE_RAMP');
+  if (before(R.memo)) {
     L.append({ id: 'MEMO', kind: 'MEMO', md: f.mud.weight_up_location_m, title: f.ids.memo_id, actor: 'agent', basis: snapshot(f.mud.weight_up_location_m) });
+  }
+  if (before(R.approve) && !s.approvedMw) {
+    s.approve();
     L.append({ id: 'APPROVAL', kind: 'APPROVAL', md: f.mud.weight_up_location_m, title: `${f.ids.memo_id} approved`, actor: 'Presenter (Drilling Superintendent)', basis: snapshot(f.mud.weight_up_location_m) });
   }
-  if (n >= 9 && !s.fired.T8_OFFSET_DEPTH) s.markFired('T8_OFFSET_DEPTH');
-  if (n >= 10 && !s.fired.T9_DRILLING_BREAK) { s.markFired('T9_DRILLING_BREAK'); s.capRop(); }
+  if (before(R.t8) && !s.fired.T8_OFFSET_DEPTH) s.markFired('T8_OFFSET_DEPTH');
+  if (before(R.t9) && !s.fired.T9_DRILLING_BREAK) { s.markFired('T9_DRILLING_BREAK'); s.capRop(); }
 }
 
 async function speak(id: string, text: string) {
@@ -55,6 +79,20 @@ async function speak(id: string, text: string) {
   A.update(id, {});
 }
 
+/** LIVE only when the presenter chose it AND a real Gemini session is behind the socket. */
+export function liveActive(): boolean {
+  return useUi.getState().agentMode === 'LIVE' && liveClient.isLive();
+}
+
+function watchdogContext(trigger: string, md: number): string {
+  return (
+    `[WATCHDOG EVENT ${trigger} @ ${md} m MD]\n` +
+    `Live snapshot (authoritative numbers): ${JSON.stringify(snapshot(md))}\n` +
+    `Proactively alert the presenter in Hinglish. Use only these numbers or tool results, ` +
+    `call the tools you need, and end with one clear recommendation.`
+  );
+}
+
 export async function runTurn(n: number, opts: { jump?: boolean } = {}) {
   const S = useScenario.getState();
   const { bundle, data } = S;
@@ -62,7 +100,9 @@ export async function runTurn(n: number, opts: { jump?: boolean } = {}) {
   const turn = bundle.turns.find((t) => t.n === n);
   if (!turn) return;
   busy = true;
+  lastTurn = n;
   try {
+    const R = turnRoles(bundle.turns);
     const script = buildScript(bundle, data)[n];
     const f = bundle.facts;
     const A = useAgent.getState();
@@ -73,42 +113,72 @@ export async function runTurn(n: number, opts: { jump?: boolean } = {}) {
       S.pause();
       S.setMd(turn.md_m);
     }
+    S.setAct(actOfTurn(turn));
+    S.showTakeaway(null);
+    let live = liveActive();
+    const proactive = turn.leader === 'agent' && !!turn.trigger;
     if (turn.trigger) {
       S.markFired(turn.trigger as TriggerId);
-      chime(n === 8 ? 'info' : 'alert');
+      chime(n === R.t8 ? 'info' : 'alert');
       A.setVoice('alert');
       L.append({ id: turn.trigger, kind: 'TRIGGER', md: turn.md_m, title: turn.trigger.replace(/_/g, ' '), actor: 'watchdog', basis: snapshot(turn.md_m) });
       await sleep(500);
-      if (liveClient.isConnected()) {
-        liveClient.sendProactiveTrigger(turn.trigger, turn.md_m, script.agent.en);
-      }
     }
-    if (script.presenter) {
-      A.setVoice('listening');
-      A.push({ role: 'presenter', en: script.presenter.en, hi: script.presenter.hi, md: turn.md_m, tools: [], citations: [], turn: n });
-      await sleep(700);
-    }
-    A.setVoice('thinking');
-    const id = A.push({
-      role: 'agent', proactive: turn.leader === 'agent' && !!turn.trigger, en: script.agent.en, hi: script.agent.hi, md: turn.md_m,
-      tools: turn.tools.map((name) => ({ name, status: 'running' as const })), citations: [], turn: n,
-    });
-    await sleep(turn.tools.length ? 900 : 350);
-    A.update(id, { tools: turn.tools.map((name) => ({ name, status: 'done' as const })), citations: script.citations ?? [] });
 
-    // ── side effects (the same ones Gemini tool calls will trigger in Phase 4) ──
-    if (n === 1) watchdog = true;
-    if (n === 5) {
+    // ── LIVE: Gemini answers; its tool calls drive memo/approval/dispatch/ROP/WCR via liveClient ──
+    let liveAnswered = false;
+    if (live) {
+      liveClient.setNextTurnMeta({ turn: n, proactive });
+      if (script.presenter) {
+        const prompt = turn.trigger ? `${watchdogContext(turn.trigger, turn.md_m)}\n\nPresenter: ${script.presenter.hi}` : script.presenter.hi;
+        liveClient.sendText(prompt, n, { en: script.presenter.en, hi: script.presenter.hi });
+      } else if (turn.trigger) {
+        liveClient.sendProactiveTrigger(turn.trigger, turn.md_m, watchdogContext(turn.trigger, turn.md_m));
+      } else {
+        const intent = (turn as { intent?: string }).intent ?? 'continue';
+        liveClient.sendProactiveTrigger(
+          `TURN_${n}`,
+          turn.md_m,
+          `[AGENT CONTINUATION · turn ${n} · ${turn.md_m} m MD] Intent: ${intent}. ` +
+            `Expected tools: ${turn.tools.join(', ') || 'none'}. Snapshot: ${JSON.stringify(snapshot(turn.md_m))}. ` +
+            `Proceed in Hinglish without waiting for the presenter.`,
+        );
+      }
+      liveAnswered = await liveClient.waitForTurnComplete(30000);
+      // Live died mid-turn (fallback / socket loss) → finish this turn from the script so the show continues.
+      if (!liveAnswered && !liveClient.isLive()) live = false;
+    }
+
+    let id: string | null = null;
+    if (!live) {
+      if (script.presenter) {
+        A.setVoice('listening');
+        A.push({ role: 'presenter', en: script.presenter.en, hi: script.presenter.hi, md: turn.md_m, tools: [], citations: [], turn: n });
+        await sleep(700);
+      }
+      A.setVoice('thinking');
+      id = A.push({
+        role: 'agent', proactive, en: script.agent.en, hi: script.agent.hi, md: turn.md_m,
+        tools: turn.tools.map((name) => ({ name, status: 'running' as const })), citations: [], turn: n,
+      });
+      await sleep(turn.tools.length ? 900 : 350);
+      A.update(id, { tools: turn.tools.map((name) => ({ name, status: 'done' as const })), citations: script.citations ?? [] });
+    }
+
+    // ── side effects. SCRIPTED: primary. LIVE: idempotent safety net (skipped if Live's tool call already did it) ──
+    const done = (entryId: string) => live && useLedger.getState().entries.some((e) => e.id === entryId);
+    if (n === R.watch) watchdog = true;
+    if (n === R.memo && !done('MEMO')) {
       L.append({ id: 'MEMO', kind: 'MEMO', md: turn.md_m, title: f.ids.memo_id, actor: 'agent', basis: snapshot(turn.md_m),
         citations: (script.citations ?? []).map((c) => c.doc_id) });
       U.open('memo');
     }
-    if (n === 6) {
+    if (n === R.approve && !(live && useScenario.getState().approvedMw)) {
       S.approve();
       L.append({ id: 'APPROVAL', kind: 'APPROVAL', md: turn.md_m, title: `${f.ids.memo_id} approved`, actor: 'Presenter (Drilling Superintendent)', basis: snapshot(turn.md_m) });
       U.notify(`${f.ids.memo_id} approved — basis frozen`, 'ok');
     }
-    if (n === 7) {
+    if (n === R.fanout && !done('DISPATCH')) {
       const labels = ['Mud chemist work order', 'RTOC alert', 'Email · Drilling Manager', 'Phone push'];
       L.append({ id: 'DISPATCH', kind: 'DISPATCH', md: turn.md_m, title: 'MOC fan-out', actor: 'agent',
         channels: f.ids.dispatch_ids.map((cid, i) => ({ id: cid, channel: labels[i] ?? cid, status: 'queued' as const })) });
@@ -120,22 +190,36 @@ export async function runTurn(n: number, opts: { jump?: boolean } = {}) {
       });
       setTimeout(() => useUi.getState().close('phone'), 7000);
     }
-    if (n === 9) {
+    if (n === R.t9 && !done('ROP_CAP')) {
       setTimeout(() => {
         useScenario.getState().capRop();
         useLedger.getState().append({ id: 'ROP_CAP', kind: 'ROP_CAP', md: turn.md_m, title: `ROP cap ${f.drilling.rop_cap_m_hr} m/hr + sweep`, actor: 'Driller (accepted)', basis: snapshot(turn.md_m) });
         useUi.getState().notify(`ROP capped at ${f.drilling.rop_cap_m_hr} m/hr`, 'ok');
-      }, 2500);
+      }, live ? 0 : 2500);
     }
-    if (n === 10) {
+    if (n === R.wcr) {
+      const hadWcr = done('WCR');
       L.append({ id: 'WCR', kind: 'WCR', md: turn.md_m, title: f.ids.wcr_id, actor: 'agent' });
       L.append({ id: 'WRITEBACK', kind: 'WRITEBACK', md: turn.md_m, title: '2 lessons → knowledge base', actor: 'agent' });
-      U.open('wcr');
+      if (!hadWcr) U.open('wcr');
     }
-    await speak(id, script.agent.en);
+    if (!live && id) await speak(id, script.agent.en);
     A.setVoice('idle');
-    if (n === 4) { busy = false; await sleep(1200); await runTurn(5); return; }
-    if (n === 8) { busy = false; await sleep(600); useScenario.getState().play(); return; }
+    const actId = actOfTurn(turn);
+    const actTurns = turnsOfAct(bundle.turns, actId);
+    const lastOfAct = actTurns.length > 0 && actTurns[actTurns.length - 1].n === n;
+    if (lastOfAct) {
+      await sleep(1200);
+      useScenario.getState().showTakeaway(actId);
+    }
+    // After the fan-out, resume drilling toward the sand (T10/T11 are depth-triggered). Hold the Act 3 card first.
+    if (n === R.fanout) {
+      busy = false;
+      await sleep(lastOfAct ? 4000 : 600);
+      useScenario.getState().showTakeaway(null);
+      useScenario.getState().play();
+      return;
+    }
   } finally {
     busy = false;
   }
@@ -149,16 +233,36 @@ export function checkTriggers(prevMd: number, nextMd: number): { clampTo: number
   const t = f.triggers;
   const crosses = (m: number) => prevMd < m && nextMd >= m;
   const t3 = t.T3_PRESSURE_RAMP.md_m as number, t8 = t.T8_OFFSET_DEPTH.md_m as number, t9 = t.T9_DRILLING_BREAK.md_m as number;
-  if (!S.fired.T3_PRESSURE_RAMP && crosses(t3)) return { clampTo: t3, turn: 3 };
+  const R = turnRoles(S.bundle!.turns);
+  if (!S.fired.T3_PRESSURE_RAMP && crosses(t3)) return { clampTo: t3, turn: R.t3 };
   if (S.fired.T3_PRESSURE_RAMP && !S.approvedMw && nextMd > t3) return { clampTo: t3, turn: -1 };
-  if (!S.fired.T8_OFFSET_DEPTH && crosses(t8)) return { clampTo: t8, turn: 8 };
-  if (!S.fired.T9_DRILLING_BREAK && crosses(t9)) return { clampTo: t9, turn: 9 };
+  if (!S.fired.T8_OFFSET_DEPTH && crosses(t8)) return { clampTo: t8, turn: R.t8 };
+  if (!S.fired.T9_DRILLING_BREAK && crosses(t9)) return { clampTo: t9, turn: R.t9 };
   const td = f.well.live_interval_m.td;
   if (crosses(td)) return { clampTo: td, turn: -2 };
   return null;
 }
 
+/** Shift+1…4: stage an act (prereqs + depth + hero) without running a turn — the presenter then speaks or presses a turn. */
+export function enterAct(id: ActId) {
+  const S = useScenario.getState();
+  if (!S.bundle || busy) return;
+  const first = turnsOfAct(S.bundle.turns, id)[0];
+  if (first) ensurePrereqs(first.n);
+  S.pause();
+  S.jumpToAct(id);
+  useUi.getState().closeAll();
+}
+
+/** N / PageDown: run the next turn in the script (clicker-friendly). */
+export function nextTurn() {
+  const turns = useScenario.getState().bundle?.turns ?? [];
+  const next = turns.find((t) => t.n > lastTurn);
+  if (next) void runTurn(next.n, { jump: true });
+}
+
 export function resetShow() {
+  lastTurn = -1;
   watchdog = false;
   busy = false;
   useScenario.getState().reset();

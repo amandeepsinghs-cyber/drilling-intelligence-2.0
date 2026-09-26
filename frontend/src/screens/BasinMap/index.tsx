@@ -15,7 +15,7 @@ import { Wordmark } from '../../components/common/AppHeader';
 import ProvenanceChip from '../../components/common/ProvenanceChip';
 import { useScenario } from '../../state/scenarioStore';
 import { useUi } from '../../state/uiStore';
-import { graticule, wellLayers } from './layers';
+import { graticule, wellLayers, offlineBasemapLayers } from './layers';
 
 const KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 const MAP_ID = import.meta.env.VITE_GOOGLE_MAPS_MAP_ID;
@@ -85,9 +85,15 @@ export default function BasinMap() {
             </GMap>
           </APIProvider>
         ) : (
-          <div className="grid-bg absolute inset-0 opacity-60">
-            <DeckGL viewState={viewState} onViewStateChange={(e) => setViewState(e.viewState as MapViewState)} controller
-              layers={[graticule(), ...layers]} onClick={onClick as never} getCursor={({ isHovering }) => (isHovering ? 'pointer' : 'grab')} />
+          <div className="absolute inset-0 bg-[#070D16]">
+            <DeckGL
+              viewState={viewState}
+              onViewStateChange={(e) => setViewState(e.viewState as MapViewState)}
+              controller
+              layers={[...offlineBasemapLayers(theme === 'light'), graticule(), ...layers]}
+              onClick={onClick as never}
+              getCursor={({ isHovering }) => (isHovering ? 'pointer' : 'grab')}
+            />
           </div>
         )}
       </div>
