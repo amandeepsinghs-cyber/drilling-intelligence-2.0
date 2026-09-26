@@ -270,9 +270,12 @@ class LiveClient {
       case 'action': {
         const payload = msg.payload || {};
         // The action panels live in Act 3 (memo → approve → fan-out) and Act 4 (shift notes ⇄ WCR).
-        if (['memo', 'approval', 'dispatch'].includes(msg.kind)) S.setAct('act3');
+        if (['memo', 'approval', 'approval_pending', 'dispatch'].includes(msg.kind)) S.setAct('act3');
         if (['shift_log', 'wcr'].includes(msg.kind)) S.setAct('act4');
-        if (msg.kind === 'memo') {
+        if (msg.kind === 'approval_pending') {
+          // The agent asked for approval (or tried to dispatch early). Only the on-screen button approves.
+          U.notify('Awaiting your approval — review the memo and click Approve', 'warn');
+        } else if (msg.kind === 'memo') {
           const evidence = Array.isArray(payload.evidence) ? payload.evidence : [];
           L.append({
             id: 'MEMO',
@@ -398,6 +401,19 @@ class LiveClient {
       A.setVoice('idle');
       useUi.getState().notify('Live agent not connected — press N for the scripted turn, or V to switch mode', 'warn');
     }
+  }
+
+  /**
+   * The presenter clicked Approve on screen — the only way an MOC gets approved in LIVE.
+   * Returns false if the socket is not open (caller falls back to the scripted path).
+   */
+  public sendHumanApproval(memoId: string): boolean {
+    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return false;
+    audioPlayer.interrupt();
+    this.currentAgentMsgId = null;
+    useAgent.getState().setVoice('thinking');
+    this.ws.send(JSON.stringify({ type: 'human_approval', memo_id: memoId, md_m: useScenario.getState().md }));
+    return true;
   }
 
   /**

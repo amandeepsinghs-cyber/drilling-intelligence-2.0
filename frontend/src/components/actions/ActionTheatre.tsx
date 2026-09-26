@@ -12,7 +12,7 @@ import clsx from 'clsx';
 import { fmt } from '../../lib/frames';
 import { useLedger } from '../../state/ledgerStore';
 import { useScenario } from '../../state/scenarioStore';
-import { runTurn } from '../../state/turnMachine';
+import { approveAndDispatch } from '../../state/turnMachine';
 
 export default function ActionTheatre() {
   const bundle = useScenario((s) => s.bundle);
@@ -217,7 +217,7 @@ export default function ActionTheatre() {
             {!approved ? (
               <div className="flex gap-2 pt-1">
                 <button
-                  onClick={() => runTurn(6)}
+                  onClick={() => void approveAndDispatch()}
                   className="flex-1 rounded-lg bg-accent py-2 text-xs font-bold text-white shadow-glow hover:bg-accent/90 transition-all"
                 >
                   Approve MOC Pre-emptive Weight-Up

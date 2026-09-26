@@ -80,8 +80,9 @@ export function turnRoles(turns: { n: number; trigger?: string; intent?: string 
 }
 const roles = () => turnRoles(useScenario.getState().bundle?.turns ?? []);
 
-/** Apply the state a turn assumes — everything from roles strictly *before* turn n — silently (rehearsal jumps). */
-function ensurePrereqs(n: number) {
+/** Apply the state a turn assumes — everything from roles strictly *before* turn n — silently (rehearsal jumps).
+ *  Approval + fan-out are applied ONLY for Shift+1…4 act staging; N / turn jumps never approve on their own. */
+function ensurePrereqs(n: number, staging = false) {
   const s = useScenario.getState();
   const f = s.bundle!.facts;
   const L = useLedger.getState();
@@ -93,11 +94,11 @@ function ensurePrereqs(n: number) {
     L.append({ id: 'MEMO', kind: 'MEMO', md: f.mud.weight_up_location_m, title: f.ids.memo_id, actor: 'agent', basis: snapshot(f.mud.weight_up_location_m) });
     void fetchMemoEvidence();
   }
-  if (before(R.approve) && !s.approvedMw) {
+  if (staging && before(R.approve) && !s.approvedMw) {
     s.approve();
     L.append({ id: 'APPROVAL', kind: 'APPROVAL', md: f.mud.weight_up_location_m, title: `${f.ids.memo_id} approved`, actor: 'Presenter (Drilling Superintendent)', basis: snapshot(f.mud.weight_up_location_m) });
   }
-  if (before(R.fanout) && !L.entries.some((e) => e.id === 'DISPATCH')) {
+  if (useScenario.getState().approvedMw && before(R.fanout) && !L.entries.some((e) => e.id === 'DISPATCH')) {
     L.append({ id: 'DISPATCH', kind: 'DISPATCH', md: f.mud.weight_up_location_m, title: 'MOC fan-out', actor: 'agent', channels: [] });
     void fetchDispatch(f).then(({ channels, text }) => useLedger.getState().patch('DISPATCH', { channels, text }));
   }
@@ -132,12 +133,20 @@ function watchdogContext(trigger: string, md: number): string {
   );
 }
 
-export async function runTurn(n: number, opts: { jump?: boolean } = {}) {
+export async function runTurn(n: number, opts: { jump?: boolean; fromButton?: boolean } = {}) {
   const S = useScenario.getState();
   const { bundle, data } = S;
   if (!bundle || !data || busy) return;
   const turn = bundle.turns.find((t) => t.n === n);
   if (!turn) return;
+  // Approval gate: the approval turn and everything after it need the presenter's on-screen click.
+  const gate = turnRoles(bundle.turns).approve;
+  if (gate >= 0 && n >= gate && !S.approvedMw && !opts.fromButton) {
+    if (opts.jump) ensurePrereqs(gate); // make sure the memo exists so there is something to approve
+    S.setAct('act3');
+    useUi.getState().notify(`${bundle.facts.ids.memo_id} needs your approval — review the memo and click Approve`, 'warn');
+    return;
+  }
   busy = true;
   lastTurn = n;
   try {
@@ -285,7 +294,7 @@ export function enterAct(id: ActId) {
   const S = useScenario.getState();
   if (!S.bundle || busy) return;
   const first = turnsOfAct(S.bundle.turns, id)[0];
-  if (first) ensurePrereqs(first.n);
+  if (first) ensurePrereqs(first.n, true);
   S.pause();
   S.jumpToAct(id);
   useUi.getState().closeAll();
@@ -304,13 +313,55 @@ async function waitIdle(maxMs = 45000) {
   while (busy && Date.now() - t0 < maxMs) await sleep(150);
 }
 
-/** Approve button (Act 3): approval turn, then fan-out turn — works in LIVE (Gemini calls the tools) and SCRIPTED. */
+/** After a LIVE fan-out (Gemini called dispatch_fanout itself): show the Act 3 card, then resume drilling. */
+async function resumeAfterFanout() {
+  const S = useScenario.getState();
+  const R = roles();
+  lastTurn = Math.max(lastTurn, R.fanout);
+  const turn = S.bundle?.turns.find((t) => t.n === R.fanout);
+  if (turn && S.bundle) {
+    const actTurns = turnsOfAct(S.bundle.turns, actOfTurn(turn));
+    if (actTurns[actTurns.length - 1]?.n === R.fanout) {
+      await sleep(1200);
+      useScenario.getState().showTakeaway(actOfTurn(turn));
+      await sleep(4000);
+      useScenario.getState().showTakeaway(null);
+    }
+  }
+  useScenario.getState().play();
+}
+
+/** Approve button (Act 3) — the ONLY way the MOC gets approved. Then the fan-out.
+ *  LIVE: tell Gemini a human clicked (it acknowledges and calls dispatch_fanout). SCRIPTED: approval turn, then fan-out turn. */
 export async function approveAndDispatch() {
   const R = roles();
-  if (R.approve < 0) return;
+  const f = useScenario.getState().bundle?.facts;
+  if (R.approve < 0 || !f) return;
   await waitIdle();
-  if (!useScenario.getState().approvedMw) await runTurn(R.approve, { jump: lastTurn < R.memo });
+  if (!useLedger.getState().entries.some((e) => e.id === 'MEMO')) ensurePrereqs(R.approve); // memo must exist first
+  let liveDispatch = false;
+  if (!useScenario.getState().approvedMw) {
+    if (liveActive() && liveClient.sendHumanApproval(f.ids.memo_id)) {
+      busy = true;
+      lastTurn = Math.max(lastTurn, R.approve);
+      try {
+        await liveClient.waitForTurnComplete(30000);
+      } finally {
+        busy = false;
+      }
+      // Safety net if the backend's approval action was lost: the click itself is the approval.
+      if (!useScenario.getState().approvedMw) {
+        const md = useScenario.getState().md;
+        useScenario.getState().approve();
+        useLedger.getState().append({ id: 'APPROVAL', kind: 'APPROVAL', md, title: `${f.ids.memo_id} approved`, actor: 'Presenter (Drilling Superintendent)', basis: snapshot(md) });
+      }
+      liveDispatch = useLedger.getState().entries.some((e) => e.id === 'DISPATCH');
+    } else {
+      await runTurn(R.approve, { jump: lastTurn < R.memo, fromButton: true });
+    }
+  }
   await waitIdle();
+  if (liveDispatch) { await resumeAfterFanout(); return; }
   if (!useLedger.getState().entries.some((e) => e.id === 'DISPATCH') && R.fanout >= 0) await runTurn(R.fanout);
 }
 
@@ -354,7 +405,12 @@ export async function askAgent(text: string) {
     return;
   }
   const R = roles();
-  if (n === R.approve) { await approveAndDispatch(); return; }
+  if (n === R.approve && !useScenario.getState().approvedMw) {
+    // Typed/spoken "approve" is not consent — only the on-screen button approves.
+    useScenario.getState().setAct('act3');
+    useUi.getState().notify('Sir, kripya screen pe Approve button dabaiye — approval needs your click', 'warn');
+    return;
+  }
   await waitIdle();
   await runTurn(n, { jump: n !== lastTurn + 1 });
 }

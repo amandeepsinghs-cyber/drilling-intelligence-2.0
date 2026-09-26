@@ -9,6 +9,8 @@ Contents: [1 · Try it now](#1--try-it-now-10-minutes) · [2 · The script](#2--
 
 > Illustrative scenario: well logs are synthetic (physics-based); offset reports and SOPs are simulated; Chat, email and phone lanes are **simulated** in the demo.
 
+> 🎯 **Practice questions:** [docs/DEMO_QUESTIONS.md](docs/DEMO_QUESTIONS.md) — 25 questions (English → Hinglish) with the two approval gates, to pick your favourites.
+
 ---
 
 ## 1 · Try it now (10 minutes)

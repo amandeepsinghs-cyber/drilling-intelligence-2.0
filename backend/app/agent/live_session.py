@@ -14,6 +14,7 @@ import asyncio
 import json
 import logging
 import os
+from datetime import datetime, timezone
 from typing import Any
 
 from fastapi import WebSocket, WebSocketDisconnect
@@ -21,6 +22,7 @@ from fastapi import WebSocket, WebSocketDisconnect
 from app.agent.prompts import get_agent_system_prompt
 from app.agent.tools import execute_tool, set_live_depth
 from app.core.config import get_settings
+from app.scenario.facts import facts
 
 logger = logging.getLogger("di2.live_session")
 
@@ -115,17 +117,17 @@ FUNCTION_DECLARATIONS_DATA = [
     },
     {
         "name": "request_approval",
-        "description": "Submit MOC memo for Drilling Superintendent approval and freeze decision basis.",
+        "description": "Queue the MOC memo for the Drilling Superintendent. Does NOT approve: returns PENDING_HUMAN_APPROVAL. Approval happens only when he clicks Approve on screen (you then get a [HUMAN APPROVAL] message).",
         "parameters": {
             "type": "OBJECT",
             "properties": {
-                "memo_id": {"type": "STRING", "description": "MOC memo ID to approve"},
+                "memo_id": {"type": "STRING", "description": "MOC memo ID to queue for approval"},
             },
         },
     },
     {
         "name": "dispatch_fanout",
-        "description": "After approval: fan out the approved MOC to Mud Chemist console, RTOC chat, Drilling Manager email and Superintendent phone. Returns honest per-channel status (DELIVERED / SIMULATED / FAILED).",
+        "description": "Only after a [HUMAN APPROVAL] message: fan out the approved MOC to Mud Chemist console, RTOC chat, Drilling Manager email and Superintendent phone. Returns honest per-channel status (DELIVERED / SIMULATED / FAILED), or BLOCKED_AWAITING_APPROVAL if not yet approved on screen.",
         "parameters": {
             "type": "OBJECT",
             "properties": {
@@ -430,6 +432,21 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any, inbound: asyncio.
                     turns=[types.Content(role="user", parts=[types.Part.from_text(text=prompt)])],
                     turn_complete=True,
                 )
+            elif msg_type == "human_approval":
+                # The ONLY path to an approved MOC: the presenter clicked Approve on screen.
+                mid = data.get("memo_id") or facts()["ids"]["memo_id"]
+                state.setdefault("approved_memos", set()).add(mid)
+                result = execute_tool("request_approval", {"memo_id": mid})
+                await _safe_send_json(websocket, {"type": "action", "kind": "approval", "payload": result})
+                stamp = datetime.now(timezone.utc).strftime("%H:%M UTC")
+                note = (f"[HUMAN APPROVAL] Drilling Superintendent clicked Approve for {mid} at {stamp}. "
+                        "Acknowledge in one short Hinglish sentence and call dispatch_fanout now.")
+                _log_turn(state, "System", note)
+                await _safe_send_json(websocket, {"type": "voice_state", "state": "thinking"})
+                await session.send_client_content(
+                    turns=[types.Content(role="user", parts=[types.Part.from_text(text=note)])],
+                    turn_complete=True,
+                )
             elif msg_type == "audio_end":
                 await session.send_realtime_input(audio_stream_end=True)
             elif msg_type == "interrupt":
@@ -470,8 +487,27 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any, inbound: asyncio.
                                 "args": fc.args,
                             })
 
-                            # Execute tool
-                            result = execute_tool(fc.name, fc.args)
+                            # Execute tool. Approval is human-only: the model may only queue the memo;
+                            # the approval itself happens when the presenter clicks Approve on screen.
+                            approved: set = state.setdefault("approved_memos", set())
+                            memo_arg = (fc.args or {}).get("memo_id") or facts()["ids"]["memo_id"]
+                            gated = False
+                            if fc.name == "request_approval":
+                                gated = True
+                                result = {
+                                    "status": "PENDING_HUMAN_APPROVAL", "memo_id": memo_arg,
+                                    "message": "Memo is on screen awaiting the Drilling Superintendent. "
+                                               "Approval happens ONLY when he clicks the Approve button. "
+                                               "Do not say it is approved.",
+                                }
+                            elif fc.name == "dispatch_fanout" and not approved:
+                                gated = True
+                                result = {
+                                    "status": "BLOCKED_AWAITING_APPROVAL", "memo_id": memo_arg,
+                                    "message": "Nothing sent. The MOC has not been approved on screen yet.",
+                                }
+                            else:
+                                result = execute_tool(fc.name, fc.args)
 
                             # Notify UI of tool result
                             await websocket.send_json({
@@ -482,10 +518,10 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any, inbound: asyncio.
                             })
 
                             # Dispatch UI side-effects for actions
-                            if fc.name == "create_moc_memo":
+                            if gated:
+                                await websocket.send_json({"type": "action", "kind": "approval_pending", "payload": result})
+                            elif fc.name == "create_moc_memo":
                                 await websocket.send_json({"type": "action", "kind": "memo", "payload": result})
-                            elif fc.name == "request_approval":
-                                await websocket.send_json({"type": "action", "kind": "approval", "payload": result})
                             elif fc.name == "dispatch_fanout":
                                 await websocket.send_json({"type": "action", "kind": "dispatch", "payload": result})
                             elif fc.name == "set_rop_cap":

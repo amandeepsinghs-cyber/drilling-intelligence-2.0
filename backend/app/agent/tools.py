@@ -119,6 +119,13 @@ def get_well_status(well_id: str | None = None, md_m: float | None = None) -> di
             "kick_side_status": "UNDERBALANCED at sand if MW unchanged" if warn["overbalance_if_unchanged_psi"] < 0 else "overbalanced at sand",
             "shoe_fit_ppg": fit,
         },
+        # Section TD is pre-approved in the well programme; drilling to it needs no MOC.
+        "target_depth": {
+            "name": "12-1/4 in section TD / 9-5/8 in casing point",
+            "md_m": f["well"]["live_interval_m"]["td"],
+            "status": "PRE-APPROVED (well programme)",
+            **_eta_to(f["well"]["live_interval_m"]["td"], fa["md_m"], rop),
+        },
     }
 
 
@@ -361,13 +368,18 @@ def _memo_evidence() -> list[dict[str, Any]]:
 
 
 def request_approval(memo_id: str | None = None) -> dict[str, Any]:
-    """Record formal approval of MOC memo and freeze decision basis into the ledger."""
+    """Record formal approval of MOC memo and freeze decision basis into the ledger.
+
+    In a live session this is NOT executed when the model calls it: the call only queues the memo
+    as PENDING. It runs when the Drilling Superintendent clicks the on-screen Approve button.
+    """
     mid = memo_id or facts()["ids"]["memo_id"]
     return {
         "approval_id": f"APP-{mid}",
         "memo_id": mid,
         "status": "APPROVED",
         "approver": "Drilling Superintendent (Company Man)",
+        "method": "On-screen Approve button",
         "timestamp_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "decision_basis_frozen": True,
         "ledger_entry": "Recorded in immutable decision ledger with petrophysical and physics basis.",
