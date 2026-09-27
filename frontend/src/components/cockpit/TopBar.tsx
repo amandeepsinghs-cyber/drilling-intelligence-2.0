@@ -6,6 +6,8 @@ import { ACTS, useScenario } from '../../state/scenarioStore';
 import { enterAct } from '../../state/turnMachine';
 import { useUi } from '../../state/uiStore';
 import { Wordmark } from '../common/AppHeader';
+import { WCR_REPORT_URL } from '../../lib/reportUrl';
+import { useWcrReady } from '../../state/wcrReady';
 
 const SHORT: Record<string, string> = { act1: 'Rock at the bit', act2: 'Window closes', act3: 'Decide & act', act4: 'Loss side · WCR' };
 
@@ -20,6 +22,7 @@ export default function TopBar() {
   const md = useScenario((s) => s.md);
   const act = useScenario((s) => s.act);
   const approved = useScenario((s) => s.approvedMw);
+  const wcrReady = useWcrReady().ready;
   const ui = useUi();
   const f = bundle?.facts;
   const cur = ACTS.findIndex((a) => a.id === act);
@@ -55,6 +58,11 @@ export default function TopBar() {
       </nav>
       <div className="flex shrink-0 items-center gap-3">
         {approved && <span className="chip border-accent/40 text-accent">MOC active</span>}
+        {/* Stays on the main screen after the "WCR draft for review is ready" card is closed. */}
+        {wcrReady && (
+          <a href={WCR_REPORT_URL} target="_blank" rel="noopener" title="WCR draft for review — open from the data lake"
+            className="chip animate-pulse border-warn/60 font-semibold text-warn hover:bg-warn/10 hover:[animation:none]">📄 WCR draft ↗</a>
+        )}
         {/* LIVE/SCRIPTED chip lives only in the agent panel (owner: one "LIVE" on screen). V still toggles. */}
         <div className="border-l border-line pl-3 text-right leading-tight">
           <div className="text-[10px] uppercase tracking-wider text-faint">Bit depth</div>

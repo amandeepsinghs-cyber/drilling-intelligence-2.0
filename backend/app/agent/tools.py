@@ -247,7 +247,8 @@ def search_knowledge(query: str = "deepwater narrow window SOP and offset kicks"
     # shut-in steps, not only the principles paragraph — steer the query to the procedure section.
     wc_topic = re.search(r"influx|kick|well.?control|flow.?check|shut.?in", query, re.I)
     sop_ask = re.search(r"\bSOP\b|instruction|guideline|kya bolta", query, re.I)
-    other_sop = re.search(r"SOP-0[2-9]|\bROP\b|drilling.?break|loss|ECD|sweep|cement|casing|trip", query, re.I)
+    other_sop = re.search(r"SOP-0[2-9]|\bROP\b|drilling.?break|loss|ECD|sweep|cement|casing|trip|"
+                          r"weight|mud|overbalance|pressure|ramp|sand|barite|situation|halat", query, re.I)
     generic_sop = re.search(r"\bSOP\b", query, re.I) and not other_sop  # e.g. a garbled "SOP institution" = well control
     if (re.search(r"WC-SOP", query, re.I) or (wc_topic and sop_ask) or generic_sop) and not re.search(r"procedure|steps", query, re.I):
         query = f"{query} ONGC-WC-SOP-01 shut-in procedure steps"

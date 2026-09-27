@@ -260,7 +260,7 @@ export async function runTurn(n: number, opts: { jump?: boolean; fromButton?: bo
     const actId = actOfTurn(turn);
     const actTurns = turnsOfAct(bundle.turns, actId);
     const lastOfAct = actTurns.length > 0 && actTurns[actTurns.length - 1].n === n;
-    if (lastOfAct) {
+    if (lastOfAct && n !== R.wcr) { // after the WCR turn the "WCR draft for review is ready" card is the only popup
       await sleep(1200);
       useScenario.getState().showTakeaway(actId);
     }

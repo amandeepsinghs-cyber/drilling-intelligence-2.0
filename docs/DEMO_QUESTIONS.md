@@ -3,6 +3,7 @@
 **Use:** try these in **LIVE** mode (`V` until the badge says *Live*) on
 https://sagar-drishti-248430093579.us-central1.run.app (sign in as `admin@amandeepsinghs.altostrat.com`) or locally on :5173.
 Tick the ones you remember and like; we cut to the best 12–15 for the Board.
+**Full rehearsal order, clicks and rescue moves:** [PRACTICE_FLOW.md](PRACTICE_FLOW.md).
 
 **Shape:** Q1–Q4 in **English** (the room settles in) → **Hinglish from Q5 onwards**.
 **Two approval gates:** 🔐 **Approval 1** = MOC weight-up (Q15) · 🔐 **Approval 2** = ROP cap at the drilling break (Q19).
@@ -65,7 +66,7 @@ Legend: 📍 when to ask (bit depth) · 🎤 what you say · 🤖 what a good an
 |---|---|---|---|
 | 21 | "Agli shift ke liye shift log bana do." | Handover lines with depths, the MOC, the ROP cap, sources | Handover in seconds |
 | 22 | "Is baatcheet mein maine sabse pehla sawaal kya poocha tha?" | Recalls Q1 (the twenty-second status) | Memory across the whole session |
-| 23 | "WCR report taiyaar karo." | Compiles WCR-MN-SM-DW-01 Draft v1.0 → "Open full report ↗" | 50 pages of paperwork → one sentence |
+| 23 | "WCR report taiyaar karo." | Compiles WCR-MN-SM-DW-01 Draft v1.0 → **"WCR draft for review is ready"** card → **📄 Open WCR report ↗** (opens from the data lake); **📄 WCR draft ↗** stays in the header | 50 pages of paperwork → one sentence |
 | 24 | "Is well se hum kya seekhe? Teen lessons batao." | Pre-emptive weight-up · ROP cap at breaks · watch DT/dxc + lag; written back to knowledge base | The organisation gets smarter |
 | 25 | "Board ko ek line mein batao — aaj aapne kya kiya?" | One line: saw the pressure early, humans approved twice, zero kick, zero losses | Your closing line, spoken by the agent |
 
@@ -74,6 +75,7 @@ Legend: 📍 when to ask (bit depth) · 🎤 what you say · 🤖 what a good an
 ### Bonus curveballs (only if you feel confident)
 - **TD test:** "Humara target depth kya hai, aur wahan tak kitna time lagega?" → 🤖 12-1/4 in section TD **4,450 m MD** (9-5/8 in casing point), pre-approved in the well programme, no MOC needed · distance + ETA at current ROP (≈ 330 m, ≈ 15 h from 4,120 m at 22 m/hr). *(Shows it knows the well plan, not just the live data.)*
 - **Safety test:** "Pit gain 6 barrel dikh raha hai — kya karein?" → 🤖 must say **flow check first**, then shut-in per ONGC-WC-SOP-01. *(Shows it won't improvise on well control.)*
+- **SOP steps test:** "SOP influx ke baare mein kya bolta hai?" → 🤖 the shut-in **steps in order** (pick up off bottom, stop rotary + pumps, flow check; if flowing: open HCR, close annular, close choke, notify Company Man + RTOC; record SIDPP, SICP, pit gain) · ONGC-WC-SOP-01.
 - **Push-back test:** "Mujhe lagta hai 11.40 ppg kaafi hai." → 🤖 should disagree politely: still below 11.48 ppg sand PP.
 - **Plain-language test:** "Ek naye trainee ko samjhao ECD kya hota hai." → short analogy, no jargon.
 

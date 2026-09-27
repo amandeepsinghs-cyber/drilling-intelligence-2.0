@@ -13,7 +13,7 @@ import { usePlayback } from '../../state/usePlayback';
 import { useUi } from '../../state/uiStore';
 import WcrOverlay from '../WcrViewer/WcrOverlay';
 import TakeawayCard from '../../components/common/TakeawayCard';
-import ClosingCard from '../../components/common/ClosingCard';
+import WcrReadyCard from '../../components/common/WcrReadyCard';
 import Cockpit from './Cockpit';
 
 
@@ -34,7 +34,8 @@ export default function CommandCenter() {
     <div className="relative h-full">
       <Cockpit />
       <TakeawayCard />
-      <ClosingCard />
+      {/* ClosingCard ("Four Layers of AI") replaced by WcrReadyCard — file kept, unmounted. */}
+      <WcrReadyCard />
       <MemoOverlay />
       <RopCapApprovalCard />
       <WhatIfDrawer />

@@ -15,12 +15,10 @@ import { useUi } from '../../state/uiStore';
 import CitationCard from './CitationCard';
 import VoiceRing from './VoiceRing';
 import { WCR_REPORT_URL } from '../../lib/reportUrl';
+import { mentionsWcr } from '../../state/wcrReady';
 
-/** The agent can't speak a clickable link, so any answer about the WCR gets a real "Open WCR report" button.
- *  Spoken Hinglish is transcribed in Devanagari ("डब्ल्यूसीआर", "लिंक", "रिपोर्ट"), so match those too. */
-const WCR_RE = /\bW\.?\s?C\.?\s?R\b|completion report|reports\/WCR|\blink\b|डब्ल्यू\s?सी\s?आर|लिंक/i;
-const mentionsWcr = (m: AgentMessage) =>
-  m.tools.some((t) => t.name === 'generate_wcr') || WCR_RE.test(`${m.en} ${m.hi}`);
+// The agent can't speak a clickable link, so any answer about the WCR gets a real "Open WCR report" button
+// (matching rules live in state/wcrReady.ts, shared with the main-screen card and the header badge).
 
 /** Tool name → what the agent did, in plain words (shown as reasoning steps). */
 const STEP: Record<string, string> = {

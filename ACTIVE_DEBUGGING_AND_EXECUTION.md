@@ -121,3 +121,4 @@ google-chrome --headless=new --no-sandbox --window-size=1920,1080 --virtual-time
 
 - 2026-09-27T09:55:02Z — Deployed v0-4-6 (revision sagar-drishti-00007-zzk): Approval 2 floating card (RopCapApprovalCard), WCR report uploaded to gs://sagar-drishti-data/reports/ + agent link button, English-in/English-out language tracking, SOP shut-in steps retrieval, ALREADY_APPROVED sync via ui_state.
 - 2026-09-27T10:07:38Z — Deployed v0-4-7 (revision sagar-drishti-00008-wq7): reverted v0-4-6 language changes (back to Hinglish default, per presenter feedback: English replies to Hindi + American accent). Kept SOP steps, already-approved sync, Approval 2 card, WCR GCS link.
+- 2026-09-27T10:16:41Z — Deployed v0-4-8 (revision sagar-drishti-00009-tkm) = git c281195 / tag v0.4.3. Rule from now on: git push first, then Cloud Run deploy; image tag v0-X-Y maps to git tag.
