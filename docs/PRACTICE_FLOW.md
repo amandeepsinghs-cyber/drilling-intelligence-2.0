@@ -13,9 +13,13 @@ The questions come from [DEMO_QUESTIONS.md](DEMO_QUESTIONS.md) (Q#); this sheet 
 | ☐ | Open **Cloud Run**: https://sagar-drishti-248430093579.us-central1.run.app/well/MN-SM-DW-01 (sign in `admin@amandeepsinghs.altostrat.com`) — backup: http://localhost:5173/well/MN-SM-DW-01 |
 | ☐ | Fresh start: **Shift+R** (resets the show). Full screen: **F11** (hides the URL). |
 | ☐ | Agent badge says **LIVE** (press **V** to toggle). Speed **×60**. |
-| ☐ | Mic test: hold **Hold to talk**, say *"Good morning"*, release. Answer should start in ≈ 2–4 s. |
+| ☐ | **Clicker / pointer:** press **Shift+K**, then press the button you'll use to talk → toast *"Talk key set"*. (Skip if your clicker has a **PageUp** / back button — that already works.) |
+| ☐ | Mic test: press the **talk button** once → agent button shows **Listening…** → say *"Good morning"* → press again. Answer should start in ≈ 2–4 s. |
 
-**Keys you need:** `Space` play/pause drilling · `Hold to talk` button = voice · `N` next scripted turn (rescue) · `Esc` close any window · `Shift+1…4` jump to an act (rehearsal only — pre-approves both approvals) · `V` LIVE ⇄ SCRIPTED
+**Keys you need:** `Space` play/pause drilling · **talk button** (PageUp / `.` / your learned key) = press to listen, press again to send · on-screen **Tap to talk** = backup · `N` next scripted turn (rescue) · `Esc` close any window · `Shift+1…4` jump to an act (rehearsal only — pre-approves both approvals) · `V` LIVE ⇄ SCRIPTED
+
+> [!TIP]
+> **Noise:** the mic is only open while the agent button shows "Listening…" (max 30 s, then it sends by itself). Wear a clip-on / wireless USB mic on the laptop; never feed the hall PA mic into the laptop.
 
 > [!IMPORTANT]
 > For the real run, **do not use Shift+1…4** — it pre-approves the memo and the ROP cap. Play straight through with `Space`.
@@ -95,6 +99,8 @@ The questions come from [DEMO_QUESTIONS.md](DEMO_QUESTIONS.md) (Q#); this sheet 
 | Drilling not moving | **Space** · check for a pending approval card (memo or ROP cap) |
 | Agent answers in the wrong language | Just repeat the question in the language you want |
 | Local Live fails | Use the Cloud Run tab (or run `gcloud auth application-default login`) |
+| Talk button does nothing | Click the browser page once (focus), then retry · or **Shift+K** and re-learn the button · or use the on-screen button |
+| Stuck on "Listening…" | Press the talk button again (it also auto-sends after 30 s) |
 
 ## After each practice run — note 3 things
 

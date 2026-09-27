@@ -43,6 +43,7 @@ export default function CommandCenter() {
       {/* DispatchCard + PhoneMirror superseded by the inline Act 3 panel (WP-08); files kept, unmounted. */}
       <WcrOverlay />
       <HelpOverlay />
+      {/* ListeningBanner removed from screen at presenter's request (too loud) — file kept, unmounted. */}
       <Toast />
     </div>
   );

@@ -155,7 +155,7 @@ FUNCTION_DECLARATIONS_DATA = [
     },
     {
         "name": "generate_wcr",
-        "description": "Generate preliminary Well Completion Report (WCR) draft for the 12-1/4 in section.",
+        "description": "Generate preliminary Well Completion Report (WCR) draft for the 12-1/4 in section of THIS well. Call ONLY when the user explicitly asks to create / prepare / make the WCR or completion report. NEVER call it for questions about offset or nearby wells (MN-DW-02, MN-DW-03) or their incidents — their source documents are WCRs, but use search_knowledge / lookup_offset_events for those.",
         "parameters": {
             "type": "OBJECT",
             "properties": {},

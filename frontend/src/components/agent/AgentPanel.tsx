@@ -4,12 +4,13 @@
  * Below: earlier turns, compact. Footer: hold-to-talk + typed question. Connection state is a small pill, never blocking. */
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { fmt, fmtInt, indexAt, num, str } from '../../lib/frames';
 import { liveClient, type LiveStatus } from '../../live/liveClient';
 import { useAgent, type AgentMessage } from '../../state/agentStore';
 import { toggleAgentMode } from '../../state/presenter';
 import { useScenario } from '../../state/scenarioStore';
+import { startTalk, stopTalk, useTalk } from '../../state/talk';
 import { askAgent } from '../../state/turnMachine';
 import { useUi } from '../../state/uiStore';
 import CitationCard from './CitationCard';
@@ -131,7 +132,8 @@ export default function AgentPanel() {
   const { messages, voice } = useAgent();
   const { lang, cycleLang, agentMode } = useUi();
   const [live, setLive] = useState<LiveStatus>('disconnected');
-  const [talking, setTalking] = useState(false);
+  const talking = useTalk((s) => s.talking);
+  const pressedAt = useRef(0);
   const [typed, setTyped] = useState('');
   const act = useScenario((s) => s.act);
 
@@ -144,11 +146,19 @@ export default function AgentPanel() {
   const lastPresenter = [...messages].reverse().find((m) => m.role === 'presenter');
   const history = messages.filter((m) => m.id !== lastAgent?.id && m.id !== lastPresenter?.id).slice(-6).reverse();
 
-  const start = async (e: React.SyntheticEvent) => {
+  // Tap = toggle (tap to open, tap again to send) · hold = push-to-talk (release to send). Clicker key: state/talk.ts.
+  const start = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    try { setTalking(true); await liveClient.startTalking(); } catch (err) { console.warn('Microphone error:', err); setTalking(false); }
+    if (useTalk.getState().talking) { stopTalk(); pressedAt.current = 0; return; }
+    pressedAt.current = Date.now();
+    void startTalk();
   };
-  const stop = (e: React.SyntheticEvent) => { e.preventDefault(); if (talking) { setTalking(false); liveClient.stopTalking(); } };
+  const stop = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    const held = pressedAt.current && Date.now() - pressedAt.current > 450;
+    pressedAt.current = 0;
+    if (held) stopTalk();
+  };
   const send = (text: string) => askAgent(text);
 
   return (
@@ -200,14 +210,14 @@ export default function AgentPanel() {
 
       <footer className="flex flex-col gap-2 border-t border-line px-4 py-3">
         <div className="flex items-center gap-2">
-          <button type="button" onPointerDown={start} onPointerUp={stop} onPointerLeave={stop} onTouchStart={start} onTouchEnd={stop}
-            className={clsx('btn h-11 flex-1 select-none justify-center text-[15px] transition-all', talking ? 'bg-risk text-white ring-2 ring-risk/50' : 'border-accent/50 text-accent hover:bg-accent/10')}
-            title="Hold to speak, release to send">
+          <button type="button" onPointerDown={start} onPointerUp={stop} onPointerLeave={stop}
+            className={clsx('btn h-11 flex-1 select-none justify-center border-accent/50 text-[15px] text-accent transition-all', talking ? 'bg-accent/15' : 'hover:bg-accent/10')}
+            title="Tap to talk, tap again to send">
             <svg width="16" height="16" viewBox="0 0 14 14" className={clsx(talking && 'animate-pulse')}>
               <rect x="4.5" y="1" width="5" height="8" rx="2.5" fill="currentColor" />
               <path d="M2.5 6.5a4.5 4.5 0 0 0 9 0M7 11v2" stroke="currentColor" fill="none" strokeWidth="1.3" />
             </svg>
-            {talking ? 'Listening… release to send' : 'Hold to talk'}
+            {talking ? 'Listening…' : 'Tap to talk'}
           </button>
           {voice === 'speaking' && (
             <button onClick={() => liveClient.interrupt()} className="btn h-11 border-risk/40 px-3 text-[13px] text-risk" title="Interrupt the agent">Stop</button>

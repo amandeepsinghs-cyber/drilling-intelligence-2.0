@@ -4,6 +4,7 @@ import { useScenario, type ActId } from './scenarioStore';
 import { enterAct, getLastTurn, nextTurn, resetShow, runTurn, turnRoles } from './turnMachine';
 import { useUi } from './uiStore';
 import { liveClient } from '../live/liveClient';
+import { beginLearnTalkKey, handleLearnKey, isTalkKey, toggleTalk } from './talk';
 
 export const CHANNEL = 'di2-presenter';
 export type PresenterCmd =
@@ -50,6 +51,7 @@ export const HOTKEYS: [string, string][] = [
   ['N / PageDown', 'Next turn (clicker)'], ['Space', 'Play / pause drilling'], ['0 – 9', 'Jump to turn 0–9'], ['-', 'Jump to WCR turn'], ['← →', 'Step 0.5 m (Shift: 5 m)'], // facts-ok: presenter step size, not a well fact
   ['M', 'MOC memo'], ['W', 'What-if'], ['A', 'Audit drawer'], ['D', '3D offsets'], ['B', 'Board / engineer'], ['V', 'Agent: LIVE / SCRIPTED'],
   ['T', 'Theme'], ['L', 'Caption language'], ['Shift+R', 'Reset show'], ['Esc', 'Close overlays + takeaway'], ['?', 'This help'],
+  ['PageUp / . (or learned key)', 'Talk: press to listen, press again to send (clicker)'], ['Shift+K', 'Learn talk key from clicker / pointer'],
 ];
 
 export function usePresenterBridge() {
@@ -83,6 +85,10 @@ export function usePresenterBridge() {
     const onKey = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      // Press-to-talk (clicker / pointer): checked first so a learned key always means TALK.
+      if (handleLearnKey(e)) return;
+      if (isTalkKey(e)) { e.preventDefault(); if (!e.repeat) toggleTalk(); return; }
+      if (e.key === 'K' && e.shiftKey) { e.preventDefault(); beginLearnTalkKey(); return; }
       const S = useScenario.getState(), U = useUi.getState();
       if (e.code === 'Space') { e.preventDefault(); S.togglePlay(); return; }
       if (/^Digit[1-4]$/.test(e.code) && e.shiftKey) { e.preventDefault(); enterAct(`act${e.code.slice(5)}` as ActId); return; }
