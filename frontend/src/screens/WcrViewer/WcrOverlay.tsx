@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useUi } from '../../state/uiStore';
+import { WCR_REPORT_URL } from '../../lib/reportUrl';
 import WcrDocument from './WcrDocument';
 import ShiftNotesTab from './ShiftNotesTab';
 import WcrCompareView from './WcrCompareView';
@@ -59,7 +60,7 @@ export default function WcrOverlay() {
 
               <div className="flex items-center gap-2">
                 <a
-                  href="/reports/WCR-MN-SM-DW-01.html"
+                  href={WCR_REPORT_URL}
                   target="_blank"
                   rel="noopener"
                   title="Full Well Completion Report (dummy report for a demo)"

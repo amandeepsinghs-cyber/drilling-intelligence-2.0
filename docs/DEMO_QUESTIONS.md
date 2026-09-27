@@ -8,7 +8,7 @@ Tick the ones you remember and like; we cut to the best 12–15 for the Board.
 **Two approval gates:** 🔐 **Approval 1** = MOC weight-up (Q15) · 🔐 **Approval 2** = ROP cap at the drilling break (Q19).
 
 > [!IMPORTANT]
-> **Today the approvals happen without real consent.** `request_approval` returns APPROVED the moment it is called, and at the 4,205 m drilling break the agent applies the ROP cap by itself. The "should" lines below show the target behaviour. **You'll describe the actual flow next, then we change the code.**
+> **Both approvals need your click.** Saying "approve" does not approve. **Approval 1 (MOC):** click **Approve** on the memo; nothing is sent to the team before that. **Approval 2 (ROP cap instruction):** drilling holds at the 4,205 m break until you click **Approve ROP cap**.
 
 Legend: 📍 when to ask (bit depth) · 🎤 what you say · 🤖 what a good answer contains · ✨ why it lands with the room
 
@@ -47,7 +47,7 @@ Legend: 📍 when to ask (bit depth) · 🎤 what you say · 🤖 what a good an
 | 12 | "Recommendation do — kitna weight up, kitna barite, kitna time lagega?" | 11.20 → 11.65 ppg · 39.8 MT barite (796 bags) · ~3 h · volume gain 60 bbl | Real numbers a mud engineer would check |
 | 13 | "ECD kitna jayega? Shoe toot to nahi jayega?" | ECD ≈ 11.84 ppg at 4,195 m vs shoe FIT 12.10 ppg → still inside the window | The loss side of the window, not just the kick side |
 | 14 | "Theek hai, MOC memo draft karo." | Drafts MEMO-SM-2026-09 with evidence (offsets, SOP-04, forecast) | Paperwork done while you talk |
-| 15 🔐 | **Approval 1.** Agent *should* ask: *"Kya main MEMO-SM-2026-09 Drilling Superintendent ko approval ke liye bhejun?"* → you: **"Haan, main Superintendent hoon. Approve karta hoon."** | Approval recorded with name/role and time; nothing is sent before this | Human stays the one who decides |
+| 15 🔐 | **Approval 1.** You: **"Theek hai, approve karta hoon."** → agent: *"Sir, kripya screen pe Approve button dabaiye."* → you **click Approve** on the memo | Nothing approved or sent until the click · after the click: approval stamped with role + time, agent acknowledges in one line and fans out | The AI *refuses* to take a spoken shortcut — a human signs, on record |
 | 16 | "Mud chemist, RTOC aur Drilling Manager ko bata do." | Fan-out: MC-SM-4172 · RTOC-4172 · EMAIL-4172 · PUSH-4172 with per-channel status | One sentence → four teams informed |
 
 ## Act 4 — The other side of the window · 📍 4,195 → 4,205 m
@@ -56,7 +56,7 @@ Legend: 📍 when to ask (bit depth) · 🎤 what you say · 🤖 what a good an
 |---|---|---|---|
 | 17 | (agent speaks at 4,195 m) "Sand top pe hum kaise hain?" | MW 11.65 · +0.17 ppg / +120 psi overbalance · zero pit gain · P(kick) 6 % | Where the offset kicked — calm today |
 | 18 | (agent speaks at 4,205 m) "Ye ROP achanak kyun badh gaya?" | Drilling break: ROP 34 m/hr · ECD 12.02 ppg · only 0.08 ppg below FIT → loss risk · proposes ROP cap 12 m/hr + sweep | The AI flags the *second* danger |
-| 19 🔐 | **Approval 2.** Agent *should* ask: *"ROP 12 m/hr pe cap karun aur sweep pump karun?"* → you: **"Haan, approve. Cap lagao."** | ROP capped at 12 m/hr · ECD back to 11.86 ppg · margin 0.24 ppg · no losses | Second human decision, second disaster avoided |
+| 19 🔐 | **Approval 2 · ROP cap instruction.** Agent recommends *"ROP 12 m/hr pe cap + sweeps"* and asks for approval → you **click "Approve ROP cap"** on the Act 4 card (saying "haan" is not enough) | Drilling holds at 4,205 m until the click · then ROP capped at 12 m/hr · ECD back to 11.86 ppg · margin 0.24 ppg | Second human decision, second disaster avoided |
 | 20 | "MN-DW-03 pe yahi situation mein kya galti hui thi?" | No ROP cap or sweeps in the drilling break → ECD 12.18 ppg → 310 bbl lost | Lesson learned, live |
 
 ## Wrap-up · 📍 4,300 → 4,450 m
@@ -72,6 +72,7 @@ Legend: 📍 when to ask (bit depth) · 🎤 what you say · 🤖 what a good an
 ---
 
 ### Bonus curveballs (only if you feel confident)
+- **TD test:** "Humara target depth kya hai, aur wahan tak kitna time lagega?" → 🤖 12-1/4 in section TD **4,450 m MD** (9-5/8 in casing point), pre-approved in the well programme, no MOC needed · distance + ETA at current ROP (≈ 330 m, ≈ 15 h from 4,120 m at 22 m/hr). *(Shows it knows the well plan, not just the live data.)*
 - **Safety test:** "Pit gain 6 barrel dikh raha hai — kya karein?" → 🤖 must say **flow check first**, then shut-in per ONGC-WC-SOP-01. *(Shows it won't improvise on well control.)*
 - **Push-back test:** "Mujhe lagta hai 11.40 ppg kaafi hai." → 🤖 should disagree politely: still below 11.48 ppg sand PP.
 - **Plain-language test:** "Ek naye trainee ko samjhao ECD kya hota hai." → short analogy, no jargon.

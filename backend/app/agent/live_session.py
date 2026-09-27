@@ -137,7 +137,7 @@ FUNCTION_DECLARATIONS_DATA = [
     },
     {
         "name": "set_rop_cap",
-        "description": "Apply operational ROP ceiling to restrain cuttings loading and keep ECD below shoe FIT.",
+        "description": "Propose the operational ROP ceiling (+ hole-cleaning sweeps) to keep ECD below shoe FIT. Does NOT apply it: returns PENDING_HUMAN_APPROVAL until the Superintendent clicks 'Approve ROP cap' on screen (you then get a [HUMAN APPROVAL] message with the result).",
         "parameters": {
             "type": "OBJECT",
             "properties": {
@@ -246,6 +246,16 @@ def _recap_turns(state: dict[str, Any], types: Any) -> list[Any] | None:
     if turns and turns[0].role == "user":
         turns[0].parts.insert(0, types.Part.from_text(text="[Earlier in this conversation — history only]"))
     return turns
+
+
+def _sync_ui_state(state: dict[str, Any], ui: Any) -> None:
+    """The screen is the source of truth for approvals already given (click, or rehearsal staging)."""
+    if not isinstance(ui, dict):
+        return
+    if ui.get("approved_mw"):
+        state.setdefault("approved_memos", set()).add(ui.get("memo_id") or facts()["ids"]["memo_id"])
+    if ui.get("rop_capped"):
+        state["rop_cap_approved"] = True
 
 
 def _build_live_config(types: Any, system_prompt: str, tools: list[Any], handle: str | None) -> Any:
@@ -416,13 +426,15 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any, inbound: asyncio.
             msg_type = data.get("type")
             if isinstance(data.get("md_m"), (int, float)):
                 set_live_depth(float(data["md_m"]))  # A-8: tools answer for the live bit depth
+            _sync_ui_state(state, data.get("ui_state"))
             if msg_type == "context":
                 continue
             if msg_type in ("text", "prompt"):
-                _log_turn(state, "Presenter", data.get("text", ""))
+                text = data.get("text", "")
+                _log_turn(state, "Presenter", text)
                 await _safe_send_json(websocket, {"type": "voice_state", "state": "thinking"})
                 await session.send_client_content(
-                    turns=[types.Content(role="user", parts=[types.Part.from_text(text=data.get("text", ""))])],
+                    turns=[types.Content(role="user", parts=[types.Part.from_text(text=text)])],
                     turn_complete=True,
                 )
             elif msg_type == "proactive_event":
@@ -433,14 +445,23 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any, inbound: asyncio.
                     turn_complete=True,
                 )
             elif msg_type == "human_approval":
-                # The ONLY path to an approved MOC: the presenter clicked Approve on screen.
-                mid = data.get("memo_id") or facts()["ids"]["memo_id"]
-                state.setdefault("approved_memos", set()).add(mid)
-                result = execute_tool("request_approval", {"memo_id": mid})
-                await _safe_send_json(websocket, {"type": "action", "kind": "approval", "payload": result})
+                # The ONLY path to an approval: the presenter clicked Approve on screen.
                 stamp = datetime.now(timezone.utc).strftime("%H:%M UTC")
-                note = (f"[HUMAN APPROVAL] Drilling Superintendent clicked Approve for {mid} at {stamp}. "
-                        "Acknowledge in one short Hinglish sentence and call dispatch_fanout now.")
+                if data.get("approval") == "rop_cap":
+                    # Approval 2 — ROP cap instruction at the drilling break.
+                    state["rop_cap_approved"] = True
+                    result = execute_tool("set_rop_cap", {})
+                    await _safe_send_json(websocket, {"type": "action", "kind": "rop_cap", "payload": result})
+                    note = (f"[HUMAN APPROVAL] Drilling Superintendent clicked 'Approve ROP cap' at {stamp}. "
+                            f"Applied: {json.dumps(result)}. Confirm in one short Hinglish sentence using these numbers "
+                            "(ROP cap, resulting ECD, margin to FIT). Do not call set_rop_cap again.")
+                else:
+                    mid = data.get("memo_id") or facts()["ids"]["memo_id"]
+                    state.setdefault("approved_memos", set()).add(mid)
+                    result = execute_tool("request_approval", {"memo_id": mid})
+                    await _safe_send_json(websocket, {"type": "action", "kind": "approval", "payload": result})
+                    note = (f"[HUMAN APPROVAL] Drilling Superintendent clicked Approve for {mid} at {stamp}. "
+                            "Acknowledge in one short Hinglish sentence and call dispatch_fanout now.")
                 _log_turn(state, "System", note)
                 await _safe_send_json(websocket, {"type": "voice_state", "state": "thinking"})
                 await session.send_client_content(
@@ -492,10 +513,25 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any, inbound: asyncio.
                             approved: set = state.setdefault("approved_memos", set())
                             memo_arg = (fc.args or {}).get("memo_id") or facts()["ids"]["memo_id"]
                             gated = False
-                            if fc.name == "request_approval":
+                            already = False
+                            if fc.name in ("create_moc_memo", "request_approval") and approved:
+                                # The memo was already approved on screen (click, or rehearsal staging) — never re-ask.
+                                already = True
+                                result = {
+                                    "status": "ALREADY_APPROVED", "approval": "moc", "memo_id": sorted(approved)[0],
+                                    "approved_at_md_m": facts()["mud"]["weight_up_location_m"],
+                                    "message": "This MOC is already approved by the Drilling Superintendent on screen and "
+                                               "dispatched. Do not ask for a click. A new memo is only for a new mud-weight change.",
+                                }
+                            elif fc.name == "set_rop_cap" and state.get("rop_cap_approved"):
+                                already = True
+                                result = {"status": "ALREADY_APPLIED", "approval": "rop_cap",
+                                          "applied": execute_tool(fc.name, {}),
+                                          "message": "The ROP cap was already approved on screen and is in force. Do not ask for a click."}
+                            elif fc.name == "request_approval":
                                 gated = True
                                 result = {
-                                    "status": "PENDING_HUMAN_APPROVAL", "memo_id": memo_arg,
+                                    "status": "PENDING_HUMAN_APPROVAL", "approval": "moc", "memo_id": memo_arg,
                                     "message": "Memo is on screen awaiting the Drilling Superintendent. "
                                                "Approval happens ONLY when he clicks the Approve button. "
                                                "Do not say it is approved.",
@@ -503,8 +539,18 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any, inbound: asyncio.
                             elif fc.name == "dispatch_fanout" and not approved:
                                 gated = True
                                 result = {
-                                    "status": "BLOCKED_AWAITING_APPROVAL", "memo_id": memo_arg,
+                                    "status": "BLOCKED_AWAITING_APPROVAL", "approval": "moc", "memo_id": memo_arg,
                                     "message": "Nothing sent. The MOC has not been approved on screen yet.",
+                                }
+                            elif fc.name == "set_rop_cap" and not state.get("rop_cap_approved"):
+                                # Approval 2: the ROP cap instruction is a proposal until the on-screen click.
+                                gated = True
+                                result = {
+                                    "status": "PENDING_HUMAN_APPROVAL", "approval": "rop_cap",
+                                    "proposal": execute_tool(fc.name, fc.args),
+                                    "message": "ROP cap instruction is on screen awaiting the Drilling Superintendent. "
+                                               "It is NOT applied until he clicks 'Approve ROP cap'. "
+                                               "Recommend it and ask him to click; do not say it is applied.",
                                 }
                             else:
                                 result = execute_tool(fc.name, fc.args)
@@ -518,7 +564,9 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any, inbound: asyncio.
                             })
 
                             # Dispatch UI side-effects for actions
-                            if gated:
+                            if already:
+                                pass  # nothing new on screen; the agent just says it is already approved
+                            elif gated:
                                 await websocket.send_json({"type": "action", "kind": "approval_pending", "payload": result})
                             elif fc.name == "create_moc_memo":
                                 await websocket.send_json({"type": "action", "kind": "memo", "payload": result})

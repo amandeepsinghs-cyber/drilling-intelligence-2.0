@@ -243,6 +243,14 @@ def compute_barite(w1: float | None = None, w2: float | None = None, vol_bbl: fl
 
 def search_knowledge(query: str = "deepwater narrow window SOP and offset kicks", filters: dict | None = None) -> dict[str, Any]:
     """Retrieve relevant drilling SOPs, offset Well Completion Reports, DDRs and incident records (cited corpus text)."""
+    # Well-control SOP questions ("SOP influx ke baare mein kya bolta hai?") must surface the actual
+    # shut-in steps, not only the principles paragraph — steer the query to the procedure section.
+    wc_topic = re.search(r"influx|kick|well.?control|flow.?check|shut.?in", query, re.I)
+    sop_ask = re.search(r"\bSOP\b|instruction|guideline|kya bolta", query, re.I)
+    other_sop = re.search(r"SOP-0[2-9]|\bROP\b|drilling.?break|loss|ECD|sweep|cement|casing|trip", query, re.I)
+    generic_sop = re.search(r"\bSOP\b", query, re.I) and not other_sop  # e.g. a garbled "SOP institution" = well control
+    if (re.search(r"WC-SOP", query, re.I) or (wc_topic and sop_ask) or generic_sop) and not re.search(r"procedure|steps", query, re.I):
+        query = f"{query} ONGC-WC-SOP-01 shut-in procedure steps"
     results = retriever.search(query, filters=filters, k=3)
     return {"query": query, "matches_count": len(results), "documents": results}
 
@@ -454,11 +462,19 @@ def dispatch_fanout(memo_id: str | None = None, channels: list[str] | None = Non
 
 
 def set_rop_cap(rop: float | None = None) -> dict[str, Any]:
-    """Apply operational ROP ceiling to restrain cuttings loading and prevent ECD from exceeding FIT."""
+    """Apply operational ROP ceiling to restrain cuttings loading and prevent ECD from exceeding FIT.
+
+    In a live session this is Approval 2: a model call only returns the proposal (PENDING); it is applied
+    when the Drilling Superintendent clicks 'Approve ROP cap' on screen.
+    """
     f = facts()
     rop = float(rop) if rop is not None else float(f["drilling"]["rop_cap_m_hr"])
     fit = float(f["casing"]["last_shoe"]["fit_ppg"])
-    ecd_new = round(ecd_calibrated(mw_ppg=f["mud"]["weighted"]["mw_ppg"], rop_m_hr=rop), 2)
+    if rop == float(f["drilling"]["rop_cap_m_hr"]):
+        # The recommended cap: quote the canonical checkpoint so voice, card, shift log and WCR all say the same ECD.
+        ecd_new = round(float(checkpoint("After ROP cap")["ecd_ppg"]), 2)
+    else:
+        ecd_new = round(ecd_calibrated(mw_ppg=f["mud"]["weighted"]["mw_ppg"], rop_m_hr=rop), 2)
 
     return {
         "rop_cap_m_hr": rop,
@@ -509,7 +525,7 @@ def generate_wcr() -> dict[str, Any]:
         "basin": f["well"]["basin"],
         "program": f["well"]["program"],
         "status": "COMPILED",
-        "report_url": "/reports/WCR-MN-SM-DW-01.html",  # full report hosted in-app (dummy report for a demo)
+        "report_url": "https://storage.cloud.google.com/sagar-drishti-data/reports/WCR-MN-SM-DW-01.html",  # full report in the GCS data lake (dummy report for a demo); agent must not read it aloud
         "sections_included": [
             "1. Geological Summary & Stratigraphy",
             "2. Drilling Operations & ROP Log",

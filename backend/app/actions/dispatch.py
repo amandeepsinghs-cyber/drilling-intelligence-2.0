@@ -87,7 +87,7 @@ async def dispatch_docs_wcr(payload: WcrExportPayload) -> DispatchResult:
         details={
             "sections_compiled": len(payload.sections),
             "export_format": "Google Docs / PDF",
-            "url": "/reports/WCR-MN-SM-DW-01.html",
+            "url": "https://storage.cloud.google.com/sagar-drishti-data/reports/WCR-MN-SM-DW-01.html",
         },
     )
 

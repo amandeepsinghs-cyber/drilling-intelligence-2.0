@@ -103,10 +103,11 @@ function ensurePrereqs(n: number, staging = false) {
     void fetchDispatch(f).then(({ channels, text }) => useLedger.getState().patch('DISPATCH', { channels, text }));
   }
   if (before(R.t8) && !s.fired.T8_OFFSET_DEPTH) s.markFired('T8_OFFSET_DEPTH');
-  if (before(R.t9) && !s.fired.T9_DRILLING_BREAK) {
-    s.markFired('T9_DRILLING_BREAK'); s.capRop();
+  if (before(R.t9) && !s.fired.T9_DRILLING_BREAK) s.markFired('T9_DRILLING_BREAK');
+  if (staging && before(R.t9) && !useScenario.getState().ropCapped) {
+    s.capRop();
     const t9 = f.triggers.T9_DRILLING_BREAK.md_m as number;
-    L.append({ id: 'ROP_CAP', kind: 'ROP_CAP', md: t9, title: `ROP cap ${f.drilling.rop_cap_m_hr} m/hr + sweep`, actor: 'Driller (accepted)', basis: snapshot(t9) });
+    L.append({ id: 'ROP_CAP', kind: 'ROP_CAP', md: t9, title: `ROP cap ${f.drilling.rop_cap_m_hr} m/hr + sweep — approved`, actor: 'Presenter (Drilling Superintendent)', basis: snapshot(t9) });
   }
   if (before(R.shift) && !L.entries.some((e) => e.id === 'SHIFT_LOG')) void fetchShiftLog(s.md);
 }
@@ -145,6 +146,14 @@ export async function runTurn(n: number, opts: { jump?: boolean; fromButton?: bo
     if (opts.jump) ensurePrereqs(gate); // make sure the memo exists so there is something to approve
     S.setAct('act3');
     useUi.getState().notify(`${bundle.facts.ids.memo_id} needs your approval — review the memo and click Approve`, 'warn');
+    return;
+  }
+  // Approval 2 gate: turns after the drilling break need the ROP cap instruction approved on screen.
+  const gate2 = turnRoles(bundle.turns).t9;
+  if (gate2 >= 0 && n > gate2 && !S.ropCapped) {
+    if (!S.fired.T9_DRILLING_BREAK && opts.jump) return runTurn(gate2, { jump: true }); // jumped past the break: show it first
+    S.setAct('act4');
+    useUi.getState().notify('ROP cap instruction needs your approval — click "Approve ROP cap"', 'warn');
     return;
   }
   busy = true;
@@ -236,12 +245,9 @@ export async function runTurn(n: number, opts: { jump?: boolean; fromButton?: bo
         setTimeout(() => useLedger.getState().setChannelStatus('DISPATCH', c.id, c.status), 1300 + i * 350);
       });
     }
-    if (n === R.t9 && !done('ROP_CAP')) {
-      setTimeout(() => {
-        useScenario.getState().capRop();
-        useLedger.getState().append({ id: 'ROP_CAP', kind: 'ROP_CAP', md: turn.md_m, title: `ROP cap ${f.drilling.rop_cap_m_hr} m/hr + sweep`, actor: 'Driller (accepted)', basis: snapshot(turn.md_m) });
-        useUi.getState().notify(`ROP capped at ${f.drilling.rop_cap_m_hr} m/hr`, 'ok');
-      }, live ? 0 : 2500);
+    if (n === R.t9 && !useScenario.getState().ropCapped) {
+      // Approval 2: the agent only proposes the cap. It is applied by approveRopCap() when the presenter clicks.
+      U.notify('ROP cap instruction awaiting your approval — click "Approve ROP cap"', 'warn');
     }
     if (n === R.shift && !useLedger.getState().entries.find((e) => e.id === 'SHIFT_LOG')?.lines?.length) await fetchShiftLog(turn.md_m);
     if (n === R.wcr) {
@@ -284,6 +290,7 @@ export function checkTriggers(prevMd: number, nextMd: number): { clampTo: number
   if (S.fired.T3_PRESSURE_RAMP && !S.approvedMw && nextMd > t3) return { clampTo: t3, turn: -1 };
   if (!S.fired.T8_OFFSET_DEPTH && crosses(t8)) return { clampTo: t8, turn: R.t8 };
   if (!S.fired.T9_DRILLING_BREAK && crosses(t9)) return { clampTo: t9, turn: R.t9 };
+  if (S.fired.T9_DRILLING_BREAK && !S.ropCapped && nextMd > t9) return { clampTo: t9, turn: -3 };
   const td = f.well.live_interval_m.td;
   if (crosses(td)) return { clampTo: td, turn: -2 };
   return null;
@@ -311,6 +318,49 @@ export function nextTurn() {
 async function waitIdle(maxMs = 45000) {
   const t0 = Date.now();
   while (busy && Date.now() - t0 < maxMs) await sleep(150);
+}
+
+/** "Approve ROP cap" button (Act 4, drilling break) — Approval 2, the ONLY way the ROP cap is applied. Then drilling resumes. */
+export async function approveRopCap() {
+  const S = useScenario.getState();
+  const f = S.bundle?.facts;
+  if (!f || S.ropCapped) return;
+  await waitIdle();
+  const R = roles();
+  const t9 = f.triggers.T9_DRILLING_BREAK.md_m as number;
+  if (!S.fired.T9_DRILLING_BREAK) S.markFired('T9_DRILLING_BREAK');
+  let live = false;
+  if (liveActive() && liveClient.sendHumanApproval(f.ids.memo_id, 'rop_cap')) {
+    live = true;
+    busy = true;
+    try {
+      await liveClient.waitForTurnComplete(30000);
+    } finally {
+      busy = false;
+    }
+  }
+  // SCRIPTED (or the backend's action was lost): the click itself applies the cap.
+  if (!useScenario.getState().ropCapped) {
+    useScenario.getState().capRop();
+    useLedger.getState().append({ id: 'ROP_CAP', kind: 'ROP_CAP', md: t9, title: `ROP cap ${f.drilling.rop_cap_m_hr} m/hr + sweep — approved`, actor: 'Presenter (Drilling Superintendent)', basis: snapshot(t9) });
+    useUi.getState().notify(`ROP cap approved — capped at ${f.drilling.rop_cap_m_hr} m/hr`, 'ok');
+    if (!live) {
+      const cap = f.checkpoints.find((c) => c.label === 'After ROP cap');
+      const ecd = cap?.ecd_ppg as number | undefined;
+      const fit = f.casing.last_shoe.fit_ppg;
+      const tail = ecd != null ? ` ECD back to ${ecd.toFixed(2)} ppg — ${(fit - ecd).toFixed(2)} ppg below the shoe FIT.` : '';
+      const tailHi = ecd != null ? ` ECD वापस ${ecd.toFixed(2)} ppg — शू FIT से ${(fit - ecd).toFixed(2)} ppg नीचे।` : '';
+      useAgent.getState().push({
+        role: 'agent', en: `Approved. ROP capped at ${f.drilling.rop_cap_m_hr} m/hr with hole-cleaning sweeps.${tail}`,
+        hi: `Approve हो गया। ROP ${f.drilling.rop_cap_m_hr} m/hr पर cap, hole-cleaning sweeps के साथ।${tailHi}`,
+        md: t9, tools: [{ name: 'set_rop_cap', status: 'done' }], citations: [], turn: R.t9,
+      });
+    }
+  }
+  lastTurn = Math.max(lastTurn, R.t9);
+  useAgent.getState().setVoice('idle');
+  await sleep(1200);
+  useScenario.getState().play();
 }
 
 /** After a LIVE fan-out (Gemini called dispatch_fanout itself): show the Act 3 card, then resume drilling. */
@@ -405,10 +455,16 @@ export async function askAgent(text: string) {
     return;
   }
   const R = roles();
-  if (n === R.approve && !useScenario.getState().approvedMw) {
+  const S0 = useScenario.getState();
+  if (n === R.approve && !S0.approvedMw) {
     // Typed/spoken "approve" is not consent — only the on-screen button approves.
-    useScenario.getState().setAct('act3');
+    S0.setAct('act3');
     useUi.getState().notify('Sir, kripya screen pe Approve button dabaiye — approval needs your click', 'warn');
+    return;
+  }
+  if ((n === R.approve || n === R.t9) && S0.fired.T9_DRILLING_BREAK && !S0.ropCapped) {
+    S0.setAct('act4');
+    useUi.getState().notify('Sir, kripya screen pe "Approve ROP cap" dabaiye — approval needs your click', 'warn');
     return;
   }
   await waitIdle();

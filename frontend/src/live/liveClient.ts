@@ -9,6 +9,13 @@ import { useUi } from '../state/uiStore';
 import { audioPlayer } from './audioPlayer';
 import { micCapture } from './micCapture';
 
+/** Approvals the screen already holds (a click, or rehearsal staging) — the backend syncs to this so the
+ *  agent never asks for a click on something that is already approved. */
+function uiState() {
+  const S = useScenario.getState();
+  return { approved_mw: S.approvedMw, rop_capped: S.ropCapped, memo_id: S.bundle?.facts.ids.memo_id };
+}
+
 export type LiveStatus = 'disconnected' | 'connecting' | 'connected' | 'reconnecting' | 'fallback';
 
 class LiveClient {
@@ -270,11 +277,17 @@ class LiveClient {
       case 'action': {
         const payload = msg.payload || {};
         // The action panels live in Act 3 (memo → approve → fan-out) and Act 4 (shift notes ⇄ WCR).
-        if (['memo', 'approval', 'approval_pending', 'dispatch'].includes(msg.kind)) S.setAct('act3');
-        if (['shift_log', 'wcr'].includes(msg.kind)) S.setAct('act4');
+        if (['memo', 'approval', 'dispatch'].includes(msg.kind)) S.setAct('act3');
+        if (['shift_log', 'wcr', 'rop_cap'].includes(msg.kind)) S.setAct('act4');
         if (msg.kind === 'approval_pending') {
-          // The agent asked for approval (or tried to dispatch early). Only the on-screen button approves.
-          U.notify('Awaiting your approval — review the memo and click Approve', 'warn');
+          // The agent asked for approval (or tried to act early). Only the on-screen button approves.
+          if (payload.approval === 'rop_cap') {
+            S.setAct('act4');
+            U.notify('Awaiting your approval — click "Approve ROP cap"', 'warn');
+          } else {
+            S.setAct('act3');
+            U.notify('Awaiting your approval — review the memo and click Approve', 'warn');
+          }
         } else if (msg.kind === 'memo') {
           const evidence = Array.isArray(payload.evidence) ? payload.evidence : [];
           L.append({
@@ -309,10 +322,10 @@ class LiveClient {
             id: 'ROP_CAP',
             kind: 'ROP_CAP',
             md: currMd,
-            title: `ROP capped at ${payload.rop_cap_m_hr || 12} m/hr + sweep`,
-            actor: 'Driller (accepted)',
+            title: `ROP cap ${payload.rop_cap_m_hr || 12} m/hr + sweep — approved`,
+            actor: 'Presenter (Drilling Superintendent)',
           });
-          U.notify(`ROP capped at ${payload.rop_cap_m_hr || 12} m/hr`, 'ok');
+          U.notify(`ROP cap approved — capped at ${payload.rop_cap_m_hr || 12} m/hr`, 'ok');
         } else if (msg.kind === 'shift_log') {
           L.append({ id: 'SHIFT_LOG', kind: 'SHIFT_LOG', md: currMd, title: 'Shift handover notes', actor: 'agent', lines: payload.lines ?? [] });
           L.patch('SHIFT_LOG', { lines: payload.lines ?? [] });
@@ -336,7 +349,7 @@ class LiveClient {
   /** A-8: tell the backend the live bit depth so tools answer for *this* depth, not a default. */
   private sendContext(): void {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify({ type: 'context', md_m: useScenario.getState().md }));
+      this.ws.send(JSON.stringify({ type: 'context', md_m: useScenario.getState().md, ui_state: uiState() }));
     }
   }
 
@@ -396,7 +409,7 @@ class LiveClient {
     A.setVoice('thinking');
 
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify({ type: 'prompt', text, turn, md_m: useScenario.getState().md }));
+      this.ws.send(JSON.stringify({ type: 'prompt', text, turn, md_m: useScenario.getState().md, ui_state: uiState() }));
     } else {
       A.setVoice('idle');
       useUi.getState().notify('Live agent not connected — press N for the scripted turn, or V to switch mode', 'warn');
@@ -407,12 +420,12 @@ class LiveClient {
    * The presenter clicked Approve on screen — the only way an MOC gets approved in LIVE.
    * Returns false if the socket is not open (caller falls back to the scripted path).
    */
-  public sendHumanApproval(memoId: string): boolean {
+  public sendHumanApproval(memoId: string, approval: 'moc' | 'rop_cap' = 'moc'): boolean {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return false;
     audioPlayer.interrupt();
     this.currentAgentMsgId = null;
     useAgent.getState().setVoice('thinking');
-    this.ws.send(JSON.stringify({ type: 'human_approval', memo_id: memoId, md_m: useScenario.getState().md }));
+    this.ws.send(JSON.stringify({ type: 'human_approval', approval, memo_id: memoId, md_m: useScenario.getState().md, ui_state: uiState() }));
     return true;
   }
 
@@ -431,6 +444,7 @@ class LiveClient {
           trigger_id: triggerId,
           md_m: md,
           prompt,
+          ui_state: uiState(),
         })
       );
     }

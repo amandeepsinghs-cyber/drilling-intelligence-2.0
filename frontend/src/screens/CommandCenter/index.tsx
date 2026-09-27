@@ -2,6 +2,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect } from 'react';
 import MemoOverlay from '../../components/actions/MemoOverlay';
+import RopCapApprovalCard from '../../components/actions/RopCapApprovalCard';
 import AuditDrawer from '../../components/audit/AuditDrawer';
 import Toast from '../../components/common/Toast';
 import WhatIfDrawer from '../../components/whatif/WhatIfDrawer';
@@ -35,6 +36,7 @@ export default function CommandCenter() {
       <TakeawayCard />
       <ClosingCard />
       <MemoOverlay />
+      <RopCapApprovalCard />
       <WhatIfDrawer />
       <AuditDrawer />
       {/* DispatchCard + PhoneMirror superseded by the inline Act 3 panel (WP-08); files kept, unmounted. */}

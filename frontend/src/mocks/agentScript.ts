@@ -204,8 +204,8 @@ export function buildScript(b: ScenarioBundle, d: Columnar): Record<number, Scri
     },
     12: {
       agent: {
-        en: `Drilling break at ${n0(brk.md_m)} m: ROP surged to ${brk.rop_m_hr} m/hr and circulating ECD reached ${fmt(brk.ecd_ppg as number)} ppg—only ${fmt(brkMargin)} ppg below shoe FIT. To prevent repeat of ${loss.id} losses, I have capped ROP at ${f.drilling.rop_cap_m_hr} m/hr with hole-cleaning sweeps. ECD returned safely to ${fmt(cap.ecd_ppg as number)} ppg.`,
-        hi: `${n0(brk.md_m)} मीटर पर drilling break: ROP ${brk.rop_m_hr} m/hr हो गया और ECD ${fmt(brk.ecd_ppg as number)} ppg पहुँच गया — शू FIT से सिर्फ ${fmt(brkMargin)} ppg नीचे। ${loss.id} जैसे losses रोकने के लिए मैंने ROP ${f.drilling.rop_cap_m_hr} m/hr पर cap कर दिया है। ECD वापस सुरक्षित ${fmt(cap.ecd_ppg as number)} ppg पर आ गया है।`,
+        en: `Sir, ek minute — drilling break at ${n0(brk.md_m)} m: ROP surged to ${brk.rop_m_hr} m/hr and circulating ECD reached ${fmt(brk.ecd_ppg as number)} ppg—only ${fmt(brkMargin)} ppg below shoe FIT. To prevent a repeat of ${loss.id} losses, I recommend capping ROP at ${f.drilling.rop_cap_m_hr} m/hr with hole-cleaning sweeps; ECD would come back to ${fmt(cap.ecd_ppg as number)} ppg. Please approve the ROP cap instruction on screen.`,
+        hi: `Sir, ek minute — ${n0(brk.md_m)} मीटर पर drilling break: ROP ${brk.rop_m_hr} m/hr हो गया और ECD ${fmt(brk.ecd_ppg as number)} ppg पहुँच गया — शू FIT से सिर्फ ${fmt(brkMargin)} ppg नीचे। ${loss.id} जैसे losses रोकने के लिए मेरी सलाह है ROP ${f.drilling.rop_cap_m_hr} m/hr पर cap करें, sweeps के साथ; ECD वापस ${fmt(cap.ecd_ppg as number)} ppg पर आ जाएगा। कृपया screen पर "Approve ROP cap" दबाइए।`,
       },
       citations: [cite(b.offsets.sops[5].id, '§6 ROP limits at drilling breaks', b.offsets.sops[5].title)],
     },

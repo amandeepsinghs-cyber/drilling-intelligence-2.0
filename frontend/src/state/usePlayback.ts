@@ -28,6 +28,7 @@ export function usePlayback() {
         S.pause();
         if (hit.turn >= 0) void runTurn(hit.turn);
         else if (hit.turn === -1) useUi.getState().notify('Holding at alert depth — MOC approval required (turn 6)', 'warn');
+        else if (hit.turn === -3) useUi.getState().notify('Holding at the drilling break — click "Approve ROP cap"', 'warn');
         else useUi.getState().notify('TD reached — press "-" to generate the WCR', 'info');
         return;
       }

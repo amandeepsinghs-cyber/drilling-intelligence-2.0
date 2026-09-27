@@ -16,13 +16,13 @@ export function Wordmark() {
   return (
     <div className="flex items-center gap-3">
       {logoOk ? (
-        <img src={src} alt="Google Cloud" className="h-7 w-auto" onError={() => setLogoOk(false)} />
+        <img src={src} alt="Google Cloud" className="h-10 w-auto" onError={() => setLogoOk(false)} />
       ) : (
         // Placeholder until the official logo file is present: plain text, no imitation of the logo.
-        <span className="whitespace-nowrap text-[15px] font-medium tracking-tight text-fg">Google Cloud</span>
+        <span className="whitespace-nowrap text-[18px] font-medium tracking-tight text-fg">Google Cloud</span>
       )}
-      <span className="h-5 w-px bg-line" />
-      <span className="whitespace-nowrap text-[14px] font-semibold tracking-tight text-muted">Drilling Intelligence</span>
+      <span className="h-7 w-px bg-line" />
+      <span className="whitespace-nowrap text-[16px] font-semibold tracking-tight text-muted">Drilling Intelligence</span>
     </div>
   );
 }

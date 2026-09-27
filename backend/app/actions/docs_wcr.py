@@ -66,6 +66,6 @@ async def generate_wcr_doc(payload: WcrExportPayload) -> DispatchResult:
         details={
             "wcr_id": payload.wcr_id,
             "document_length_chars": len(wcr_text),
-            "export_url": "/reports/WCR-MN-SM-DW-01.html",
+            "export_url": "https://storage.cloud.google.com/sagar-drishti-data/reports/WCR-MN-SM-DW-01.html",
         },
     )

@@ -14,6 +14,13 @@ import { askAgent } from '../../state/turnMachine';
 import { useUi } from '../../state/uiStore';
 import CitationCard from './CitationCard';
 import VoiceRing from './VoiceRing';
+import { WCR_REPORT_URL } from '../../lib/reportUrl';
+
+/** The agent can't speak a clickable link, so any answer about the WCR gets a real "Open WCR report" button.
+ *  Spoken Hinglish is transcribed in Devanagari ("डब्ल्यूसीआर", "लिंक", "रिपोर्ट"), so match those too. */
+const WCR_RE = /\bW\.?\s?C\.?\s?R\b|completion report|reports\/WCR|\blink\b|डब्ल्यू\s?सी\s?आर|लिंक/i;
+const mentionsWcr = (m: AgentMessage) =>
+  m.tools.some((t) => t.name === 'generate_wcr') || WCR_RE.test(`${m.en} ${m.hi}`);
 
 /** Tool name → what the agent did, in plain words (shown as reasoning steps). */
 const STEP: Record<string, string> = {
@@ -27,7 +34,7 @@ const STEP: Record<string, string> = {
   create_moc_memo: 'Drafted the MOC memo',
   request_approval: 'Asked for your approval',
   dispatch_fanout: 'Sent the instructions to the team',
-  set_rop_cap: 'Set the ROP limit',
+  set_rop_cap: 'Prepared the ROP cap instruction',
   draft_shift_log: 'Drafted the shift handover notes',
   generate_wcr: 'Drafted the well completion report',
   writeback_lessons: 'Saved the lessons learned',
@@ -95,6 +102,12 @@ function Stage({ m, speaking }: { m: AgentMessage; speaking: boolean }) {
       </div>
       {lang !== 'en' && m.hi && <p className="devanagari text-[24px] font-medium leading-[1.45] text-fg">{m.hi}</p>}
       {lang !== 'hi' && m.en && (lang === 'en' || m.en !== m.hi) && <p className={clsx('leading-relaxed', lang === 'en' ? 'text-[20px] text-fg' : 'mt-2 text-[15px] text-muted')}>{m.en}</p>}
+      {mentionsWcr(m) && (
+        <a href={WCR_REPORT_URL} target="_blank" rel="noopener"
+          className="mt-3 inline-flex items-center gap-2 rounded-md border border-accent/60 bg-accent/10 px-3 py-1.5 text-[14px] font-semibold text-accent hover:bg-accent/20">
+          📄 Open WCR report ↗
+        </a>
+      )}
       {m.tools.length > 0 && (
         <ol className="mt-3 space-y-1 border-t border-line/70 pt-2.5">
           {m.tools.map((t, k) => (

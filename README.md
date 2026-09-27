@@ -9,7 +9,7 @@ Contents: [1 · Try it now](#1--try-it-now-10-minutes) · [2 · The script](#2--
 
 > Illustrative scenario: well logs are synthetic (physics-based); offset reports and SOPs are simulated; Chat, email and phone lanes are **simulated** in the demo.
 
-> 🎯 **Practice questions:** [docs/DEMO_QUESTIONS.md](docs/DEMO_QUESTIONS.md) — 25 questions (English → Hinglish) with the two approval gates, to pick your favourites.
+> 🎯 **Practice questions:** [docs/CONVERSATION_PRACTICE.md](docs/CONVERSATION_PRACTICE.md) — 24 questions as one conversation per act (start here) · [docs/DEMO_QUESTIONS.md](docs/DEMO_QUESTIONS.md) — 25 questions (English → Hinglish) with the two approval gates, to pick your favourites.
 
 ---
 
@@ -145,10 +145,13 @@ Numbers come from the scenario file the agent reads, so what you hear should mat
 ⌨️ `M` opens the memo. Show the frozen basis and citations, then `Esc`.
 🗣️ *"Physics does the numbers, the model gives the range, the memo cites the SOP. It recommends; it does not decide."*
 
-**Turn 8 · approval** 🎤 (or click **Approve** on the Act 3 panel)
+**Turn 8 · approval (Approval 1)** 🎤 then ⌨️ click
 > "Theek hai, kar do."
 
-🤖 Approved by you. The basis is frozen in the decision ledger. "Kisko dispatch karun?"
+🤖 It does **not** take the spoken shortcut: "Sir, kripya screen pe **Approve** button dabaiye."
+⌨️ Click **Approve** (memo footer or the Act 3 panel). Only now is it approved: stamped with your role and time, basis frozen in the decision ledger, and the agent acknowledges in one line.
+
+🗣️ *"Notice it refused my voice. A decision like this needs a signature on record, so it needs my click."*
 
 **Turn 9 · fan-out** 🎤
 > "Mud chemist ko message, manager ko email, base ko bhi bata do."
@@ -173,11 +176,13 @@ Speed stays at **×60**: about 2 min to 4,195 m. Switch to **×300** if you're r
 🤖 "We are at 4,195 m, the depth where **MN-DW-02** kicked." We're **+120 psi** overbalanced, kick probability is down to **6 %**, and flow and pits are stable.
 👉 The offset kick replays as a ghost next to our flat line.
 
-**Turn 11 · PROACTIVE drilling break** (automatic at 4,205 m)
-🤖 ROP jumped to **34 m/hr** and ECD reached **12.02 ppg**, only **0.08 ppg** under the FIT. To avoid a repeat of the MN-DW-03 losses, it has capped ROP at **12 m/hr** with sweeps. ECD is back to **11.86 ppg**.
-🗣️ *"Now it's protecting the other side of the window: the losses."*
+**Turn 11 · PROACTIVE drilling break → Approval 2** (automatic at 4,205 m; drilling holds)
+🤖 "Sir, ek minute." ROP jumped to **34 m/hr** and ECD reached **12.02 ppg**, only **0.08 ppg** under the FIT. To avoid a repeat of the MN-DW-03 losses it **recommends** an ROP cap of **12 m/hr** with sweeps (ECD would come back to **11.86 ppg**) and asks you to approve.
+👉 The **Approval 2 · ROP cap instruction** card in the Act 4 panel.
+⌨️ Click **Approve ROP cap**. Only then is the cap applied; the agent confirms ECD back to 11.86 ppg and drilling resumes.
+🗣️ *"Second decision, second human click. Now it's protecting the other side of the window: the losses."*
 
-⌨️ Click speed chip **×1200**, then `Space`. That gives about a minute of rig time-lapse toward TD while you talk.
+⌨️ Drilling resumes by itself after the click. Click speed chip **×1200** for about a minute of rig time-lapse toward TD while you talk.
 
 **Turn 12 · shift handover** 🎤
 > "Is shift ka handover note bana do."
