@@ -19,6 +19,14 @@ export const useTalk = create<TalkState>(() => ({
 
 let timer: ReturnType<typeof setTimeout> | null = null;
 
+// The live client closes the mic itself when the agent starts answering (server VAD ended the turn).
+if (typeof window !== 'undefined') {
+  window.addEventListener('di-mic-auto-closed', () => {
+    if (timer) { clearTimeout(timer); timer = null; }
+    useTalk.setState({ talking: false });
+  });
+}
+
 export async function startTalk() {
   if (useTalk.getState().talking) return;
   if (useUi.getState().agentMode !== 'LIVE') {

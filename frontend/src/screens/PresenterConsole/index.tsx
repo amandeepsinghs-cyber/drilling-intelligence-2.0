@@ -112,6 +112,9 @@ export default function PresenterConsole() {
           <span className="text-xs uppercase tracking-wider text-muted font-mono px-2 py-0.5 rounded bg-panel/60 border border-strong">
             Presenter Remote · /presenter
           </span>
+          <a href="/guide" target="_blank" rel="noopener noreferrer" className="kbd px-2.5 py-1 text-xs hover:border-accent/60 hover:text-accent" title="Open demo flow & 25-question bank">
+            Demo Flow ↗
+          </a>
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5 text-xs font-mono">

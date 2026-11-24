@@ -69,6 +69,7 @@ export default function TopBar() {
           <div className="num text-[17px] font-semibold text-fg">{md.toLocaleString('en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} <span className="text-[12px] text-muted">m</span></div>
         </div>
         <Clock />
+        <button id="topbar-guide-btn" className={clsx('kbd px-2 py-1', ui.overlays.guide && 'border-accent/70 text-accent')} onClick={() => ui.toggle('guide')} title="Demo flow & 25-question bank (G)">Guide</button>
         <button className="kbd py-1" onClick={ui.toggleTheme} title="Theme (T)">{ui.theme === 'dark' ? '☀' : '☾'}</button>
         <button className="kbd py-1" onClick={() => ui.toggle('help')} title="Hotkeys (?)">?</button>
       </div>

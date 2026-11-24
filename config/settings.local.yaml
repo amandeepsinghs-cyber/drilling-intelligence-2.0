@@ -1,6 +1,6 @@
 # DI_ENV=local  (SDD §4.2)
 env: local
-project_id: drilling-intelligence
+project_id: drilling-intelligence-2-509714
 region: us-central1
 offline: false                     # DI_OFFLINE=1 overrides
 paths:

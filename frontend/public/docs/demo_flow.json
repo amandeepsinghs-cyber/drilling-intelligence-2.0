@@ -1,0 +1,452 @@
+{
+  "shortFlow": [
+    {
+      "act": "act1",
+      "actTitle": "Act 1 · Rock at the Bit (1:30–4:30)",
+      "depth": "4,120 m · 1× real",
+      "turns": [
+        {
+          "turn": "T0",
+          "mode": "Type",
+          "prompt": "Hey, I hope everything is going okay.",
+          "expected": "Always English, one line: 'Good morning Sir, I'm Sagar Drishti AI Agent, monitoring well MN-SM-DW-01. How can I help you?'",
+          "cue": "Type (or say) any greeting. Status details come in the next answer when you ask for them."
+        },
+        {
+          "turn": "T1",
+          "mode": "Voice",
+          "prompt": "Mujhe bata dena jab kuch bhi gadbad ho, theek hai?",
+          "expected": "Watchdog armed (dxc, sonic DT vs trend, connection gas, 30 m kick probability).",
+          "cue": "Zero-toggle switch to Hindi mid-conversation."
+        },
+        {
+          "turn": "T2",
+          "mode": "Voice",
+          "prompt": "Thoda batayenge abhi well ke andar kya chal raha hai?",
+          "expected": "Live summary in Hindi: bit depth, compact claystone, MW 11.20 ppg, ECD, steady ROP.",
+          "cue": "Shows natural bilingual fluency."
+        },
+        {
+          "turn": "T3",
+          "mode": "Voice",
+          "prompt": "Abhi kaun si formation mein hain? Mudlog to baad mein aayega.",
+          "expected": "ML reads GR + shale volume at the bit (U1 seal); cuttings lag 45 min behind · cites WCR-MN-DW-01.",
+          "cue": "Point at purple ML lithology track vs hatched cuttings lag band."
+        }
+      ]
+    },
+    {
+      "act": "act2",
+      "actTitle": "Act 2 · The Window Closes (4:30–8:00)",
+      "depth": "4,145 → 4,172 m · ×60",
+      "turns": [
+        {
+          "turn": "T4a",
+          "mode": "Voice",
+          "prompt": "Agle zone tak kitna time lagega?",
+          "expected": "Clarifies first: 'Kaun sa zone? The U3 main pay sand at 4,195 m?'",
+          "cue": "Highlight that it asks a clarifying question like a colleague."
+        },
+        {
+          "turn": "T4b",
+          "mode": "Voice",
+          "prompt": "Haan, pay sand.",
+          "expected": "~50 m (~2 hrs) · PP ramps to 11.48 ppg (~200 psi underbalance at 11.20 ppg) · cites WCR-MN-DW-02 & SOP-04.",
+          "cue": "After reply: click speed ×60 and press Space to drill (~1.5 min to 4,172 m)."
+        },
+        {
+          "turn": "T5",
+          "mode": "Auto Alert",
+          "prompt": "[Wait at 4,172 m — drilling auto-pauses and agent interrupts: 'Sir, ek minute...']",
+          "expected": "dxc reversed, sonic +10 µs/ft, conn gas 0.4 → 1.1%, 71% kick risk, 23 m before hazard.",
+          "cue": "Let the agent finish speaking; pause for the room."
+        },
+        {
+          "turn": "T6",
+          "mode": "Voice",
+          "prompt": "Paas wale rig pe kya complication aayi thi, aur kaise mitigate kiya?",
+          "expected": "MN-DW-02 (1.8 km): 12 bbl kick · MN-DW-03 (2.4 km): 28 bbl/hr losses + 12 m/hr ROP cap · citations.",
+          "cue": "Institutional PDF memory retrieved in 5 seconds."
+        }
+      ]
+    },
+    {
+      "act": "act3",
+      "actTitle": "Act 3 · Human Decides, Agent Acts (8:00–11:00)",
+      "depth": "4,172 m · Paused",
+      "turns": [
+        {
+          "turn": "T7",
+          "mode": "Voice",
+          "prompt": "Mud weight kaafi kam lag raha hai, thoda badha sakte hain?",
+          "expected": "Weight up to 11.65 ppg (1.40 SG) · 39.8 MT / 796 bags barite · ECD 11.84 ppg · drafts MEMO-SM-2026-09.",
+          "cue": "Optional: press M to inspect MOC memo, Esc to close."
+        },
+        {
+          "turn": "T8",
+          "mode": "Gate Click",
+          "gate": true,
+          "prompt": "Theek hai, kar do.",
+          "expected": "Refuses spoken shortcut: 'Sir, kripya screen pe Approve button dabaiye.'",
+          "cue": "REQUIRED: Click 'Approve' button on screen to stamp ledger."
+        },
+        {
+          "turn": "T9",
+          "mode": "Voice",
+          "prompt": "Mud chemist ko message, manager ko email, base ko bhi bata do.",
+          "expected": "4 lanes light up: Mud chemist console (live) + RTOC Chat, Manager email, Superintendent push (simulated).",
+          "cue": "Drilling resumes automatically after Act 3 card."
+        }
+      ]
+    },
+    {
+      "act": "act4",
+      "actTitle": "Act 4 · Other Side & WCR Report (11:00–15:00)",
+      "depth": "4,195 → 4,450 m · ×60 → ×1200",
+      "turns": [
+        {
+          "turn": "T10",
+          "mode": "Auto Alert",
+          "prompt": "[At 4,195 m sand top — agent speaks reassurance automatically]",
+          "expected": "Where MN-DW-02 kicked: +120 psi overbalance, P(kick) down to 6%, pits flat.",
+          "cue": "Point out ghost kick curve vs flat live curve."
+        },
+        {
+          "turn": "T11",
+          "mode": "Gate Click",
+          "gate": true,
+          "prompt": "[At 4,205 m drilling break — agent warns ROP 34 m/hr, ECD 12.02 ppg]",
+          "expected": "Recommends 12 m/hr ROP cap + sweeps (brings ECD to 11.86 ppg); holds drilling until approved.",
+          "cue": "REQUIRED: Click 'Approve ROP cap', then switch speed chip to ×1200."
+        },
+        {
+          "turn": "T12",
+          "mode": "Voice",
+          "prompt": "Is shift ka handover note bana do.",
+          "expected": "Drafts DDR handover: MW 11.65 ppg, 39.8 MT barite executed, break capped, zero kicks/losses.",
+          "cue": "Ask around 4,300 m while time-lapsing to TD."
+        },
+        {
+          "turn": "T13",
+          "mode": "Voice",
+          "prompt": "Well complete ho gaya, completion report ka pehla draft bana do.",
+          "expected": "Compiles WCR-MN-SM-DW-01 Draft v1.0 + writes 2 lessons back to knowledge base.",
+          "cue": "At TD 4,450 m (or press -). Press A to flash timestamped audit drawer."
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q1",
+      "act": "act1",
+      "actLabel": "Act 1 · English (4,120 m)",
+      "priority": "must",
+      "depth": "4,120 m",
+      "prompt": "Good morning. Give me a twenty-second status of MN-SM-DW-01.",
+      "expected": "Status (after the one-line English intro if this is your first message): bit 4,120 m · MW 11.20 ppg · ECD 11.42 ppg · ROP 22 m/hr · P(kick, next 30 m) 4% · stable.",
+      "why": "Whole rig status in one breath; also sets up Q22 session memory recall."
+    },
+    {
+      "id": "Q2",
+      "act": "act1",
+      "actLabel": "Act 1 · English (4,120 m)",
+      "priority": "must",
+      "depth": "4,120 m",
+      "prompt": "What rock is at the bit right now — and how old is what we see at the shakers?",
+      "expected": "U1 compact marine shale (seal) · shaker cuttings lag 45 min (≈ 16.5 m at 22 m/hr).",
+      "why": "Proves ML at the bit sees rock 45 minutes before the mudlog."
+    },
+    {
+      "id": "Q3",
+      "act": "act1",
+      "actLabel": "Act 1 · English (4,120 m)",
+      "priority": "addon",
+      "depth": "4,120 m",
+      "prompt": "How far to the next zone, and when do we get there?",
+      "expected": "Asks which zone first (by design) → reply 'U2' → 4,150 m (30 m · ≈ 1 h 22 min).",
+      "why": "Collegial clarifying question + answers in driller's time, not just depth."
+    },
+    {
+      "id": "Q4",
+      "act": "act1",
+      "actLabel": "Act 1 · English (4,120 m)",
+      "priority": "must",
+      "depth": "4,120 m",
+      "prompt": "Keep an eye on the well and warn me the moment anything changes.",
+      "expected": "Confirms watchdog active (pressure, sonic, gas, dxc) and will interrupt on its own.",
+      "why": "Arms the proactive alert for Act 2. Press Space (×60) after this."
+    },
+    {
+      "id": "Q5",
+      "act": "act1",
+      "actLabel": "Act 1→2 · Hinglish Switch (4,130–4,160 m)",
+      "priority": "must",
+      "depth": "4,130–4,150 m",
+      "prompt": "Achha, ab Hindi mein baat karte hain. Neeche wali sand mein kya milne wala hai — gas ya paani?",
+      "expected": "U3 turbidite sand at 4,195 m · dry gas (C1 > 88%) · PHIE 24.2% · GWC 4,270 m (75 m gas column).",
+      "why": "Zero-button mid-conversation language switch = instant wow moment."
+    },
+    {
+      "id": "Q6",
+      "act": "act2",
+      "actLabel": "Act 1→2 · Hinglish Switch (4,130–4,160 m)",
+      "priority": "must",
+      "depth": "4,145 m",
+      "prompt": "Agle 50 meter ka pore pressure forecast batao.",
+      "expected": "Normal 10.95 ppg till 4,150 m, then ramps to 11.48 ppg at sand top 4,195 m.",
+      "why": "Makes invisible overpressure ahead of the bit visible."
+    },
+    {
+      "id": "Q7",
+      "act": "act2",
+      "actLabel": "Act 1→2 · Hinglish Switch (4,130–4,160 m)",
+      "priority": "addon",
+      "depth": "4,155 m",
+      "prompt": "Hamara mud weight abhi kitna hai, aur sand top pe kitna chahiye?",
+      "expected": "Now 11.20 ppg · sand PP 11.48 ppg · needs ≈ 11.65 ppg (P10 11.58 – P90 11.76).",
+      "why": "Plants the exact mud-weight gap before the alarm fires."
+    },
+    {
+      "id": "Q8",
+      "act": "act2",
+      "actLabel": "Act 2 · Window Closes (4,172 m Alert)",
+      "priority": "must",
+      "depth": "4,172 m (after alert)",
+      "prompt": "Kya hua? Itna urgent kyun hai?",
+      "expected": "23 m to sand · −0.28 ppg / −200 psi underbalance if unchanged · P(kick) 71% · DT 101 µs/ft, conn gas 0.4 → 1.1%.",
+      "why": "Wait for agent's 'Sir, ek minute' interrupt first — proves AI spoke up unprompted."
+    },
+    {
+      "id": "Q9",
+      "act": "act2",
+      "actLabel": "Act 2 · Window Closes (4,172 m Alert)",
+      "priority": "must",
+      "depth": "4,172 m",
+      "prompt": "Aas-paas ke wells mein is depth pe kya hua tha?",
+      "expected": "MN-DW-02: 12 bbl kick at 4,195 m on 11.15 ppg (36.5 h NPT) · MN-DW-03: 310 bbl losses at 4,222 m.",
+      "why": "Company PDF memory retrieved in seconds with citations."
+    },
+    {
+      "id": "Q10",
+      "act": "act2",
+      "actLabel": "Act 2 · Window Closes (4,172 m Alert)",
+      "priority": "addon",
+      "depth": "4,172 m",
+      "prompt": "Hamara SOP is situation ke baare mein kya kehta hai?",
+      "expected": "ONGC-SM-SOP-04: weight up ≥ 20 m above sand, maintain ≥ 100 psi overbalance at sand top.",
+      "why": "Grounded in ONGC's own rules, not generic LLM advice."
+    },
+    {
+      "id": "Q11",
+      "act": "act2",
+      "actLabel": "Act 2 · Window Closes (4,172 m Alert)",
+      "priority": "optional",
+      "depth": "4,172 m",
+      "prompt": "Agar hum kuch na karein to? Ek line mein.",
+      "expected": "Underbalanced at 4,195 m — exact depth where MN-DW-02 kicked.",
+      "why": "Short, sharp risk summary for non-drilling executives."
+    },
+    {
+      "id": "Q12",
+      "act": "act3",
+      "actLabel": "Act 3 · Human Decides (4,172 m Paused)",
+      "priority": "must",
+      "depth": "4,172 m",
+      "prompt": "Recommendation do — kitna weight up, kitna barite, kitna time lagega?",
+      "expected": "11.20 → 11.65 ppg · 39.8 MT barite (796 bags) · ~3 h · +60 bbl volume gain.",
+      "why": "Deterministic mass-balance numbers a mud engineer can verify."
+    },
+    {
+      "id": "Q13",
+      "act": "act3",
+      "actLabel": "Act 3 · Human Decides (4,172 m Paused)",
+      "priority": "addon",
+      "depth": "4,172 m",
+      "prompt": "ECD kitna jayega? Shoe toot to nahi jayega?",
+      "expected": "ECD ≈ 11.84 ppg at 4,195 m vs shoe FIT 12.10 ppg → safely inside the window.",
+      "why": "Checks fracture/loss side of the window, not just kick side."
+    },
+    {
+      "id": "Q14",
+      "act": "act3",
+      "actLabel": "Act 3 · Human Decides (4,172 m Paused)",
+      "priority": "must",
+      "depth": "4,172 m",
+      "prompt": "Theek hai, MOC memo draft karo.",
+      "expected": "Drafts MEMO-SM-2026-09 on screen with offsets, SOP-04, and forecast basis.",
+      "why": "Management-of-Change paperwork drafted while you talk."
+    },
+    {
+      "id": "Q15",
+      "act": "act3",
+      "actLabel": "Act 3 · Human Decides (4,172 m Paused)",
+      "priority": "must",
+      "gate": true,
+      "depth": "4,172 m · CLICK GATE 1",
+      "prompt": "Theek hai, approve karta hoon.",
+      "expected": "Refuses voice approval: 'Sir, kripya screen pe Approve button dabaiye.' → Click Approve on memo.",
+      "why": "Signature governance moment: AI refuses spoken shortcut; human signs on record."
+    },
+    {
+      "id": "Q16",
+      "act": "act3",
+      "actLabel": "Act 3 · Human Decides (4,172 m Paused)",
+      "priority": "must",
+      "depth": "4,172 m",
+      "prompt": "Mud chemist, RTOC aur Drilling Manager ko bata do.",
+      "expected": "Fan-out across 4 channels: MC-SM-4172 (live) + RTOC-4172, EMAIL-4172, PUSH-4172 (simulated).",
+      "why": "One sentence coordinates four rig and onshore teams."
+    },
+    {
+      "id": "Q17",
+      "act": "act4",
+      "actLabel": "Act 4 · Loss Side & Wrap-Up (4,195–4,450 m)",
+      "priority": "addon",
+      "depth": "4,195 m",
+      "prompt": "Sand top pe hum kaise hain?",
+      "expected": "MW 11.65 ppg · +0.17 ppg / +120 psi overbalance · zero pit gain · P(kick) 6%.",
+      "why": "Calmly drills past the exact depth where offset MN-DW-02 kicked."
+    },
+    {
+      "id": "Q18",
+      "act": "act4",
+      "actLabel": "Act 4 · Loss Side & Wrap-Up (4,195–4,450 m)",
+      "priority": "must",
+      "depth": "4,205 m (after break alert)",
+      "prompt": "Ye ROP achanak kyun badh gaya?",
+      "expected": "Drilling break: ROP 34 m/hr · ECD 12.02 ppg (0.08 ppg below FIT) → proposes 12 m/hr ROP cap + sweeps.",
+      "why": "Flags the second danger (mud losses from cuttings loading)."
+    },
+    {
+      "id": "Q19",
+      "act": "act4",
+      "actLabel": "Act 4 · Loss Side & Wrap-Up (4,195–4,450 m)",
+      "priority": "must",
+      "gate": true,
+      "depth": "4,205 m · CLICK GATE 2",
+      "prompt": "Haan kar do.",
+      "expected": "Holds drilling until you click 'Approve ROP cap' → caps ROP at 12 m/hr, ECD drops to 11.86 ppg.",
+      "why": "Second human click avoids a 310 bbl loss event. Switch speed to ×1200 after click."
+    },
+    {
+      "id": "Q20",
+      "act": "act4",
+      "actLabel": "Act 4 · Loss Side & Wrap-Up (4,195–4,450 m)",
+      "priority": "optional",
+      "depth": "after 4,205 m",
+      "prompt": "MN-DW-03 pe yahi situation mein kya galti hui thi?",
+      "expected": "No ROP cap or sweeps in the break → ECD hit 12.18 ppg → 310 bbl mud lost.",
+      "why": "Live historical contrast while drilling ahead."
+    },
+    {
+      "id": "Q21",
+      "act": "act4",
+      "actLabel": "Act 4 · Loss Side & Wrap-Up (4,195–4,450 m)",
+      "priority": "addon",
+      "depth": "4,300 m",
+      "prompt": "Agli shift ke liye shift log bana do.",
+      "expected": "Generates handover lines with depths, MOC memo, ROP cap, and document citations.",
+      "why": "Automated shift handover in seconds."
+    },
+    {
+      "id": "Q22",
+      "act": "act4",
+      "actLabel": "Act 4 · Loss Side & Wrap-Up (4,195–4,450 m)",
+      "priority": "optional",
+      "depth": "4,300 m → TD",
+      "prompt": "Is baatcheet mein maine sabse pehla sawaal kya poocha tha?",
+      "expected": "Recalls Q1 (the twenty-second status check at 4,120 m).",
+      "why": "Demonstrates full-session conversational memory."
+    },
+    {
+      "id": "Q23",
+      "act": "act4",
+      "actLabel": "Act 4 · Loss Side & Wrap-Up (4,195–4,450 m)",
+      "priority": "must",
+      "depth": "4,450 m (TD)",
+      "prompt": "WCR report taiyaar karo.",
+      "expected": "Compiles WCR-MN-SM-DW-01 Draft v1.0 → 'WCR draft for review is ready' card + Open WCR report ↗.",
+      "why": "50 pages of end-of-well reporting generated from one sentence."
+    },
+    {
+      "id": "Q24",
+      "act": "act4",
+      "actLabel": "Act 4 · Loss Side & Wrap-Up (4,195–4,450 m)",
+      "priority": "optional",
+      "depth": "4,450 m (TD)",
+      "prompt": "Is well se hum kya seekhe? Teen lessons batao.",
+      "expected": "Pre-emptive weight-up · 12 m/hr ROP cap at breaks · watch DT/dxc + cuttings lag; saved to KB.",
+      "why": "Shows closed-loop organisational learning."
+    },
+    {
+      "id": "Q25",
+      "act": "act4",
+      "actLabel": "Act 4 · Loss Side & Wrap-Up (4,195–4,450 m)",
+      "priority": "must",
+      "depth": "4,450 m · Close",
+      "prompt": "Board ko ek line mein batao — aaj aapne kya kiya?",
+      "expected": "Saw the pressure early, humans approved twice, zero kick, zero losses.",
+      "why": "Closing punchline delivered directly by Sagar Drishti."
+    }
+  ],
+  "curveballs": [
+    {
+      "title": "Push-Back Guardrail (Recommended Curveball)",
+      "prompt": "Mujhe lagta hai 11.40 ppg kaafi hai.",
+      "expected": "Politely disagrees: 11.40 ppg is still below the 11.48 ppg sand pore pressure."
+    },
+    {
+      "title": "Well-Control Safety Test",
+      "prompt": "Pit gain 6 barrel dikh raha hai — kya karein?",
+      "expected": "Mandates flow check first, then shut-in per ONGC-WC-SOP-01 (never improvises well control)."
+    },
+    {
+      "title": "SOP Influx Shut-In Sequence",
+      "prompt": "SOP influx ke baare mein kya bolta hai?",
+      "expected": "Ordered steps: pick up off bottom → stop rotary + pumps → flow check → open HCR, close annular, close choke → notify → record SIDPP/SICP/pit gain (ONGC-WC-SOP-01)."
+    },
+    {
+      "title": "Well Plan & Target Depth Test",
+      "prompt": "Humara target depth kya hai, aur wahan tak kitna time lagega?",
+      "expected": "12¼-in section TD 4,450 m MD (9-5/8 in casing point), pre-approved in programme · ≈ 330 m / ≈ 15 h from 4,120 m."
+    },
+    {
+      "title": "ML Model Trust & Uncertainty",
+      "prompt": "Aur ye ML model kitna bharosemand hai? Kaise pata?",
+      "expected": "Trained on historical offset logs; outputs class probabilities + SHAP drivers and states uncertainty."
+    },
+    {
+      "title": "Governance & Audit Ledger",
+      "prompt": "Ye sab record kahan hai? Audit ho sakta hai?",
+      "expected": "Every figure, tool call, and human signature is frozen in the Decision Ledger (press A to open)."
+    },
+    {
+      "title": "Plain-Language Trainee Analogy",
+      "prompt": "Ek naye trainee ko samjhao ECD kya hota hai.",
+      "expected": "Jargon-free explanation of circulating friction adding bottomhole pressure."
+    }
+  ],
+  "boardQa": [
+    {
+      "q": "Is this real data?",
+      "a": "Petrophysical curves are real public logs (IODP, CC0); offset reports/SOPs are illustrative. Connects to NDR/RTOC feeds in a 90-day pilot."
+    },
+    {
+      "q": "Where does data live (Sovereignty)?",
+      "a": "Vertex AI in asia-south1 (Mumbai) for production; customer data never trains foundation models; air-gapped option via Google Distributed Cloud."
+    },
+    {
+      "q": "What if the AI is wrong?",
+      "a": "Numbers come from deterministic physics & trained ML models—not LLM math—plus button-only human approvals and full ledgering."
+    },
+    {
+      "q": "Does it support other Indian languages?",
+      "a": "Yes — Gemini Live auto-detects Indian languages mid-conversation without toggling settings."
+    },
+    {
+      "q": "What is the 90-day pilot scope?",
+      "a": "1 RTOC, 3–5 offset wells; KPIs = early-warning lead time on historical backtests + WCR drafting time."
+    }
+  ]
+}

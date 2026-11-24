@@ -9,7 +9,7 @@ import { beginLearnTalkKey, handleLearnKey, isTalkKey, toggleTalk } from './talk
 export const CHANNEL = 'di2-presenter';
 export type PresenterCmd =
   | { cmd: 'turn'; n: number } | { cmd: 'play' } | { cmd: 'pause' } | { cmd: 'toggle' } | { cmd: 'reset' }
-  | { cmd: 'mode' } | { cmd: 'theme' } | { cmd: 'lang' } | { cmd: 'overlay'; o: 'memo' | 'audit' | 'whatif' | 'wcr' } | { cmd: '3d' }
+  | { cmd: 'mode' } | { cmd: 'theme' } | { cmd: 'lang' } | { cmd: 'overlay'; o: 'memo' | 'audit' | 'whatif' | 'wcr' | 'guide' } | { cmd: '3d' }
   | { cmd: 'speed'; s: number } | { cmd: 'agentMode' } | { cmd: 'act'; id: ActId } | { cmd: 'takeaway' } | { cmd: 'next' };
 
 /** Enter: show / hide the current act's takeaway card. */
@@ -49,7 +49,7 @@ export function toggleAgentMode() {
 export const HOTKEYS: [string, string][] = [
   ['Shift+1 – 4', 'Enter Act 1–4 (stage only)'], ['Enter', 'Show / hide act takeaway'],
   ['N / PageDown', 'Next turn (clicker)'], ['Space', 'Play / pause drilling'], ['0 – 9', 'Jump to turn 0–9'], ['-', 'Jump to WCR turn'], ['← →', 'Step 0.5 m (Shift: 5 m)'], // facts-ok: presenter step size, not a well fact
-  ['M', 'MOC memo'], ['W', 'What-if'], ['A', 'Audit drawer'], ['D', '3D offsets'], ['B', 'Board / engineer'], ['V', 'Agent: LIVE / SCRIPTED'],
+  ['M', 'MOC memo'], ['W', 'What-if'], ['A', 'Audit drawer'], ['G', 'Demo guide & 25 questions'], ['D', '3D offsets'], ['B', 'Board / engineer'], ['V', 'Agent: LIVE / SCRIPTED'],
   ['T', 'Theme'], ['L', 'Caption language'], ['Shift+R', 'Reset show'], ['Esc', 'Close overlays + takeaway'], ['?', 'This help'],
   ['PageUp / . (or learned key)', 'Talk: press to listen, press again to send (clicker)'], ['Shift+K', 'Learn talk key from clicker / pointer'],
 ];
@@ -103,6 +103,7 @@ export function usePresenterBridge() {
       if (k === 'm') U.toggle('memo');
       else if (k === 'w') U.toggle('whatif');
       else if (k === 'a') U.toggle('audit');
+      else if (k === 'g') U.toggle('guide');
       else if (k === 'd') U.toggle3d();
       else if (k === 'b') U.toggleMode();
       else if (k === 'v') toggleAgentMode();

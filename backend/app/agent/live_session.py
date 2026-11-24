@@ -14,6 +14,7 @@ import asyncio
 import json
 import logging
 import os
+import time
 from datetime import datetime, timezone
 from typing import Any
 
@@ -202,6 +203,34 @@ _CLOSED = object()  # sentinel pushed on the inbound queue when the browser disc
 MAX_CONSECUTIVE_FAILURES = 3
 DEBUG_RECONNECT = os.getenv("DI_DEBUG_RECONNECT", "0") == "1"
 
+# Lessons ported from the Urvi app (same gemini-3.8-live model):
+# * Gemini Live sometimes keeps streaming near-silent audio for minutes after the answer with no turn_complete.
+#   Cut the turn after this much trailing silence so later answers are not queued behind it in the browser.
+SILENCE_RMS = 200                # PCM16 RMS; speech is in the thousands, the runaway stream ~5-20
+MAX_TRAILING_SILENCE_S = 4.0     # after speech; natural pauses between sentences are well under 2 s
+MAX_LEADING_SILENCE_S = 12.0     # before any speech in the turn
+PCM_OUT_BYTES_PER_S = 48000      # 24 kHz mono PCM16
+# * Tools run off the event loop with a timeout, so a slow tool never stalls audio streaming.
+TOOL_TIMEOUT_S = 10.0
+
+
+def _pcm_rms(data: bytes) -> float:
+    import numpy as np
+    samples = np.frombuffer(data[: len(data) - len(data) % 2], dtype="<i2").astype(np.float64)
+    return float(np.sqrt(np.mean(samples * samples))) if samples.size else 0.0
+
+
+def _reset_turn_audio(state: dict[str, Any]) -> None:
+    state.update(turn_cut=False, speech_seen=False, silent_s=0.0)
+
+
+async def _exec_tool(name: str, args: Any) -> Any:
+    try:
+        return await asyncio.wait_for(asyncio.to_thread(execute_tool, name, args), timeout=TOOL_TIMEOUT_S)
+    except (TimeoutError, asyncio.TimeoutError):
+        logger.warning(f"Tool {name} timed out after {TOOL_TIMEOUT_S:.0f} s")
+        return {"status": "UNAVAILABLE", "message": f"{name} timed out"}
+
 
 async def _safe_send_json(websocket: WebSocket, payload: dict) -> bool:
     try:
@@ -262,14 +291,27 @@ def _build_live_config(types: Any, system_prompt: str, tools: list[Any], handle:
     """LiveConnectConfig with session resumption + sliding-window compression (P0-1)."""
     return types.LiveConnectConfig(
         response_modalities=[types.Modality.AUDIO],
+        temperature=0.2,  # Urvi: steadier language and fewer invented details on the same model
         output_audio_transcription=types.AudioTranscriptionConfig(),
         input_audio_transcription=types.AudioTranscriptionConfig(),
         system_instruction=types.Content(parts=[types.Part.from_text(text=system_prompt)]),
         tools=tools,
         speech_config=types.SpeechConfig(
+            # en-IN: Indian English accent; Hinglish (Hindi words in an Indian English voice) still works.
+            language_code=os.getenv("DI_SPEECH_LANG", "en-IN"),
             voice_config=types.VoiceConfig(
                 prebuilt_voice_config=types.PrebuiltVoiceConfig(voice_name="Aoede")
             )
+        ),
+        # Tap-to-talk: server VAD ends the turn on a short pause (no second tap needed); a second tap
+        # sends audio_stream_end to flush immediately. Tuned for fast hand-off in a quiet boardroom.
+        realtime_input_config=types.RealtimeInputConfig(
+            automatic_activity_detection=types.AutomaticActivityDetection(
+                disabled=False,
+                end_of_speech_sensitivity=types.EndSensitivity.END_SENSITIVITY_HIGH,
+                prefix_padding_ms=200,
+                silence_duration_ms=int(os.getenv("DI_VAD_SILENCE_MS", "700")),
+            ),
         ),
         # Resumption: server issues handles; reconnecting with the latest handle keeps conversation memory.
         session_resumption=types.SessionResumptionConfig(handle=handle),
@@ -413,6 +455,14 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any, inbound: asyncio.
             if message is _CLOSED:
                 return "browser_closed"
             if message.get("bytes"):
+                if not state.get("talking"):
+                    state["talking"] = True
+                    state.pop("t_end", None)
+                    state["t_mic0"], state["mic_bytes"], state["t_heard0"] = time.monotonic(), 0, None
+                    if state.get("turn_cut"):
+                        _reset_turn_audio(state)  # new question: never swallow its answer as runaway silence
+                    logger.info("TL mic: first audio chunk from browser")
+                state["mic_bytes"] = state.get("mic_bytes", 0) + len(message["bytes"])
                 await session.send_realtime_input(
                     audio=types.Blob(data=message["bytes"], mime_type="audio/pcm;rate=16000")
                 )
@@ -431,6 +481,9 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any, inbound: asyncio.
                 continue
             if msg_type in ("text", "prompt"):
                 text = data.get("text", "")
+                logger.info(f"TL text prompt: {text[:80]}")
+                _reset_turn_audio(state)
+                state["t_end"] = time.monotonic()
                 _log_turn(state, "Presenter", text)
                 await _safe_send_json(websocket, {"type": "voice_state", "state": "thinking"})
                 await session.send_client_content(
@@ -439,6 +492,7 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any, inbound: asyncio.
                 )
             elif msg_type == "proactive_event":
                 prompt = data.get("prompt") or data.get("prompt_injection", "")
+                logger.info(f"TL proactive event: {prompt[:80]}")
                 await _safe_send_json(websocket, {"type": "voice_state", "state": "alert"})
                 await session.send_client_content(
                     turns=[types.Content(role="user", parts=[types.Part.from_text(text=prompt)])],
@@ -469,7 +523,11 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any, inbound: asyncio.
                     turn_complete=True,
                 )
             elif msg_type == "audio_end":
-                await session.send_realtime_input(audio_stream_end=True)
+                logger.info(f"TL mic: audio_end from browser (talking={state.get('talking')}, "
+                            f"sent {state.get('mic_bytes', 0) / 32000:.1f} s of audio)")
+                if state.pop("talking", False):
+                    state["t_end"] = time.monotonic()
+                    await session.send_realtime_input(audio_stream_end=True)
             elif msg_type == "interrupt":
                 await _safe_send_json(websocket, {"type": "interrupted"})
             elif msg_type == "debug_reconnect" and DEBUG_RECONNECT:
@@ -497,6 +555,7 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any, inbound: asyncio.
                     # 1. Check for tool calls
                     if response.tool_call is not None:
                         tool_since_output = True
+                        state["silent_s"] = 0.0  # no audio flows while tools run
                         await websocket.send_json({"type": "voice_state", "state": "thinking"})
                         tool_responses = []
                         for fc in response.tool_call.function_calls:
@@ -526,7 +585,7 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any, inbound: asyncio.
                             elif fc.name == "set_rop_cap" and state.get("rop_cap_approved"):
                                 already = True
                                 result = {"status": "ALREADY_APPLIED", "approval": "rop_cap",
-                                          "applied": execute_tool(fc.name, {}),
+                                          "applied": await _exec_tool(fc.name, {}),
                                           "message": "The ROP cap was already approved on screen and is in force. Do not ask for a click."}
                             elif fc.name == "request_approval":
                                 gated = True
@@ -547,13 +606,15 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any, inbound: asyncio.
                                 gated = True
                                 result = {
                                     "status": "PENDING_HUMAN_APPROVAL", "approval": "rop_cap",
-                                    "proposal": execute_tool(fc.name, fc.args),
+                                    "proposal": await _exec_tool(fc.name, fc.args),
                                     "message": "ROP cap instruction is on screen awaiting the Drilling Superintendent. "
                                                "It is NOT applied until he clicks 'Approve ROP cap'. "
                                                "Recommend it and ask him to click; do not say it is applied.",
                                 }
                             else:
-                                result = execute_tool(fc.name, fc.args)
+                                _t0 = time.monotonic()
+                                result = await _exec_tool(fc.name, fc.args)
+                                logger.info(f"TL tool {fc.name} took {(time.monotonic() - _t0) * 1000:.0f} ms")
 
                             # Notify UI of tool result
                             await websocket.send_json({
@@ -592,6 +653,10 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any, inbound: asyncio.
 
                     # 2. Check for server content (audio & transcription)
                     sc = response.server_content
+                    if sc is not None and getattr(sc, "interrupted", False):
+                        logger.info("TL Gemini interrupted the current reply (barge-in)")
+                        _reset_turn_audio(state)
+                        await _safe_send_json(websocket, {"type": "interrupted"})
                     if sc is not None:
                         # Transcription from output_audio_transcription
                         if getattr(sc, "output_transcription", None):
@@ -609,9 +674,38 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any, inbound: asyncio.
                         if sc.model_turn is not None:
                             for part in sc.model_turn.parts:
                                 if part.inline_data and part.inline_data.data:
+                                    if state.get("turn_cut"):
+                                        continue  # swallow the rest of a runaway silent stream
+                                    data = part.inline_data.data
+                                    dur = len(data) / PCM_OUT_BYTES_PER_S
+                                    if _pcm_rms(data) >= SILENCE_RMS:
+                                        state["speech_seen"], state["silent_s"] = True, 0.0
+                                    else:
+                                        state["silent_s"] = state.get("silent_s", 0.0) + dur
+                                    limit = MAX_TRAILING_SILENCE_S if state.get("speech_seen") else MAX_LEADING_SILENCE_S
+                                    if state["silent_s"] > limit:
+                                        # Gemini Live can keep streaming near-silent audio for minutes with no
+                                        # turn_complete; queued in the browser it delays every later answer.
+                                        logger.warning(f"Runaway silence cut after {state['silent_s']:.1f} s of silent audio")
+                                        state["turn_cut"], state["cut_tail"] = True, True
+                                        turn_output = False
+                                        tool_since_output = False
+                                        full_text = " ".join(current_caption).strip()
+                                        current_caption = []
+                                        heard = "".join(state.pop("heard", [])).strip()
+                                        logger.info(f"Heard: {heard[:200]}")
+                                        logger.info(f"Said (cut): {full_text[:200]}")
+                                        _log_turn(state, "Agent", full_text)
+                                        await websocket.send_json({"type": "turn_complete", "full_text": full_text})
+                                        await websocket.send_json({"type": "voice_state", "state": "idle"})
+                                        continue
                                     turn_output = True
+                                    t_end = state.pop("t_end", None)
+                                    if t_end is not None:
+                                        logger.info(f"TL first reply audio after end of input: {(time.monotonic() - t_end) * 1000:.0f} ms")
+                                    state["talking"] = False  # VAD ended the utterance; next mic chunk starts a new one
                                     # Send binary 24 kHz audio chunk directly to browser
-                                    await websocket.send_bytes(part.inline_data.data)
+                                    await websocket.send_bytes(data)
                                     await websocket.send_json({"type": "voice_state", "state": "speaking"})
                                 if part.text:
                                     turn_output = True
@@ -622,9 +716,13 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any, inbound: asyncio.
                                         "role": "agent",
                                     })
 
-                        if sc.turn_complete and not turn_output and tool_since_output:
+                        if sc.turn_complete and state.pop("cut_tail", False):
+                            # Gemini's own turn_complete for a turn we already closed (runaway silence cut).
+                            _reset_turn_audio(state)
+                        elif sc.turn_complete and not turn_output and tool_since_output:
                             logger.debug("Swallowed empty turn_complete after tool call")
                         elif sc.turn_complete:
+                            _reset_turn_audio(state)
                             turn_output = False
                             tool_since_output = False
                             full_text = " ".join(current_caption).strip()
@@ -632,7 +730,9 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any, inbound: asyncio.
                             heard = "".join(state.pop("heard", [])).strip()
                             if heard:
                                 _log_turn(state, "Presenter", heard)
+                                logger.info(f"Heard: {heard[:200]}")
                             _log_turn(state, "Agent", full_text)
+                            logger.info(f"Said: {full_text[:200]}")
                             await websocket.send_json({
                                 "type": "turn_complete",
                                 "full_text": full_text,
@@ -642,6 +742,10 @@ async def _run_bidi_stream(websocket: WebSocket, session: Any, inbound: asyncio.
                         # Presenter speech transcription (Hindi/Hinglish) for on-screen captions
                         it = getattr(sc, "input_transcription", None)
                         if it is not None and getattr(it, "text", None):
+                            if state.get("turn_cut"):
+                                _reset_turn_audio(state)  # presenter is speaking again: a new turn
+                            if not state.get("heard") and state.get("t_mic0"):
+                                logger.info(f"TL heard first words {(time.monotonic() - state['t_mic0']) * 1000:.0f} ms after mic start")
                             state.setdefault("heard", []).append(it.text)
                             await _safe_send_json(websocket, {"type": "input_transcript", "text": it.text})
 

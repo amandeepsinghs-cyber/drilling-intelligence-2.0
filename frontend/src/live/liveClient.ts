@@ -16,6 +16,14 @@ function uiState() {
   return { approved_mw: S.approvedMw, rop_capped: S.ropCapped, memo_id: S.bundle?.facts.ids.memo_id };
 }
 
+function pcmRms(buf: ArrayBuffer): number {
+  const s = new Int16Array(buf, 0, Math.floor(buf.byteLength / 2));
+  if (!s.length) return 0;
+  let acc = 0;
+  for (let i = 0; i < s.length; i++) acc += s[i] * s[i];
+  return Math.sqrt(acc / s.length);
+}
+
 export type LiveStatus = 'disconnected' | 'connecting' | 'connected' | 'reconnecting' | 'fallback';
 
 class LiveClient {
@@ -24,6 +32,9 @@ class LiveClient {
   private statusListeners: Array<(s: LiveStatus) => void> = [];
   private currentAgentMsgId: string | null = null;
   private currentPresenterMsgId: string | null = null;
+  /** Barge-in: the presenter tapped while the agent was still answering. Drop the rest of that old answer
+   *  (don't play it, don't let it close the new mic) until Gemini confirms the interruption or ends that turn. */
+  private dropOldAnswer = false;
   private reconnectTimer: number | null = null;
   private turnWaiters: Array<(ok: boolean) => void> = [];
   /** Turn number / proactive flag stamped onto the next Live agent bubble (set by turnMachine). */
@@ -119,6 +130,13 @@ class LiveClient {
       this.ws.onmessage = (event) => {
         if (event.data instanceof ArrayBuffer) {
           // Downstream 24 kHz audio chunk from Gemini Live
+          // Server VAD already ended the presenter's turn: close the mic so the agent never hears itself.
+          if (this.dropOldAnswer) return;
+          // Only on real speech — Gemini can stream near-silent chunks, which must not cut a new question.
+          if (micCapture.isCapturing() && pcmRms(event.data) > 300) {
+            micCapture.stop();
+            window.dispatchEvent(new Event('di-mic-auto-closed'));
+          }
           audioPlayer.playPcmChunk(event.data);
           useAgent.getState().setVoice('speaking');
           return;
@@ -266,7 +284,13 @@ class LiveClient {
         break;
       }
 
+      case 'interrupted':
+        this.dropOldAnswer = false;
+        audioPlayer.interrupt();
+        break;
+
       case 'turn_complete':
+        this.dropOldAnswer = false;
         this.currentAgentMsgId = null;
         this.currentPresenterMsgId = null;
         this.nextTurnMeta = {};
@@ -354,7 +378,9 @@ class LiveClient {
   }
 
   public async startTalking(): Promise<void> {
-    audioPlayer.interrupt(); // Barge-in: cut agent speech immediately
+    // Barge-in: if the agent is still answering, cut it and ignore the rest of that answer.
+    if (useAgent.getState().voice === 'speaking' || useAgent.getState().voice === 'thinking') this.dropOldAnswer = true;
+    audioPlayer.interrupt();
     this.currentAgentMsgId = null;
     this.currentPresenterMsgId = null;
 

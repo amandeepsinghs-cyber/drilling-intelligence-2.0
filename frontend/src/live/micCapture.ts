@@ -98,13 +98,18 @@ class MicCapture {
       return pcm;
     }
 
+    // Box-filter (average) each output window instead of picking one sample: removes the aliasing that
+    // nearest-sample decimation adds above 8 kHz, which garbled speech and confused language detection.
     const ratio = inputRate / outputRate;
-    const newLength = Math.round(buffer.length / ratio);
+    const newLength = Math.floor(buffer.length / ratio);
     const pcm = new Int16Array(newLength);
 
     for (let i = 0; i < newLength; i++) {
-      const srcIndex = Math.min(Math.round(i * ratio), buffer.length - 1);
-      const s = Math.max(-1, Math.min(1, buffer[srcIndex]));
+      const start = Math.floor(i * ratio);
+      const end = Math.min(Math.floor((i + 1) * ratio), buffer.length);
+      let sum = 0;
+      for (let j = start; j < end; j++) sum += buffer[j];
+      const s = Math.max(-1, Math.min(1, sum / Math.max(1, end - start)));
       pcm[i] = s < 0 ? s * 0x8000 : s * 0x7fff;
     }
     return pcm;

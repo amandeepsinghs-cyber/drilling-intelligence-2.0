@@ -1,7 +1,7 @@
 /** uiStore — mode, theme, caption language, overlays (SDD §12.4). */
 import { create } from 'zustand';
 
-export type Overlay = 'memo' | 'audit' | 'whatif' | 'wcr' | 'phone' | 'help';
+export type Overlay = 'memo' | 'audit' | 'whatif' | 'wcr' | 'phone' | 'help' | 'guide';
 type Lang = 'both' | 'en' | 'hi';
 /** LIVE: Gemini Live answers and its tool calls drive the UI. SCRIPTED: deterministic mock script (rehearsal / outage). */
 export type AgentMode = 'LIVE' | 'SCRIPTED';
@@ -28,7 +28,7 @@ interface UiState {
   notify: (text: string, tone?: 'ok' | 'warn' | 'risk' | 'info') => void;
 }
 
-const none: Record<Overlay, boolean> = { memo: false, audit: false, whatif: false, wcr: false, phone: false, help: false };
+const none: Record<Overlay, boolean> = { memo: false, audit: false, whatif: false, wcr: false, phone: false, help: false, guide: false };
 
 const getSavedAgentMode = (): AgentMode => {
   if (typeof window !== 'undefined') {

@@ -85,8 +85,8 @@ export function buildScript(b: ScenarioBundle, d: Columnar): Record<number, Scri
     0: {
       presenter: { en: 'Hey, I hope everything is going okay.', hi: 'Hey, I hope everything is going okay.' },
       agent: {
-        en: `${f.well.id} is drilling ${f.well.current_section.hole_size_in}-in hole at ${n0(before.md_m)} m in the Upper Miocene seal. Mud weight ${fmt(mw0)} ppg (${fmt(f.mud.initial.mw_sg)} SG), ECD ${fmt(before.ecd_ppg as number)} ppg against shoe FIT ${fmt(fit)} ppg at ${n0(shoe)} m. Overbalance is clean at ${fmtInt(at(before.md_m, 'derived.OVERBAL_PSI'))} psi.`,
-        hi: `${f.well.id} अभी ${n0(before.md_m)} मीटर पर Upper Miocene seal में ${f.well.current_section.hole_size_in}-इंच होल ड्रिल कर रहा है। मड वेट ${fmt(mw0)} ppg (${fmt(f.mud.initial.mw_sg)} SG), ECD ${fmt(before.ecd_ppg as number)} ppg — ${n0(shoe)} मीटर शू पर FIT ${fmt(fit)} ppg है। ओवरबैलेंस ${fmtInt(at(before.md_m, 'derived.OVERBAL_PSI'))} psi।`,
+        en: `Good morning Sir, I'm Sagar Drishti AI Agent, monitoring well ${f.well.id}. How can I help you?`,
+        hi: `Good morning Sir, I'm Sagar Drishti AI Agent, monitoring well ${f.well.id}. How can I help you?`,
       },
     },
     1: {

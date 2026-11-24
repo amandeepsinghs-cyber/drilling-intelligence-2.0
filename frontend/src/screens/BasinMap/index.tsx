@@ -2,7 +2,7 @@
  * BasinMap — landing screen. Google Maps (dark vector, Map ID) + deck.gl GoogleMapsOverlay when
  * VITE_GOOGLE_MAPS_API_KEY is set; otherwise a deck.gl-only fallback (no basemap) so the demo never blocks.
  */
-import { FlyToInterpolator, type MapViewState } from '@deck.gl/core';
+import { FlyToInterpolator, MapView, type MapViewState } from '@deck.gl/core';
 import { GoogleMapsOverlay } from '@deck.gl/google-maps';
 import DeckGL from '@deck.gl/react';
 import { APIProvider, Map as GMap, useMap } from '@vis.gl/react-google-maps';
@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { getWells } from '../../api/client';
 import type { WellFeature } from '../../api/types';
 import { Wordmark } from '../../components/common/AppHeader';
+import { DemoGuideDrawer } from '../../components/guide/DemoGuide';
 import ProvenanceChip from '../../components/common/ProvenanceChip';
 import { useScenario } from '../../state/scenarioStore';
 import { useUi } from '../../state/uiStore';
@@ -87,6 +88,7 @@ export default function BasinMap() {
         ) : (
           <div className="absolute inset-0 bg-[#070D16]">
             <DeckGL
+              views={new MapView({ id: 'map', repeat: true })}
               viewState={viewState}
               onViewStateChange={(e) => setViewState(e.viewState as MapViewState)}
               controller
@@ -137,11 +139,13 @@ export default function BasinMap() {
         </div>
       </div>
 
-      <div className="absolute right-6 top-6 flex gap-2">
+      <div className="absolute right-6 top-6 flex items-center gap-2">
         {(['basin', 'prospect'] as const).map((v) => (
           <button key={v} onClick={() => setView(v)} className={`btn py-1 text-xs capitalize ${view === v ? 'border-accent/60 text-accent' : ''}`}>{v}</button>
         ))}
+        <button id="basin-guide-btn" onClick={() => useUi.getState().toggle('guide')} className="btn py-1 text-xs border-accent/50 text-accent" title="Open demo flow & 25-question bank">Demo Flow</button>
       </div>
+      <DemoGuideDrawer />
       <AnimatePresence>
         {!KEY && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute bottom-4 right-6 text-[10.5px] text-faint">

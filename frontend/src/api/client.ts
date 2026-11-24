@@ -6,11 +6,11 @@ export const API_BASE = import.meta.env.VITE_API_BASE ?? '';
 
 async function getJson<T>(path: string, mock: string): Promise<{ data: T; source: 'api' | 'mock' }> {
   try {
-    const r = await fetch(`${API_BASE}${path}`, { signal: AbortSignal.timeout(2500) });
+    const r = await fetch(`${API_BASE}${path}`, { credentials: 'same-origin', signal: AbortSignal.timeout(2500) });
     if (!r.ok) throw new Error(String(r.status));
     return { data: (await r.json()) as T, source: 'api' };
   } catch {
-    const r = await fetch(mock);
+    const r = await fetch(mock, { credentials: 'same-origin' });
     return { data: (await r.json()) as T, source: 'mock' };
   }
 }
@@ -26,6 +26,7 @@ export async function postTool<T = Record<string, unknown>>(name: string, args: 
   try {
     const r = await fetch(`${API_BASE}/api/tools/${encodeURIComponent(name)}`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(args),
+      credentials: 'same-origin',
       signal: AbortSignal.timeout(6000),
     });
     if (!r.ok) throw new Error(String(r.status));
@@ -42,6 +43,7 @@ export async function postWhatIf(
   try {
     const r = await fetch(`${API_BASE}/api/physics/whatif`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(q),
+      credentials: 'same-origin',
       signal: AbortSignal.timeout(2500),
     });
     if (!r.ok) throw new Error(String(r.status));

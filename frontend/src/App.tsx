@@ -4,6 +4,7 @@ import BasinMap from './screens/BasinMap';
 import CommandCenter from './screens/CommandCenter';
 import WcrViewer from './screens/WcrViewer';
 import PresenterConsole from './screens/PresenterConsole';
+import DemoGuidePage from './components/guide/DemoGuide';
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
         <Route path="/well/:wellId" element={<CommandCenter />} />
         <Route path="/wcr/:docId" element={<WcrViewer />} />
         <Route path="/presenter" element={<PresenterConsole />} />
+        <Route path="/guide" element={<DemoGuidePage />} />
       </Routes>
     </BrowserRouter>
   );

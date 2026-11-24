@@ -1,4 +1,5 @@
 """FastAPI entrypoint (SDD §13). Serves scenario, physics, live voice agent WebSocket (/ws/live)."""
+import logging
 from pathlib import Path
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,6 +10,9 @@ from app.api.routes_actions import router as tools_router
 from app.api.routes_physics import router as physics_router
 from app.api.routes_scenario import router as scenario_router
 from app.core.config import get_settings
+
+# Surface di2.* logs (Live connects, reconnects, heard/said transcripts) in Cloud Run logging.
+logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 
 app = FastAPI(title="Drilling Intelligence 2.0", version="0.1.0")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])

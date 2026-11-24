@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import MemoOverlay from '../../components/actions/MemoOverlay';
 import RopCapApprovalCard from '../../components/actions/RopCapApprovalCard';
 import AuditDrawer from '../../components/audit/AuditDrawer';
+import { DemoGuideDrawer } from '../../components/guide/DemoGuide';
 import Toast from '../../components/common/Toast';
 import WhatIfDrawer from '../../components/whatif/WhatIfDrawer';
 import { HOTKEYS, usePresenterBridge } from '../../state/presenter';
@@ -40,6 +41,7 @@ export default function CommandCenter() {
       <RopCapApprovalCard />
       <WhatIfDrawer />
       <AuditDrawer />
+      <DemoGuideDrawer />
       {/* DispatchCard + PhoneMirror superseded by the inline Act 3 panel (WP-08); files kept, unmounted. */}
       <WcrOverlay />
       <HelpOverlay />
