@@ -31,7 +31,7 @@ The questions come from [DEMO_QUESTIONS.md](DEMO_QUESTIONS.md) (Q#); this sheet 
 | Step | You do / say | Check on screen |
 |---|---|---|
 | 1 | Q1 *"Good morning. Give me a twenty-second status of MN-SM-DW-01."* | Bit 4,120 m · MW 11.20 · ECD 11.42 · ROP 22 · P(kick) 4 % |
-| 2 | Q2 *"What rock is at the bit right now — and how old is what we see at the shakers?"* | U1 shale · 45 min cuttings lag explained |
+| 2 | Q2 *"What rock is at the bit right now — and how old is what we see at the shakers?"* | U1 shale · 20 min cuttings lag explained |
 | 3 | Q3 *"How far to the next zone, and when do we get there?"* | Agent **asks which zone first** (by design) → answer *"U2"* / *"the sand"* → distance + time |
 | 4 | Q4 *"Keep an eye on the well and warn me the moment anything changes."* | Confirms it is watching |
 | 5 | Press **Space** — drilling starts | Depth counter moves |

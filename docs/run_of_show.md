@@ -14,7 +14,7 @@
 | Clock | Beat | Depth | Speed chip | What the room should feel |
 |---|---|---|---|---|
 | 0:00 – 1:30 | Opening · basin map → live well | 4,120 m | `1× real` | "This is live, not a video." |
-| 1:30 – 4:30 | **Act 1** · Rock at the bit | 4,120 m | `1× real` | "It sees the rock 45 min before the mudlog." |
+| 1:30 – 4:30 | **Act 1** · Rock at the bit | 4,120 m | `1× real` | "It sees the rock 20 min before the mudlog." |
 | 4:30 – 8:00 | **Act 2** · The window closes | 4,145 → 4,172 m | `×60` | "It interrupted *me* — before the kick." |
 | 8:00 – 11:00 | **Act 3** · Human decides, agent acts | 4,172 m (paused) | — | "I said yes; the whole rig knew in seconds." |
 | 11:00 – 13:30 | **Act 4** · Other side + the report | 4,172 → 4,205 → TD | `×60` then `×1200` | "Paperwork done. Lessons saved." |
@@ -61,11 +61,11 @@ Legend below: 🎤 = you say (hold **Hold to talk** in the agent panel, speak, r
 **Turn 3 — rock before the mudlog** 🎤
 > "Abhi kaun si formation mein hain? Mudlog to baad mein aayega."
 
-🤖 Real-time ML reads gamma ray + shale volume **at the bit**; cuttings lag **45 minutes** behind. Still safely in the seal. Cites WCR-MN-DW-01.
+🤖 Real-time ML reads gamma ray + shale volume **at the bit**; cuttings lag **20 minutes** behind. Still safely in the seal. Cites WCR-MN-DW-01.
 
 👉 The **ML lithology column** (shale/sand %) and the LWD tracks. Citation chip under the reply.
 🎤 (to the room)
-> "Today the geologist waits 45 minutes for cuttings to come up. A model trained on our own historical logs tells us now."
+> "Today the geologist waits 20 minutes for cuttings to come up. A model trained on our own historical logs tells us now."
 
 ⌨️ `Enter` shows the Act 1 takeaway card → `Esc`.
 

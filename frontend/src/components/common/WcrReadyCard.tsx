@@ -1,6 +1,6 @@
 /** WcrReadyCard — shown when the agent finishes the WCR draft (replaces the "Four Layers of AI" ClosingCard,
  *  which is kept in ClosingCard.tsx but no longer mounted). Tells the presenter the draft is ready for human
- *  review and gives the real link to the report in the data lake. Esc / Close dismisses. */
+ *  review and gives the link to the full report (app copy). Esc / Close dismisses. */
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { WCR_REPORT_URL } from '../../lib/reportUrl';

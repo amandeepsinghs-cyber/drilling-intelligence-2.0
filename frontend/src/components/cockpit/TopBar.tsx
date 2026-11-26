@@ -28,7 +28,7 @@ export default function TopBar() {
   const cur = ACTS.findIndex((a) => a.id === act);
   return (
     <header className="flex h-14 shrink-0 items-center gap-5 border-b border-line bg-panel/60 px-4">
-      <Link to="/" className="shrink-0"><Wordmark /></Link>
+      <Link to="/map" className="shrink-0"><Wordmark /></Link>
       {f && (
         <div className="shrink-0 border-l border-line pl-5 leading-tight">
           <div className="num text-[16px] font-semibold text-fg">{f.well.id}</div>
@@ -60,7 +60,7 @@ export default function TopBar() {
         {approved && <span className="chip border-accent/40 text-accent">MOC active</span>}
         {/* Stays on the main screen after the "WCR draft for review is ready" card is closed. */}
         {wcrReady && (
-          <a href={WCR_REPORT_URL} target="_blank" rel="noopener" title="WCR draft for review — open from the data lake"
+          <a href={WCR_REPORT_URL} target="_blank" rel="noopener" title="WCR draft for review — opens the full report"
             className="chip animate-pulse border-warn/60 font-semibold text-warn hover:bg-warn/10 hover:[animation:none]">📄 WCR draft ↗</a>
         )}
         {/* LIVE/SCRIPTED chip lives only in the agent panel (owner: one "LIVE" on screen). V still toggles. */}

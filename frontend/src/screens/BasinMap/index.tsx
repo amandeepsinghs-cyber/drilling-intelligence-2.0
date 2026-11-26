@@ -103,6 +103,9 @@ export default function BasinMap() {
 
       <div className="absolute left-6 top-6 flex w-[440px] flex-col gap-4">
         <Wordmark />
+        <button type="button" onClick={() => nav('/')} className="btn pointer-events-auto self-start text-[12px]">
+          <span aria-hidden>←</span> The business challenge
+        </button>
         <div>
           <div className="text-[11px] uppercase tracking-[0.18em] text-accent">{f?.well.program ?? 'Mahanadi deepwater'}</div>
           <h1 className="mt-1 text-[34px] font-semibold leading-tight tracking-tight text-fg">{f?.well.basin ?? 'Mahanadi Offshore Deepwater'}</h1>

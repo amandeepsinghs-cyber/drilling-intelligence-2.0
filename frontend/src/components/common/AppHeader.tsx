@@ -35,7 +35,7 @@ export default function AppHeader() {
   return (
     <header className="flex h-12 shrink-0 items-center justify-between gap-4">
       <div className="flex items-center gap-6">
-        <Link to="/"><Wordmark /></Link>
+        <Link to="/map"><Wordmark /></Link>
         {f && (
           <div className="flex items-center gap-3 border-l border-line pl-6">
             <div>

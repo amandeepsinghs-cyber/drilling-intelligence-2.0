@@ -30,7 +30,7 @@
           "turn": "T3",
           "mode": "Voice",
           "prompt": "Abhi kaun si formation mein hain? Mudlog to baad mein aayega.",
-          "expected": "ML reads GR + shale volume at the bit (U1 seal); cuttings lag 45 min behind · cites WCR-MN-DW-01.",
+          "expected": "ML reads GR + shale volume at the bit (U1 seal); cuttings lag 20 min behind · cites WCR-MN-DW-01.",
           "cue": "Point at purple ML lithology track vs hatched cuttings lag band."
         }
       ]
@@ -154,8 +154,8 @@
       "priority": "must",
       "depth": "4,120 m",
       "prompt": "What rock is at the bit right now — and how old is what we see at the shakers?",
-      "expected": "U1 compact marine shale (seal) · shaker cuttings lag 45 min (≈ 16.5 m at 22 m/hr).",
-      "why": "Proves ML at the bit sees rock 45 minutes before the mudlog."
+      "expected": "U1 compact marine shale (seal) · shaker cuttings lag 20 min (≈ 7.3 m at 22 m/hr).",
+      "why": "Proves ML at the bit sees rock 20 minutes before the mudlog."
     },
     {
       "id": "Q3",

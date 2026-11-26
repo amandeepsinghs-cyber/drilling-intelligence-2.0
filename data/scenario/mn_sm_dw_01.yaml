@@ -76,8 +76,8 @@ reservoir:                       # U3 main pay — owner-approved 2026-09-26 (sp
   archie: { a: 1.0, m: 2.0, n: 2.0 }
 
 mudlog:
-  bottoms_up_lag_min: 45         # cuttings travel time bit → shakers (owner-approved)
-  # Depth lag is DERIVED, never stored: lag_m = ROP (m/hr) × 45/60
+  bottoms_up_lag_min: 20         # cuttings travel time bit → shakers (owner-approved)
+  # Depth lag is DERIVED, never stored: lag_m = ROP (m/hr) × 20/60
   #   at 22 m/hr → 16.5 m · at 12 m/hr → 9 m · at 34 m/hr (drilling break) → 25.5 m
 
 pressure:

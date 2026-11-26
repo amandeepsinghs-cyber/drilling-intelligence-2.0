@@ -18,7 +18,7 @@ Contents: [1 · Try it now](#1--try-it-now-10-minutes) · [2 · The script](#2--
 
 Both services are normally already running on the Cloudtop. Just open:
 
-**http://amandeepsinghs.c.googlers.com:5173/** → click the pulsing well.
+**http://amandeepsinghs.c.googlers.com:5173/** → the business-challenge screen opens first (`Space` steps through it, **Meet Sagar Drishti →** goes on) → basin map (`/map`) → click the pulsing well.
 
 (If they're not running, see [§7 Setup](#7--setup--reference).)
 
@@ -41,7 +41,7 @@ Both services are normally already running on the Cloudtop. Just open:
 | Clock | Beat | Depth | Speed chip | What the room should feel |
 |---|---|---|---|---|
 | 0:00 – 1:30 | Opening · basin map → live well | 4,120 m | `1× real` | "This is live, not a video." |
-| 1:30 – 4:30 | **Act 1** · Rock at the bit | 4,120 m | `1× real` | "It sees the rock 45 min before the mudlog." |
+| 1:30 – 4:30 | **Act 1** · Rock at the bit | 4,120 m | `1× real` | "It sees the rock 20 min before the mudlog." |
 | 4:30 – 8:00 | **Act 2** · The window closes | 4,145 → 4,172 m | `×60` | "It interrupted *me*, before the kick." |
 | 8:00 – 11:00 | **Act 3** · Human decides, agent acts | 4,172 m (paused) | n/a | "I said yes; the whole rig knew in seconds." |
 | 11:00 – 13:30 | **Act 4** · Other side + the report | 4,172 → 4,205 m → TD | `×60`, then `×1200` | "Paperwork done. Lessons saved." |
@@ -54,7 +54,7 @@ Numbers come from the scenario file the agent reads, so what you hear should mat
 
 ### 0:00 – 1:30 · Opening (basin map)
 
-⌨️ Start on the basin map (`/`). Make sure the speed chip is **1× real**.
+⌨️ Start on the business-challenge screen (`/`), then the basin map (`/map`). Make sure the speed chip is **1× real**.
 
 🗣️
 > "What you're about to see is not a recording. This is a deepwater well in the Mahanadi. The data is illustrative, but it's running live. Everything on this screen updates the way a real rig feed would."
@@ -89,11 +89,11 @@ Numbers come from the scenario file the agent reads, so what you hear should mat
 **Turn 3 · rock before the mudlog** 🎤
 > "Abhi kaun si formation mein hain? Mudlog to baad mein aayega."
 
-🤖 The real-time ML reads gamma ray and shale volume **at the bit**. Cuttings lag **45 minutes** behind. We're still safely in the seal. It cites WCR-MN-DW-01.
+🤖 The real-time ML reads gamma ray and shale volume **at the bit**. Cuttings lag **20 minutes** behind. We're still safely in the seal. It cites WCR-MN-DW-01.
 
 👉 The **ML lithology** track (purple, "ML · at the bit") and the **Cuttings** track, with its hatched "in transit" band showing what the mudlog hasn't seen yet. Point out the citation chip under the reply.
 🗣️
-> "Today the geologist waits 45 minutes for cuttings to come up. A model trained on our own historical logs tells us now."
+> "Today the geologist waits 20 minutes for cuttings to come up. A model trained on our own historical logs tells us now."
 
 ⌨️ `Enter` shows the Act 1 takeaway card; `Esc` closes it.
 

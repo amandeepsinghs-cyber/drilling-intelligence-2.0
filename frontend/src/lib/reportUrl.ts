@@ -1,4 +1,5 @@
-/** Where the full WCR report lives. The data lake bucket (gs://sagar-drishti-data, ASIA) is the system of record;
- *  storage.cloud.google.com opens it in the browser for a signed-in user with read access (same account as the app).
- *  The in-app copy at /reports/WCR-MN-SM-DW-01.html stays as an offline fallback. */
-export const WCR_REPORT_URL = 'https://storage.cloud.google.com/sagar-drishti-data/reports/WCR-MN-SM-DW-01.html';
+/** Where the full WCR report opens. The app's own copy (same origin, behind the same sign-in as the app) is used so
+ *  the button never depends on which Google account the browser picks for storage.cloud.google.com (403 on stage).
+ *  The data-lake copy gs://sagar-drishti-data/reports/WCR-MN-SM-DW-01.html stays the system of record. */
+export const WCR_REPORT_URL = '/reports/WCR-MN-SM-DW-01.html';
+export const WCR_DATA_LAKE_URL = 'https://storage.cloud.google.com/sagar-drishti-data/reports/WCR-MN-SM-DW-01.html';

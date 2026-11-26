@@ -15,7 +15,7 @@ Legend: 🎤 you say · 🤖 a good answer contains · 🔐 approval point
 | 2 | "What is our target depth for this section, and how long to get there?" | TD 4,450 m MD = 9-5/8 in casing point, pre-approved · ~330 m · ~15 h at 22 m/hr |
 | 3 ⭐ | "Mujhe bata dena jab kuch bhi gadbad ho, theek hai?" *(switch to Hindi)* | Watchdog armed: dxc, sonic vs trend, connection gas, P(kick) next 30 m |
 | 4 ⭐ | "Thoda batayenge abhi well ke andar kya chal raha hai?" | Status in Hindi: depth, claystone, MW, ECD, steady ROP |
-| 5 ⭐ | "Abhi kaun si formation mein hain? Mudlog to baad mein aayega." | ML at the bit = U1 seal shale · cuttings lag 45 min · cites WCR-MN-DW-01 |
+| 5 ⭐ | "Abhi kaun si formation mein hain? Mudlog to baad mein aayega." | ML at the bit = U1 seal shale · cuttings lag 20 min · cites WCR-MN-DW-01 |
 | 6 | "Aur ye ML model kitna bharosemand hai? Kaise pata?" | Trained on offset logs; gives class probabilities; honest about uncertainty |
 
 ## Act 2 — The window closes · 📍 4,145 → 4,172 m

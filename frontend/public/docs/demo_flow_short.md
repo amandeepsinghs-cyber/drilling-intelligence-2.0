@@ -16,7 +16,7 @@
 1. **T0 (Type or say any greeting):** `"Hey, I hope everything is going okay."` → **Always English, one line:** *"Good morning Sir, I'm Sagar Drishti AI Agent, monitoring well MN-SM-DW-01. How can I help you?"* (status comes when you ask for it, next turn)
 2. **T1 (Voice — switch to Hindi):** `"Mujhe bata dena jab kuch bhi gadbad ho, theek hai?"` → Watchdog armed (`dxc`, DT, conn gas, 30 m kick risk).
 3. **T2 (Voice):** `"Thoda batayenge abhi well ke andar kya chal raha hai?"` → Live status in Hindi.
-4. **T3 (Voice):** `"Abhi kaun si formation mein hain? Mudlog to baad mein aayega."` → ML lithology at bit (U1 seal) vs. 45-min shaker cuttings lag; cites `WCR-MN-DW-01`.
+4. **T3 (Voice):** `"Abhi kaun si formation mein hain? Mudlog to baad mein aayega."` → ML lithology at bit (U1 seal) vs. 20-min shaker cuttings lag; cites `WCR-MN-DW-01`.
 
 ### Act 2 — The Window Closes (`4:30 – 8:00` · `4,145 → 4,172 m`)
 5. **T4a (Voice):** `"Agle zone tak kitna time lagega?"` → Clarifies first (*"Kaun sa zone? U3 pay sand at 4,195 m?"*).

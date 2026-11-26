@@ -6,7 +6,7 @@
 
 ## Act 1 — Meet the Well (English · `4,120 m`)
 * **Q1 ⭐ MUST ASK:** `"Good morning. Give me a twenty-second status of MN-SM-DW-01."` → If this is your first message: one-line English intro ("Good morning Sir, I'm Sagar Drishti AI Agent, monitoring well MN-SM-DW-01. How can I help you?"), then the status — 4,120 m, MW 11.20 ppg, ECD 11.42 ppg, ROP 22 m/hr, P(kick) 4%.
-* **Q2 ⭐ MUST ASK:** `"What rock is at the bit right now — and how old is what we see at the shakers?"` → U1 shale seal; cuttings lag 45 min (~16.5 m).
+* **Q2 ⭐ MUST ASK:** `"What rock is at the bit right now — and how old is what we see at the shakers?"` → U1 shale seal; cuttings lag 20 min (~7.3 m).
 * **Q3 🟢 ADD-ON:** `"How far to the next zone, and when do we get there?"` → Asks which zone first; U2 at 4,150 m (30 m / ~1 h 22 min).
 * **Q4 ⭐ MUST ASK:** `"Keep an eye on the well and warn me the moment anything changes."` → Arms watchdog; then press `Space` at `×60`.
 

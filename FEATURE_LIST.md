@@ -60,7 +60,7 @@ Legend: ✅ built & verified · 🟡 built, needs polish · ⬜ not built · ✖
 
 - **3-Act Narrative Architecture with Live Takeaway Badges**:
   - Integrated Act Navigation Bar at the top of the Command Center:
-    * `[ 🟢 Act I: Real-Time ML Lithology & Borehole Q&A ]` (Takeaway: Eliminates 45-min mudlogging cuttings lag).
+    * `[ 🟢 Act I: Real-Time ML Lithology & Borehole Q&A ]` (Takeaway: Eliminates 20-min mudlogging cuttings lag).
     * `[ 🔴 Act II: Offset Precedent & Human-in-the-Loop MOC ]` (Takeaway: Instant institutional memory).
     * `[ 🟡 Act III: Secondary Loss Defense & Autonomous WCR ]` (Takeaway: Shift notes to instant audit-ready WCR).
 

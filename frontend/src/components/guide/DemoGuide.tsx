@@ -407,7 +407,7 @@ export default function DemoGuidePage() {
     <div className="flex h-full flex-col bg-app text-fg">
       <header className="flex h-14 shrink-0 items-center justify-between gap-4 border-b border-line bg-panel/60 px-6">
         <div className="flex items-center gap-4">
-          <Link to="/" className="shrink-0">
+          <Link to="/map" className="shrink-0">
             <Wordmark />
           </Link>
           <span className="border-l border-line pl-4 text-sm font-semibold text-fg">

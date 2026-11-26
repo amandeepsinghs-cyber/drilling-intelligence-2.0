@@ -20,7 +20,7 @@ Legend: 📍 when to ask (bit depth) · 🎤 what you say · 🤖 what a good an
 | # | 🎤 You say | 🤖 Good answer contains | ✨ Why it lands |
 |---|---|---|---|
 | 1 | "Good morning. Give me a twenty-second status of MN-SM-DW-01." | Bit 4,120 m · MW 11.20 ppg · ECD 11.42 ppg · ROP 22 m/hr · P(kick, next 30 m) 4 % · "stable" | One question, the whole rig in one breath |
-| 2 | "What rock is at the bit right now — and how old is what we see at the shakers?" | U1 compact marine shale (seal) · cuttings lag 45 min ≈ 16.5 m at 22 m/hr | Shows it knows the mud log is *late* |
+| 2 | "What rock is at the bit right now — and how old is what we see at the shakers?" | U1 compact marine shale (seal) · cuttings lag 20 min ≈ 7.3 m at 22 m/hr | Shows it knows the mud log is *late* |
 | 3 | "How far to the next zone, and when do we get there?" | U2 top at 4,150 m · 30 m · ≈ 1 h 22 min at current ROP | Time, not just depth — how a driller thinks |
 | 4 | "Keep an eye on the well and warn me the moment anything changes." | Confirms it is watching (pressure, sonic, gas, dxc) and will speak up on its own | Sets up the surprise in Act 2 |
 

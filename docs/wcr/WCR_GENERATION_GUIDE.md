@@ -59,7 +59,7 @@ Every number below must appear exactly as written wherever it is used. If a chap
 
 **Barite**: formula lb/bbl = 1470 × (W2 − W1) / (35 − W2) → **28.3 lb/bbl; 87,700 lb; 39.8 MT; 796 × 50 kg bags; volume gain 60 bbl.**
 
-**Drilling**: ROP 22 m/hr initial; drilling break 34 m/hr; **ROP cap 12 m/hr**; flow 850 gpm. Mud-log bottoms-up lag 45 min (depth lag = ROP × 45/60, e.g. 16.5 m at 22 m/hr).
+**Drilling**: ROP 22 m/hr initial; drilling break 34 m/hr; **ROP cap 12 m/hr**; flow 850 gpm. Mud-log bottoms-up lag 20 min (depth lag = ROP × 20/60, e.g. 7.3 m at 22 m/hr).
 
 **Key checkpoints (use this table verbatim in Exec Summary and Ch. 6)**
 | MD (m) | Event | MW (ppg) | ECD (ppg) | ROP (m/hr) | PP (ppg) | Margin | P(kick, next 30 m) |
@@ -215,7 +215,7 @@ End with the updated Invented values register.
 Write Chapter 8 (Formation evaluation), about 6 pages: LWD suite and log quality, mud-log gas and C1–C5
 chromatography (dry gas, C1 > 88 %), petrophysical summary of U3 (PHIE 24.2 %, N/G 0.84, 180 mD, quartz
 82 %, GWC 4,270 m, 75 m gross gas column), a zone-by-zone results table for U1–U4, and the ML lithology
-cross-check against cuttings (mention the 45-minute lag). End with the updated Invented values register.
+cross-check against cuttings (mention the 20-minute lag). End with the updated Invented values register.
 ```
 
 ### PROMPT 10 — AI decision record
