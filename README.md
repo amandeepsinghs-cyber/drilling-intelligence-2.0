@@ -3,6 +3,8 @@
 **Drilling Intelligence 2.0** · live, voice-driven drilling co-pilot for the ONGC Board · built on Google Cloud
 Well **MN-SM-DW-01** · illustrative Mahanadi deepwater scenario · 15 minutes
 
+> 🚀 **Live app (Cloud Run):** **https://sagar-drishti-248430093579.us-central1.run.app/** — opens on the business-challenge screen → **Meet Sagar Drishti →** → basin map → click the pulsing well. Google sign-in required (Identity-Aware Proxy).
+
 > **The one message:** *a connected worker — one engineer, talking in their own language, gets the rock, the pressure, the history and the paperwork in seconds, and stays the one who decides.*
 
 Contents: [1 · Try it now](#1--try-it-now-10-minutes) · [2 · The script](#2--the-script-15-minutes) · [3 · Controls](#3--controls) · [4 · If something breaks](#4--if-something-breaks) · [5 · Day-of checklist](#5--day-of-checklist) · [6 · Rehearsal notes](#6--rehearsal-notes) · [7 · Setup & reference](#7--setup--reference)
