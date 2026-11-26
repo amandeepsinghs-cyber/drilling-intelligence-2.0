@@ -18,7 +18,7 @@ Contents: [1 · Try it now](#1--try-it-now-10-minutes) · [2 · The script](#2--
 
 Both services are normally already running on the Cloudtop. Just open:
 
-**http://amandeepsinghs.c.googlers.com:5173/** → the business-challenge screen opens first (`Space` steps through it, **Meet Sagar Drishti →** goes on) → basin map (`/map`) → click the pulsing well.
+**http://amandeepsinghs.c.googlers.com:5173/** → the business-challenge screen opens first (everything fades in by itself; **Meet Sagar Drishti →** or `Space` goes on · add `?steps=1` for click-through) → basin map (`/map`) → click the pulsing well.
 
 (If they're not running, see [§7 Setup](#7--setup--reference).)
 

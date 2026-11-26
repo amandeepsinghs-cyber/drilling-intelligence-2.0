@@ -1,7 +1,8 @@
 /**
  * Problem — opening "business challenge" screen shown before the basin map (route /problem).
  * Left half: the money and the person. Right half: a drilling rig at night.
- * Presenter controls: Space / → reveal the next beat, then go to the basin map · ← back one beat · ?all=1 shows every beat.
+ * Default: static — all beats fade in automatically; Space / → / Enter or the button go to the basin map (/map).
+ * ?steps=1: presenter click-through (Space / → next beat, ← back) · ?all=1 shows every beat at once.
  * Figures are rounded, illustrative industry estimates (not from the scenario YAML) and carry that label.
  */
 import { AnimatePresence, motion } from 'framer-motion';
@@ -36,30 +37,38 @@ function Stat({ value, unit, label, sub, tone }: { value: string; unit?: string;
 export default function Problem() {
   const nav = useNavigate();
   const [params] = useSearchParams();
+  // Default: static page — every beat fades in automatically (~0.4 s apart). ?steps=1: presenter click-through.
+  const stepMode = params.get('steps') === '1';
   const [beat, setBeat] = useState(params.get('all') === '1' ? LAST_BEAT : 0);
+
+  useEffect(() => {
+    if (stepMode || beat >= LAST_BEAT) return;
+    const t = setTimeout(() => setBeat((b) => Math.min(LAST_BEAT, b + 1)), beat === 0 ? 300 : 400);
+    return () => clearTimeout(t);
+  }, [stepMode, beat]);
 
   const next = useCallback(() => {
     setBeat((b) => {
-      if (b >= LAST_BEAT) { nav('/map'); return b; }
+      if (!stepMode || b >= LAST_BEAT) { nav('/map'); return b; }
       return b + 1;
     });
-  }, [nav]);
+  }, [nav, stepMode]);
 
   useEffect(() => {
     document.documentElement.classList.add('dark');
     document.documentElement.classList.remove('light');
     const onKey = (e: KeyboardEvent) => {
       if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'Enter' || e.key === 'PageDown') { e.preventDefault(); next(); }
-      else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); setBeat((b) => Math.max(0, b - 1)); }
+      else if (stepMode && (e.key === 'ArrowLeft' || e.key === 'PageUp')) { e.preventDefault(); setBeat((b) => Math.max(0, b - 1)); }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [next]);
+  }, [next, stepMode]);
 
   const show = (n: number) => (beat >= n ? 'show' : 'hidden');
 
   return (
-    <div className="relative flex h-full w-full overflow-hidden bg-[#070B10] text-fg" onClick={next}>
+    <div className="relative flex h-full w-full overflow-hidden bg-[#070B10] text-fg" onClick={stepMode ? next : undefined}>
       {/* ── Left half: the business challenge ── */}
       <section className="relative z-10 flex w-1/2 flex-col justify-between px-16 py-12">
         <Wordmark />
