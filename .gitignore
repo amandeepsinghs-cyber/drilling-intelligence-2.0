@@ -34,3 +34,16 @@ infra/terraform/.terraform/
 *.tfstate*
 # OS
 .DS_Store
+
+# Local-only working files (not for the repo)
+sovereignity.md
+frontend/public/mockups/live/res_1080p.png
+frontend/public/mockups/live/res_1080p_125pct.png
+frontend/public/mockups/live/res_1080p_150pct.png
+frontend/public/mockups/live/res_1440p.png
+frontend/public/mockups/live/talk_learn.png
+frontend/public/mockups/live/talk_listening.png
+frontend/scratch/res_probe.mjs
+frontend/scratch/rop_probe.mjs
+frontend/scratch/talk_probe.mjs
+frontend/scratch/wcr_ready_probe.mjs
