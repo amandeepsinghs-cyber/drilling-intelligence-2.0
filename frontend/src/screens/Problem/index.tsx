@@ -102,7 +102,7 @@ export default function Problem() {
               Behind the real-time decision is <span className="text-accent">one person.</span>
             </p>
             <ul className="mt-4 space-y-1.5 text-[16px] text-muted">
-              <li>On a <span className="num text-fg">12-hour</span> shift · 6 PM to 6 AM</li>
+              <li>Rigs run <span className="num text-fg">24/7</span> on <span className="num text-fg">12-hour</span> shifts</li>
               <li><span className="num text-fg">4,000 m</span> below, every metre can be different — uncertainty is the norm</li>
               <li className="font-semibold text-fg">The driller never sees the rock — only telemetry data on screen</li>
             </ul>
